@@ -1,0 +1,85 @@
+@import "tailwindcss";
+
+@theme {
+  /* ─── Color tokens ───────────────────────────────────────────── */
+  --color-maroon:        #7B0D2A;
+  --color-maroon-deep:   #5A0A1F;
+  --color-gold:          #C9A84C;
+  --color-gold-bright:   #E0C36E;
+  --color-charcoal:      #1A0E10;
+  --color-cardbrown:     #3D1A24;
+  --color-ivory:         #FAF6F0;
+  --color-sand:          #E8DCC4;
+
+  /* ─── Fonts ───────────────────────────────────────────────────── */
+  --font-display: "Fraunces", "Georgia", serif;
+  --font-body:    "Inter", system-ui, sans-serif;
+  --font-mono:    "JetBrains Mono", "Space Mono", monospace;
+}
+
+@font-face {
+  font-family: "Fraunces";
+  src: url("/fonts/Fraunces-Variable.woff2") format("woff2");
+  font-weight: 300 900;
+  font-style: normal italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Inter";
+  src: url("/fonts/Inter-Variable.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "JetBrains Mono";
+  src: url("/fonts/JetBrainsMono-Variable.woff2") format("woff2");
+  font-weight: 100 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--color-ivory);
+  color: var(--color-charcoal);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ─── Ledger ticker animation ──────────────────────────────────── */
+@keyframes ledger-scroll {
+  from { transform: translateY(0); }
+  to   { transform: translateY(-50%); }
+}
+
+.ledger-track {
+  animation: ledger-scroll 28s linear infinite;
+}
+
+.ledger-track:hover {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ledger-track {
+    animation: none;
+  }
+}
+
+/* ─── Hairline gold divider ────────────────────────────────────── */
+.divider-gold {
+  background: linear-gradient(90deg, transparent, var(--color-gold) 50%, transparent);
+  height: 1px;
+}
+
+/* ─── Focus visibility ──────────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--color-gold);
+  outline-offset: 2px;
+}
