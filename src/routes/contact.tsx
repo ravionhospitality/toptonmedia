@@ -1,206 +1,177 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { MapPin, Mail, Phone, MessageCircle, Clock, ArrowRight } from 'lucide-react'
+import { useState } from 'react'
+import { ArrowRight, Mail, Phone, MapPin, MessageCircle } from 'lucide-react'
 import { SiteNav } from '../components/SiteNav'
 import { SiteFooter } from '../components/SiteFooter'
+import { FAQAccordion } from '../components/FAQAccordion'
+import { Reveal } from '../lib/useReveal'
+import { CONTACT, CONTACT_FAQS } from '../lib/site-data'
+import { seoMeta, seoLinks, breadcrumbSchema, faqSchema } from '../lib/seo'
 
 export const Route = createFileRoute('/contact')({
+  head: () => ({
+    meta: seoMeta({
+      title: 'Contact Topton Media | Start a Project or Book a Free Audit — Lagos',
+      description: 'Get in touch with Topton Media in Lagos. Book a free 30-minute growth audit, start a project, or ask about our services. We respond within 24 hours.',
+      path: '/contact',
+    }),
+    links: seoLinks('/contact'),
+    scripts: [
+      {
+        type: 'application/ld+json',
+        children: JSON.stringify(breadcrumbSchema([
+          { name: 'Home', url: 'https://toptonmedia.com' },
+          { name: 'Contact', url: 'https://toptonmedia.com/contact' },
+        ])),
+      },
+      {
+        type: 'application/ld+json',
+        children: JSON.stringify(faqSchema(CONTACT_FAQS)),
+      },
+    ],
+  }),
   component: ContactPage,
 })
 
-const ENQUIRY_TYPES = [
-  'Performance Marketing',
-  'Lead Generation',
-  'User Acquisition',
-  'Growth Strategy',
-  'Creative & Web',
-  'Full Agency Partnership',
-  'Other',
-]
-
-const BUDGETS = [
-  'Under ₦500K/month',
-  '₦500K – ₦1M/month',
-  '₦1M – ₦3M/month',
-  '₦3M – ₦5M/month',
-  '₦5M+/month',
-  'Not sure yet',
-]
-
-const CONTACT_INFO = [
-  { icon: MapPin, label: 'Office', value: 'Lagos, Nigeria\n(Serving clients globally)' },
-  { icon: Mail, label: 'Email', value: 'hello@toptonmedia.com', href: 'mailto:hello@toptonmedia.com' },
-  { icon: Phone, label: 'Phone', value: '+234 (0) 800 000 0000', href: 'tel:+2348000000000' },
-  { icon: MessageCircle, label: 'WhatsApp', value: 'Chat with us directly', href: 'https://wa.me/2348000000000' },
-  { icon: Clock, label: 'Response time', value: 'Within 4 business hours' },
-]
-
-const FAQS = [
-  { q: 'How quickly can you start?', a: 'Most clients are onboarded within 5 business days of signing. We run a rapid discovery session, then move into strategy and execution. First results typically visible within 2–3 weeks.' },
-  { q: 'Do you work with early-stage startups?', a: 'Yes, though we\'re most effective when there\'s a product already live and a minimum ad budget of ₦300K/month to work with. If you\'re pre-revenue, we\'ll be honest about what we can do for you.' },
-  { q: 'What does a typical engagement look like?', a: 'We work on monthly retainers, scoped per client. Minimum engagement is 3 months, as meaningful growth data takes time to generate and act on.' },
-  { q: 'Do you charge a percentage of ad spend?', a: 'We work on fixed retainers, not percentage models. You know exactly what you\'re paying and what you\'re getting. Ad spend goes directly to the platforms — we don\'t mark it up.' },
-]
+const SERVICE_OPTIONS = ['User Acquisition', 'Lead Generation', 'Performance Marketing', 'Web Design & CRO', 'Social Media Management', 'PR & Communications', 'Market Activations', 'Printing Services', 'Branded Corporate Gifts', 'Brand Strategy & Creative', 'Media Production', 'Training & Workshops', 'Africa Market Entry', 'Email & CRM Marketing', 'SEO', 'Not sure yet — need advice']
+const BUDGET_OPTIONS = ['Under ₦250,000/month', '₦250,000 – ₦500,000/month', '₦500,000 – ₦1,000,000/month', '₦1,000,000 – ₦2,500,000/month', 'Above ₦2,500,000/month', 'One-off project budget']
 
 function ContactPage() {
+  const [submitted, setSubmitted] = useState(false)
+  const [loading, setLoading] = useState(false)
+
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault()
+    setLoading(true)
+    window.setTimeout(() => { setLoading(false); setSubmitted(true) }, 700)
+  }
+
   return (
-    <div className="min-h-screen flex flex-col bg-ivory">
+    <div className="min-h-screen flex flex-col">
       <SiteNav />
       <main className="flex-1">
-
-        {/* Header */}
-        <section className="bg-charcoal pt-20 pb-24 lg:pt-28 lg:pb-32">
+        <section className="bg-charcoal pt-20 pb-16">
           <div className="max-w-7xl mx-auto px-6 lg:px-10">
-            <p className="font-mono text-xs uppercase tracking-[0.25em] text-gold mb-5">Contact</p>
-            <h1 className="font-display text-5xl sm:text-6xl lg:text-7xl font-semibold leading-[1.04] tracking-tight text-ivory max-w-4xl">
-              Let's talk about <span className="text-gold italic">your growth.</span>
-            </h1>
-            <p className="mt-8 text-lg text-ivory/60 max-w-xl leading-relaxed">
-              Fill in what you can. We'll come back to you within 4 business hours with a straight answer about whether we're the right fit.
-            </p>
+            <Reveal>
+              <p className="font-[Space_Grotesk] text-xs uppercase tracking-[0.12em] text-gold mb-4">Get in Touch</p>
+              <h1 className="font-display text-5xl sm:text-6xl font-extrabold leading-[1.1] text-ivory max-w-3xl">
+                Tell Us About{' '}
+                <span className="bg-gradient-to-r from-gold to-gold-bright bg-clip-text text-transparent">
+                  Your Goals.
+                </span>
+              </h1>
+            </Reveal>
           </div>
         </section>
 
-        <div className="h-px bg-gradient-to-r from-transparent via-gold to-transparent" />
-
-        {/* Main */}
-        <section className="max-w-7xl mx-auto px-6 lg:px-10 py-24">
-          <div className="grid grid-cols-1 lg:grid-cols-5 gap-16">
-
-            {/* Form */}
-            <div className="lg:col-span-3">
-              <h2 className="font-display text-2xl font-semibold text-charcoal mb-8">Tell us about your project</h2>
-              <div className="space-y-6">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-semibold text-charcoal/60 uppercase tracking-widest mb-2">First Name *</label>
-                    <input type="text" className="w-full px-4 py-3.5 rounded-xl border border-sand bg-white focus:outline-none focus:border-maroon text-charcoal text-sm transition-colors" placeholder="Temi" />
+        <section className="bg-ivory py-20">
+          <div className="max-w-7xl mx-auto px-6 lg:px-10">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
+              {/* Left */}
+              <div className="lg:col-span-4">
+                <Reveal>
+                  <p className="text-lg text-charcoal/70 leading-[1.7] mb-10">
+                    Fill out the form and we'll get back to you within one business day to schedule a short discovery call.
+                  </p>
+                  <div className="space-y-5">
+                    <a href={`mailto:${CONTACT.email}`} className="flex items-center gap-3 text-charcoal/70 hover:text-maroon transition-colors">
+                      <div className="w-10 h-10 rounded-xl bg-maroon/10 flex items-center justify-center flex-shrink-0"><Mail size={17} className="text-maroon" /></div>
+                      <span>{CONTACT.email}</span>
+                    </a>
+                    <a href={`tel:${CONTACT.phoneIntl}`} className="flex items-center gap-3 text-charcoal/70 hover:text-maroon transition-colors">
+                      <div className="w-10 h-10 rounded-xl bg-maroon/10 flex items-center justify-center flex-shrink-0"><Phone size={17} className="text-maroon" /></div>
+                      <span>{CONTACT.phone}</span>
+                    </a>
+                    <a href={CONTACT.whatsapp} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-charcoal/70 hover:text-maroon transition-colors">
+                      <div className="w-10 h-10 rounded-xl bg-maroon/10 flex items-center justify-center flex-shrink-0"><MessageCircle size={17} className="text-maroon" /></div>
+                      <span>WhatsApp us</span>
+                    </a>
+                    <div className="flex items-center gap-3 text-charcoal/70">
+                      <div className="w-10 h-10 rounded-xl bg-maroon/10 flex items-center justify-center flex-shrink-0"><MapPin size={17} className="text-maroon" /></div>
+                      <span>{CONTACT.location}</span>
+                    </div>
                   </div>
-                  <div>
-                    <label className="block text-xs font-semibold text-charcoal/60 uppercase tracking-widest mb-2">Last Name *</label>
-                    <input type="text" className="w-full px-4 py-3.5 rounded-xl border border-sand bg-white focus:outline-none focus:border-maroon text-charcoal text-sm transition-colors" placeholder="Bamidele" />
+                  <div className="mt-10 pt-8 border-t border-sand">
+                    <p className="text-sm font-semibold text-charcoal mb-3">Prefer to book directly?</p>
+                    <a
+                      href={CONTACT.discoveryCallUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-gold to-gold-bright text-charcoal text-sm font-semibold hover:opacity-90 transition-opacity"
+                    >
+                      Book a Free Audit <ArrowRight size={15} />
+                    </a>
                   </div>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-semibold text-charcoal/60 uppercase tracking-widest mb-2">Email Address *</label>
-                  <input type="email" className="w-full px-4 py-3.5 rounded-xl border border-sand bg-white focus:outline-none focus:border-maroon text-charcoal text-sm transition-colors" placeholder="hello@yourbrand.com" />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-semibold text-charcoal/60 uppercase tracking-widest mb-2">WhatsApp / Phone</label>
-                  <input type="tel" className="w-full px-4 py-3.5 rounded-xl border border-sand bg-white focus:outline-none focus:border-maroon text-charcoal text-sm transition-colors" placeholder="+234 800 000 0000" />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-semibold text-charcoal/60 uppercase tracking-widest mb-2">Company / Brand Name</label>
-                  <input type="text" className="w-full px-4 py-3.5 rounded-xl border border-sand bg-white focus:outline-none focus:border-maroon text-charcoal text-sm transition-colors" placeholder="Your brand name" />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-semibold text-charcoal/60 uppercase tracking-widest mb-2">What do you need help with? *</label>
-                  <div className="flex flex-wrap gap-2">
-                    {ENQUIRY_TYPES.map(t => (
-                      <button key={t} className="px-4 py-2 rounded-full text-sm border border-sand text-charcoal/60 hover:border-maroon hover:text-maroon transition-colors">
-                        {t}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-semibold text-charcoal/60 uppercase tracking-widest mb-2">Monthly Marketing Budget</label>
-                  <select className="w-full px-4 py-3.5 rounded-xl border border-sand bg-white focus:outline-none focus:border-maroon text-charcoal text-sm transition-colors">
-                    <option value="">Select budget range</option>
-                    {BUDGETS.map(b => <option key={b} value={b}>{b}</option>)}
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-semibold text-charcoal/60 uppercase tracking-widest mb-2">Tell us more *</label>
-                  <textarea rows={5} className="w-full px-4 py-3.5 rounded-xl border border-sand bg-white focus:outline-none focus:border-maroon text-charcoal text-sm transition-colors resize-none" placeholder="What's your biggest growth challenge right now? Where are you currently spending on marketing? What have you already tried?" />
-                </div>
-
-                <button className="w-full py-4 rounded-full bg-maroon text-ivory text-sm font-semibold tracking-wide hover:bg-maroon-deep transition-colors flex items-center justify-center gap-2">
-                  Send Message <ArrowRight size={15} />
-                </button>
-
-                <p className="text-xs text-charcoal/40 text-center">We read every submission personally. No bots. No auto-replies.</p>
+                </Reveal>
               </div>
-            </div>
 
-            {/* Sidebar */}
-            <div className="lg:col-span-2 space-y-6">
-              {/* Contact info */}
-              <div className="bg-charcoal rounded-2xl p-8">
-                <p className="font-mono text-xs uppercase tracking-[0.2em] text-gold mb-6">Find us</p>
-                <div className="space-y-5">
-                  {CONTACT_INFO.map((info) => {
-                    const Icon = info.icon
-                    return (
-                      <div key={info.label} className="flex items-start gap-4">
-                        <div className="w-9 h-9 rounded-lg bg-ivory/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                          <Icon size={15} className="text-gold" />
-                        </div>
-                        <div>
-                          <p className="text-xs text-ivory/40 mb-0.5">{info.label}</p>
-                          {info.href ? (
-                            <a href={info.href} className="text-sm text-ivory/80 hover:text-gold transition-colors">{info.value}</a>
-                          ) : (
-                            <p className="text-sm text-ivory/80 whitespace-pre-line">{info.value}</p>
-                          )}
-                        </div>
+              {/* Form */}
+              <div className="lg:col-span-8">
+                {submitted ? (
+                  <Reveal className="bg-charcoal rounded-2xl p-10 lg:p-14 text-center">
+                    <p className="font-[Space_Grotesk] text-xs uppercase tracking-[0.12em] text-gold mb-4">Message Received</p>
+                    <h2 className="font-display text-3xl font-bold text-ivory mb-4">Thanks — we'll be in touch shortly.</h2>
+                    <p className="text-ivory/60 max-w-md mx-auto">A member of the team will reach out within one business day to schedule your discovery call.</p>
+                  </Reveal>
+                ) : (
+                  <form onSubmit={handleSubmit} className="bg-ivory border border-sand rounded-2xl p-8 lg:p-10 space-y-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                      <div>
+                        <label htmlFor="name" className="block text-sm font-medium text-charcoal mb-2">Full name *</label>
+                        <input id="name" name="name" type="text" required className="w-full rounded-xl border border-sand bg-ivory px-4 py-3 text-charcoal focus:outline-none focus:ring-2 focus:ring-maroon/30 focus:border-maroon transition-colors" placeholder="Ada Okafor" />
                       </div>
-                    )
-                  })}
-                </div>
-              </div>
-
-              {/* WhatsApp CTA */}
-              <a href="https://wa.me/2348000000000?text=Hi%2C%20I'd%20like%20to%20discuss%20a%20project%20with%20Topton%20Media" target="_blank" rel="noopener noreferrer"
-                className="flex items-center gap-4 bg-green-600 hover:bg-green-700 transition-colors rounded-2xl p-6 group">
-                <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0">
-                  <MessageCircle size={22} className="text-white" />
-                </div>
-                <div>
-                  <p className="font-semibold text-white text-sm">Chat on WhatsApp</p>
-                  <p className="text-green-200 text-xs mt-0.5">Fastest response — usually under 30 minutes</p>
-                </div>
-                <ArrowRight size={18} className="text-white/60 ml-auto group-hover:translate-x-1 transition-transform" />
-              </a>
-
-              {/* What to expect */}
-              <div className="bg-maroon/8 border border-maroon/15 rounded-2xl p-8">
-                <p className="font-mono text-xs uppercase tracking-[0.2em] text-maroon mb-4">What happens next</p>
-                <ol className="space-y-4">
-                  {['We read your brief and get context on your business','We reply with honest feedback on how we\'d approach it','If there\'s a fit, we schedule a 30-minute discovery call','We send a scoped proposal within 48 hours of that call'].map((step, i) => (
-                    <li key={i} className="flex items-start gap-3 text-sm text-charcoal/65">
-                      <span className="w-5 h-5 rounded-full bg-maroon text-ivory text-xs flex items-center justify-center flex-shrink-0 mt-0.5 font-semibold">{i+1}</span>
-                      {step}
-                    </li>
-                  ))}
-                </ol>
+                      <div>
+                        <label htmlFor="company" className="block text-sm font-medium text-charcoal mb-2">Company</label>
+                        <input id="company" name="company" type="text" className="w-full rounded-xl border border-sand bg-ivory px-4 py-3 text-charcoal focus:outline-none focus:ring-2 focus:ring-maroon/30 focus:border-maroon transition-colors" placeholder="Acme Inc." />
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                      <div>
+                        <label htmlFor="email" className="block text-sm font-medium text-charcoal mb-2">Email *</label>
+                        <input id="email" name="email" type="email" required className="w-full rounded-xl border border-sand bg-ivory px-4 py-3 text-charcoal focus:outline-none focus:ring-2 focus:ring-maroon/30 focus:border-maroon transition-colors" placeholder="ada@acme.com" />
+                      </div>
+                      <div>
+                        <label htmlFor="phone" className="block text-sm font-medium text-charcoal mb-2">Phone / WhatsApp</label>
+                        <input id="phone" name="phone" type="tel" className="w-full rounded-xl border border-sand bg-ivory px-4 py-3 text-charcoal focus:outline-none focus:ring-2 focus:ring-maroon/30 focus:border-maroon transition-colors" placeholder="+234 800 000 0000" />
+                      </div>
+                    </div>
+                    <div>
+                      <label htmlFor="service" className="block text-sm font-medium text-charcoal mb-2">What do you need help with? *</label>
+                      <select id="service" name="service" required defaultValue="" className="w-full rounded-xl border border-sand bg-ivory px-4 py-3 text-charcoal focus:outline-none focus:ring-2 focus:ring-maroon/30 focus:border-maroon transition-colors">
+                        <option value="" disabled>Select a service</option>
+                        {SERVICE_OPTIONS.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                      </select>
+                    </div>
+                    <div>
+                      <label htmlFor="budget" className="block text-sm font-medium text-charcoal mb-2">Monthly budget range</label>
+                      <select id="budget" name="budget" defaultValue="" className="w-full rounded-xl border border-sand bg-ivory px-4 py-3 text-charcoal focus:outline-none focus:ring-2 focus:ring-maroon/30 focus:border-maroon transition-colors">
+                        <option value="" disabled>Select a range</option>
+                        {BUDGET_OPTIONS.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                      </select>
+                    </div>
+                    <div>
+                      <label htmlFor="message" className="block text-sm font-medium text-charcoal mb-2">Tell us about your goals</label>
+                      <textarea id="message" name="message" rows={4} className="w-full rounded-xl border border-sand bg-ivory px-4 py-3 text-charcoal focus:outline-none focus:ring-2 focus:ring-maroon/30 focus:border-maroon transition-colors resize-none" placeholder="What are you trying to grow, and what's gotten in the way so far?" />
+                    </div>
+                    <button type="submit" disabled={loading} className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full bg-gradient-to-r from-gold to-gold-bright text-charcoal text-sm font-semibold hover:opacity-90 disabled:opacity-60 transition-opacity">
+                      {loading ? 'Sending…' : 'Send Message'} {!loading && <ArrowRight size={16} />}
+                    </button>
+                  </form>
+                )}
               </div>
             </div>
-
           </div>
         </section>
 
         {/* FAQs */}
-        <section className="bg-charcoal py-24">
-          <div className="max-w-7xl mx-auto px-6 lg:px-10">
-            <p className="font-mono text-xs uppercase tracking-[0.2em] text-gold mb-5">FAQs</p>
-            <h2 className="font-display text-3xl sm:text-4xl font-semibold text-ivory tracking-tight mb-12">Questions we get asked a lot.</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {FAQS.map((faq) => (
-                <div key={faq.q} className="border-t border-ivory/15 pt-7">
-                  <h3 className="font-display text-lg font-semibold text-ivory mb-3">{faq.q}</h3>
-                  <p className="text-ivory/55 text-sm leading-relaxed">{faq.a}</p>
-                </div>
-              ))}
-            </div>
+        <section className="bg-sand/20 py-20 border-t border-sand">
+          <div className="max-w-4xl mx-auto px-6 lg:px-10">
+            <Reveal className="mb-12">
+              <h2 className="font-display text-3xl font-bold text-charcoal">Frequently Asked Questions</h2>
+            </Reveal>
+            <FAQAccordion faqs={CONTACT_FAQS} />
           </div>
         </section>
-
       </main>
       <SiteFooter />
     </div>

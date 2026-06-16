@@ -1,5 +1,5 @@
 import { Link } from '@tanstack/react-router'
-import { Mail, X } from 'lucide-react'
+import { Mail, Phone, MapPin, X } from 'lucide-react'
 import { InstagramIcon, LinkedinIcon } from './SocialIcons'
 
 export function SiteFooter() {

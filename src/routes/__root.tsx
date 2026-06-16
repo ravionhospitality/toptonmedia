@@ -1,27 +1,39 @@
 import { createRootRoute, Outlet, HeadContent, Scripts } from '@tanstack/react-router'
 import appCss from '../styles.css?url'
+import { ORGANIZATION_SCHEMA } from '../lib/seo'
+import { NotFoundPage } from '../components/NotFoundPage'
 
 export const Route = createRootRoute({
   head: () => ({
     meta: [
       { charSet: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { title: 'Topton Media — Performance Marketing Studio, Lagos' },
+      { title: 'Topton Media — Growth & Performance Marketing Agency, Lagos' },
       {
         name: 'description',
-        content: 'Topton Media is a performance marketing studio helping ambitious brands turn ad spend into measurable revenue. Paid media, growth strategy, and creative that converts.',
+        content: 'Topton Media is a growth and performance marketing agency in Lagos, Nigeria — paid media, SEO, web design, branding, printing, and corporate gifting for ambitious brands.',
       },
       { name: 'theme-color', content: '#7B0D2A' },
-      { property: 'og:title', content: 'Topton Media — Performance Marketing Studio' },
-      { property: 'og:description', content: 'We turn ad spend into measurable revenue. Paid media, growth strategy, and creative that converts.' },
-      { property: 'og:type', content: 'website' },
     ],
     links: [
+      { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
+      { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossOrigin: 'anonymous' },
+      {
+        rel: 'stylesheet',
+        href: 'https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500&family=Space+Grotesk:wght@500&display=swap',
+      },
       { rel: 'stylesheet', href: appCss },
-      { rel: 'icon', href: '/favicon.ico' },
+      { rel: 'icon', href: 'https://i.imgur.com/yuWmsVc.png' },
+    ],
+    scripts: [
+      {
+        type: 'application/ld+json',
+        children: JSON.stringify(ORGANIZATION_SCHEMA),
+      },
     ],
   }),
   component: RootLayout,
+  notFoundComponent: NotFoundPage,
 })
 
 function RootLayout() {

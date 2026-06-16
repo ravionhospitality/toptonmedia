@@ -7,7 +7,7 @@ import { nitro } from 'nitro/vite'
 
 export default defineConfig({
   plugins: [
-    tsConfigPaths({ projects: ['./tsconfig.json'] }),
+    tsConfigPaths({ projects: ['./tsconfig.json'], ignoreConfigErrors: true }),
     tailwindcss(),
     tanstackStart(),
     nitro(),

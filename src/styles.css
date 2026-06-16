@@ -11,34 +11,10 @@
   --color-ivory:         #FAF6F0;
   --color-sand:          #E8DCC4;
 
-  /* ─── Fonts ───────────────────────────────────────────────────── */
-  --font-display: "Fraunces", "Georgia", serif;
+  /* ─── Fonts (loaded via Google Fonts CDN in __root.tsx head) ──── */
+  --font-display: "Sora", system-ui, sans-serif;
   --font-body:    "Inter", system-ui, sans-serif;
-  --font-mono:    "JetBrains Mono", "Space Mono", monospace;
-}
-
-@font-face {
-  font-family: "Fraunces";
-  src: url("/fonts/Fraunces-Variable.woff2") format("woff2");
-  font-weight: 300 900;
-  font-style: normal italic;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Inter";
-  src: url("/fonts/Inter-Variable.woff2") format("woff2");
-  font-weight: 100 900;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "JetBrains Mono";
-  src: url("/fonts/JetBrainsMono-Variable.woff2") format("woff2");
-  font-weight: 100 800;
-  font-style: normal;
-  font-display: swap;
+  --font-mono:    "Space Grotesk", monospace;
 }
 
 html {
@@ -52,7 +28,7 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* ─── Ledger ticker animation ──────────────────────────────────── */
+/* ─── Ledger / ticker scroll animation ─────────────────────────── */
 @keyframes ledger-scroll {
   from { transform: translateY(0); }
   to   { transform: translateY(-50%); }
@@ -66,10 +42,38 @@ body {
   animation-play-state: paused;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .ledger-track {
-    animation: none;
-  }
+/* ─── Horizontal marquee ticker (results bar) ──────────────────── */
+@keyframes scroll-left {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: scroll-left 30s linear infinite;
+}
+
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+
+/* ─── Scroll reveal ─────────────────────────────────────────────── */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ─── Counter number tabular alignment ─────────────────────────── */
+.tabular {
+  font-feature-settings: "tnum" 1;
+  font-variant-numeric: tabular-nums;
 }
 
 /* ─── Hairline gold divider ────────────────────────────────────── */
@@ -78,8 +82,56 @@ body {
   height: 1px;
 }
 
+/* ─── CTA gold glow pulse on hover ──────────────────────────────── */
+.cta-glow {
+  transition: box-shadow 0.3s ease, opacity 0.3s ease;
+}
+
+.cta-glow:hover {
+  box-shadow: 0 0 20px rgba(201, 168, 76, 0.4);
+}
+
+/* ─── Service card hover lift + left border glow ───────────────── */
+.service-card {
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  border-left: 2px solid transparent;
+}
+
+.service-card:hover {
+  transform: translateY(-4px);
+  border-left-color: var(--color-gold);
+  box-shadow: 0 12px 32px -8px rgba(26, 14, 16, 0.18);
+}
+
+/* ─── Reduced motion ────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .ledger-track,
+  .marquee-track {
+    animation: none;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .service-card {
+    transition: none;
+  }
+  .service-card:hover {
+    transform: none;
+  }
+}
+
 /* ─── Focus visibility ──────────────────────────────────────────── */
 :focus-visible {
   outline: 2px solid var(--color-gold);
   outline-offset: 2px;
+}
+
+/* ─── Line clamp utility ─────────────────────────────────────────── */
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
