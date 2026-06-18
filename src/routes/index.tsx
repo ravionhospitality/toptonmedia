@@ -138,7 +138,7 @@ function HomePage() {
             </Reveal>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {SERVICES.map((service, i) => {
+              {SERVICES.filter(s => s.featuredOnHome).map((service, i) => {
                 const Icon = SERVICE_ICONS[service.slug]
                 return (
                   <Reveal key={service.slug} delay={(i % 3) * 80}>

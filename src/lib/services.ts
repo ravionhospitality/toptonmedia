@@ -33,6 +33,7 @@ export interface ServiceData {
   faqs: ServiceFAQ[]
   seoTitle: string
   seoDescription: string
+  featuredOnHome?: boolean
 }
 
 export const SERVICES: ServiceData[] = [
@@ -83,6 +84,7 @@ export const SERVICES: ServiceData[] = [
     ],
     seoTitle: 'User Acquisition Agency in Lagos | App Install & Growth Campaigns — Topton Media',
     seoDescription: 'Topton Media runs precision-targeted user acquisition campaigns on Google, Meta, TikTok, and Snapchat for Nigerian apps and brands. Get users who activate and pay.',
+    featuredOnHome: true,
   },
   {
     slug: 'lead-generation',
@@ -129,6 +131,7 @@ export const SERVICES: ServiceData[] = [
     ],
     seoTitle: 'Lead Generation Agency Lagos | B2B & B2C Leads into Your CRM — Topton Media',
     seoDescription: 'Topton Media generates high-intent leads for B2B and B2C brands in Nigeria using paid media, landing pages, and CRM integration. Leads delivered, not just clicks.',
+    featuredOnHome: true,
   },
   {
     slug: 'performance-marketing',
@@ -174,6 +177,7 @@ export const SERVICES: ServiceData[] = [
     ],
     seoTitle: 'Performance Marketing Agency Lagos | Paid Ads Measured on Revenue — Topton Media',
     seoDescription: 'Topton Media runs full-funnel paid media for brands in Nigeria — Meta, Google, TikTok — measured exclusively on revenue outcomes. No vanity metrics.',
+    featuredOnHome: true,
   },
   {
     slug: 'web-design-cro',
@@ -222,6 +226,7 @@ export const SERVICES: ServiceData[] = [
     ],
     seoTitle: 'Web Design & CRO Agency Lagos | Marketing Sites That Convert — Topton Media',
     seoDescription: 'Topton Media builds fast, sharp marketing websites designed to convert paid traffic into leads and revenue. CMS setup, analytics, Core Web Vitals and GTM included.',
+    featuredOnHome: true,
   },
   {
     slug: 'social-media-management',
@@ -265,6 +270,7 @@ export const SERVICES: ServiceData[] = [
     ],
     seoTitle: 'Social Media Management Agency Lagos | Content, Strategy & Community — Topton Media',
     seoDescription: 'Topton Media manages social media for brands across Nigeria — content calendars, creative direction, posting, and community management on 2–4 platforms.',
+    featuredOnHome: true,
   },
   {
     slug: 'pr-communications',
@@ -718,6 +724,7 @@ export const SERVICES: ServiceData[] = [
     ],
     seoTitle: 'SEO Agency Lagos | Search Engine Optimisation for Nigerian Brands — Topton Media',
     seoDescription: 'Topton Media provides technical SEO, content strategy, and link building for brands in Nigeria and across Africa. Results visible from month 2–3.',
+    featuredOnHome: true,
   },
 ]
 

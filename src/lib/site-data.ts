@@ -62,14 +62,16 @@ export interface TeamMember {
   role: string
   bio: string
   skills: string[]
+  linkedin?: string
 }
 
 export const TEAM: TeamMember[] = [
   {
     name: 'Temitope Bamidele',
     role: 'CEO & Chief Growth Officer',
-    bio: 'Performance marketer with 4+ years scaling brands across fintech, edtech, hospitality, and retail. Grew FxBud from 600 to 2,100+ users in 4 months. Closed \u20a633M+ in B2B deals. MBA candidate in Global Marketing.',
-    skills: ['Meta & TikTok Ads', 'Growth Strategy', 'B2B Sales', 'Fintech Marketing'],
+    bio: 'Growth and performance marketing leader with 10+ years of experience scaling brands across fintech, edtech, hospitality, and retail. Holds an MBA in International Marketing, with a track record of building growth teams and go-to-market strategies that compound.',
+    skills: ['Growth Leadership', 'Strategic Planning', 'Team Building', 'Go-to-Market Strategy'],
+    linkedin: 'https://www.linkedin.com/in/bamidele-samuel/',
   },
   {
     name: 'Chidi Okonkwo',
@@ -128,32 +130,144 @@ export interface CaseStudy {
   result: string
   summary: string
   image: string
+  relatedService: string
 }
 
 export const CASE_STUDIES: CaseStudy[] = [
   {
     slug: 'fintech-cpl',
     title: 'Nigerian Fintech: 47% Lower CPL via Meta Funnel Rebuild',
-    category: 'Fintech',
+    category: 'User Acquisition',
     result: '-47% CPL',
     summary: 'A full funnel rebuild \u2014 from ad creative to landing page to retargeting \u2014 cut cost per lead nearly in half within 8 weeks.',
     image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200&q=80',
+    relatedService: 'user-acquisition',
+  },
+  {
+    slug: 'b2b-saas-leads',
+    title: 'B2B SaaS: 3x Qualified Leads via LinkedIn + Landing Page Rebuild',
+    category: 'Lead Generation',
+    result: '3x qualified leads',
+    summary: 'Combining LinkedIn thought leadership with a redesigned landing page and CRM nurture flow tripled qualified leads for a B2B SaaS platform.',
+    image: 'https://images.unsplash.com/photo-1432888622747-4eb9a8efeb07?w=1200&q=80',
+    relatedService: 'lead-generation',
   },
   {
     slug: 'ecommerce-90day',
     title: 'Lagos E-commerce: \u20a60 \u2192 \u20a64.8M in 60 Days with TikTok + Meta',
-    category: 'E-commerce',
+    category: 'Performance Marketing',
     result: '\u20a64.8M in 60 days',
     summary: 'A new-to-market e-commerce brand went from zero revenue to \u20a64.8M in two months through a combined TikTok and Meta launch strategy.',
-    image: 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=1200&q=80',
+    image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1200&q=80',
+    relatedService: 'performance-marketing',
   },
   {
-    slug: 'b2b-saas-demos',
-    title: 'B2B SaaS: 3x Demo Bookings via LinkedIn + Google Ads',
-    category: 'B2B SaaS',
-    result: '3x demo bookings',
-    summary: 'Combining LinkedIn thought leadership with targeted Google Ads tripled qualified demo bookings for a B2B SaaS platform.',
-    image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1200&q=80',
+    slug: 'hospitality-booking-site',
+    title: 'Hospitality Brand: 41% Higher Booking Conversion After Site Rebuild',
+    category: 'Web Design & CRO',
+    result: '+41% conversion',
+    summary: 'A slow, outdated booking site was rebuilt for speed and clarity, raising the on-site booking conversion rate by 41% within a month of launch.',
+    image: 'https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=1200&q=80',
+    relatedService: 'web-design-cro',
+  },
+  {
+    slug: 'restaurant-social-growth',
+    title: 'Restaurant Group: 5x Instagram Engagement in 90 Days',
+    category: 'Social Media Management',
+    result: '5x engagement',
+    summary: 'A consistent content calendar and active community management grew engagement fivefold across a 3-location restaurant group\u2019s Instagram.',
+    image: 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=1200&q=80',
+    relatedService: 'social-media-management',
+  },
+  {
+    slug: 'fintech-launch-pr',
+    title: 'Fintech Launch: 12 Media Placements in First 30 Days',
+    category: 'PR & Communications',
+    result: '12 media placements',
+    summary: 'A coordinated press strategy around a fintech product launch secured coverage across 12 Nigerian business and tech outlets in the first month.',
+    image: 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=1200&q=80',
+    relatedService: 'pr-communications',
+  },
+  {
+    slug: 'retail-launch-activation',
+    title: 'Retail Brand Launch: 2,000+ Attendees at Lagos Pop-Up Activation',
+    category: 'Market Activations',
+    result: '2,000+ attendees',
+    summary: 'A weekend pop-up activation introduced a new retail brand to the Lagos market, driving over 2,000 attendees and strong social content reach.',
+    image: 'https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=1200&q=80',
+    relatedService: 'market-activations',
+  },
+  {
+    slug: 'corporate-rebrand-print',
+    title: 'Corporate Rebrand: Full Stationery Rollout for 200+ Staff in 10 Days',
+    category: 'Printing Services',
+    result: '10-day rollout',
+    summary: 'Following a corporate rebrand, we delivered fully branded stationery, ID cards, and signage for a 200+ person organisation within 10 working days.',
+    image: 'https://images.unsplash.com/photo-1562564055-71e051d33c19?w=1200&q=80',
+    relatedService: 'printing-services',
+  },
+  {
+    slug: 'bank-onboarding-gifts',
+    title: 'Bank Onboarding Kits: 500-Unit Rollout for New Hire Programme',
+    category: 'Branded Corporate Gifts',
+    result: '500 units delivered',
+    summary: 'A Nigerian bank\u2019s HR team needed consistent onboarding kits at scale \u2014 we sourced, branded, and delivered 500 units ahead of schedule.',
+    image: 'https://images.unsplash.com/photo-1512909006721-3d6018887383?w=1200&q=80',
+    relatedService: 'branded-gifts',
+  },
+  {
+    slug: 'startup-rebrand',
+    title: 'Startup Rebrand: New Identity Drove 30% Increase in Inbound Enquiries',
+    category: 'Brand Strategy & Creative',
+    result: '+30% inbound enquiries',
+    summary: 'A complete brand identity refresh \u2014 logo, messaging, and guidelines \u2014 helped a B2B startup look as credible as the enterprise clients it was pitching.',
+    image: 'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=1200&q=80',
+    relatedService: 'brand-strategy',
+  },
+  {
+    slug: 'brand-film-launch',
+    title: 'Brand Film: 250,000+ Organic Views on Product Launch Video',
+    category: 'Media Production',
+    result: '250K+ organic views',
+    summary: 'A 2-minute brand film produced for a product launch was shared organically across social platforms, passing 250,000 views without paid promotion.',
+    image: 'https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=1200&q=80',
+    relatedService: 'media-production',
+  },
+  {
+    slug: 'sales-team-training',
+    title: 'Sales Enablement Training: 22% Lift in Close Rate for B2B Team',
+    category: 'Training & Workshops',
+    result: '+22% close rate',
+    summary: 'A full-day sales enablement workshop equipped a 15-person B2B sales team with a digital-first pitch framework, lifting close rates within the quarter.',
+    image: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=1200&q=80',
+    relatedService: 'training-workshops',
+  },
+  {
+    slug: 'uk-brand-nigeria-entry',
+    title: 'UK Consumer Brand: Successful Nigeria Market Entry in 10 Weeks',
+    category: 'Africa Market Entry',
+    result: 'Launched in 10 weeks',
+    summary: 'A UK consumer brand entered the Nigerian market with localised messaging, a launch campaign, and on-ground PR \u2014 fully executed within 10 weeks.',
+    image: 'https://images.unsplash.com/photo-1580060839134-75a5edca2e99?w=1200&q=80',
+    relatedService: 'africa-market-entry',
+  },
+  {
+    slug: 'subscription-retention-email',
+    title: 'Subscription Business: 27% Higher Repeat Purchase via Lifecycle Email',
+    category: 'Email & CRM Marketing',
+    result: '+27% repeat purchase',
+    summary: 'A full lifecycle email programme \u2014 welcome, nurture, and win-back flows \u2014 raised repeat purchase rate by 27% for a subscription business.',
+    image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200&q=80',
+    relatedService: 'email-crm',
+  },
+  {
+    slug: 'b2b-organic-growth',
+    title: 'B2B Service Brand: 152% Organic Traffic Growth in 6 Months',
+    category: 'SEO',
+    result: '+152% organic traffic',
+    summary: 'A technical SEO overhaul plus a targeted content strategy grew organic traffic by 152% for a B2B service brand within six months.',
+    image: 'https://images.unsplash.com/photo-1562577309-4932fdd64cd1?w=1200&q=80',
+    relatedService: 'seo',
   },
 ]
 

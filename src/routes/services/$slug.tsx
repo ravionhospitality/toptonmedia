@@ -5,15 +5,16 @@ import { SiteFooter } from '../../components/SiteFooter'
 import { FAQAccordion } from '../../components/FAQAccordion'
 import { Reveal } from '../../lib/useReveal'
 import { getServiceBySlug } from '../../lib/services'
+import { CASE_STUDIES } from '../../lib/site-data'
 import { SERVICE_ICONS } from '../../lib/service-icons'
-import { seoMeta, seoLinks, breadcrumbSchema, faqSchema } from '../../lib/seo'
+import { seoMeta, seoLinks, breadcrumbSchema, faqSchema, serviceSchema } from '../../lib/seo'
 
 export const Route = createFileRoute('/services/$slug')({
   head: ({ params }) => {
     const service = getServiceBySlug(params.slug)
     if (!service) return { meta: [], links: [] }
     return {
-      meta: seoMeta({ title: service.seoTitle, description: service.seoDescription, path: `/services/${service.slug}` }),
+      meta: seoMeta({ title: service.seoTitle, description: service.seoDescription, path: `/services/${service.slug}`, image: service.heroImage }),
       links: seoLinks(`/services/${service.slug}`),
       scripts: [
         {
@@ -27,6 +28,14 @@ export const Route = createFileRoute('/services/$slug')({
         {
           type: 'application/ld+json',
           children: JSON.stringify(faqSchema(service.faqs)),
+        },
+        {
+          type: 'application/ld+json',
+          children: JSON.stringify(serviceSchema({
+            name: service.name,
+            description: service.seoDescription,
+            url: `https://toptonmedia.com/services/${service.slug}`,
+          })),
         },
       ],
     }
@@ -50,6 +59,7 @@ export const Route = createFileRoute('/services/$slug')({
 function ServiceDetailPage() {
   const service = Route.useLoaderData()
   const Icon = SERVICE_ICONS[service.slug]
+  const relatedCaseStudy = CASE_STUDIES.find(cs => cs.relatedService === service.slug)
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -213,6 +223,45 @@ function ServiceDetailPage() {
             </div>
           </div>
         </section>
+
+        {/* ─── Related Case Study ───────────────────────────────── */}
+        {relatedCaseStudy && (
+          <section className="bg-cardbrown py-20">
+            <div className="max-w-7xl mx-auto px-6 lg:px-10">
+              <Reveal>
+                <p className="font-[Space_Grotesk] text-xs uppercase tracking-[0.12em] text-gold mb-4">Real Results</p>
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center bg-charcoal border border-gold/15 rounded-2xl overflow-hidden">
+                  <div className="lg:col-span-5 aspect-[16/10] lg:aspect-auto lg:h-full">
+                    <img
+                      src={relatedCaseStudy.image}
+                      alt={relatedCaseStudy.title}
+                      className="w-full h-full object-cover"
+                      loading="lazy"
+                    />
+                  </div>
+                  <div className="lg:col-span-7 p-8 lg:p-10">
+                    <h3 className="font-display text-2xl font-bold text-ivory mb-3 leading-snug">
+                      {relatedCaseStudy.title}
+                    </h3>
+                    <p className="text-ivory/60 leading-relaxed mb-6">{relatedCaseStudy.summary}</p>
+                    <div className="flex items-center gap-8 mb-6">
+                      <div>
+                        <p className="text-[10px] uppercase tracking-wide text-ivory/40">Result</p>
+                        <p className="font-display text-2xl font-bold text-gold">{relatedCaseStudy.result}</p>
+                      </div>
+                    </div>
+                    <Link
+                      to="/case-studies"
+                      className="inline-flex items-center gap-1.5 text-sm font-semibold text-gold hover:gap-2.5 transition-all"
+                    >
+                      Read More Case Studies <ArrowRight size={14} />
+                    </Link>
+                  </div>
+                </div>
+              </Reveal>
+            </div>
+          </section>
+        )}
 
         {/* ─── Pricing ──────────────────────────────────────────── */}
         <section className="bg-ivory py-24">

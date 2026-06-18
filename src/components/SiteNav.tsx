@@ -22,11 +22,8 @@ export function SiteNav() {
     <header className="sticky top-0 z-50 bg-ivory/90 backdrop-blur-md border-b border-sand">
       <div className="max-w-7xl mx-auto px-6 lg:px-10">
         <div className="flex items-center justify-between h-20">
-          <Link to="/" className="flex items-center gap-2.5">
-            <img src={CONTACT.logo} alt="Topton Media" className="h-9 w-auto" />
-            <span className="font-display text-xl font-bold tracking-tight text-maroon hidden sm:inline">
-              Topton<span className="text-gold">.</span>
-            </span>
+          <Link to="/" className="flex items-center">
+            <img src={CONTACT.logo} alt="Topton Media" className="h-10 w-auto" />
           </Link>
 
           {/* Desktop nav */}

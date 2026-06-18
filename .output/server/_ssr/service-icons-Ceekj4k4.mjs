@@ -1,4 +1,4 @@
-import { S as Search, a as Mail, b as Compass, G as GraduationCap, V as Video, P as Palette, c as Gift, d as Printer, e as PartyPopper, f as Megaphone, g as Share2, h as Globe, T as TrendingUp, U as Users, i as Target } from "../_libs/lucide-react.mjs";
+import { S as Search, a as Mail, c as Compass, G as GraduationCap, V as Video, d as Palette, e as Gift, f as Printer, g as PartyPopper, h as Megaphone, i as Share2, j as Globe, k as TrendingUp, U as Users, l as Target } from "../_libs/lucide-react.mjs";
 const SERVICE_ICONS = {
   "user-acquisition": Target,
   "lead-generation": Users,

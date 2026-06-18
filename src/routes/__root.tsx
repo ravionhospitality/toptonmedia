@@ -14,6 +14,9 @@ export const Route = createRootRoute({
         content: 'Topton Media is a growth and performance marketing agency in Lagos, Nigeria — paid media, SEO, web design, branding, printing, and corporate gifting for ambitious brands.',
       },
       { name: 'theme-color', content: '#7B0D2A' },
+      { property: 'og:image', content: 'https://toptonmedia.com/og-image.jpg' },
+      { property: 'og:image:width', content: '1200' },
+      { property: 'og:image:height', content: '630' },
     ],
     links: [
       { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
@@ -24,6 +27,7 @@ export const Route = createRootRoute({
       },
       { rel: 'stylesheet', href: appCss },
       { rel: 'icon', href: 'https://i.imgur.com/yuWmsVc.png' },
+      { rel: 'alternate', type: 'application/rss+xml', title: 'Topton Media Blog RSS Feed', href: 'https://toptonmedia.com/rss.xml' },
     ],
     scripts: [
       {

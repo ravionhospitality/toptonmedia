@@ -1,4 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
+import { Linkedin } from 'lucide-react'
 import { SiteNav } from '../components/SiteNav'
 import { SiteFooter } from '../components/SiteFooter'
 import { Reveal } from '../lib/useReveal'
@@ -61,7 +62,20 @@ function TeamPage() {
                         {initials(member.name)}
                       </span>
                     </div>
-                    <h2 className="font-display text-xl font-semibold text-charcoal mb-1">{member.name}</h2>
+                    <div className="flex items-center gap-2 mb-1">
+                      <h2 className="font-display text-xl font-semibold text-charcoal">{member.name}</h2>
+                      {member.linkedin && (
+                        <a
+                          href={member.linkedin}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label={`${member.name} on LinkedIn`}
+                          className="text-charcoal/40 hover:text-maroon transition-colors"
+                        >
+                          <Linkedin size={16} />
+                        </a>
+                      )}
+                    </div>
                     <p className="text-sm text-maroon font-medium mb-3">{member.role}</p>
                     <p className="text-sm text-charcoal/60 leading-relaxed mb-4">{member.bio}</p>
                     <div className="flex flex-wrap gap-1.5">

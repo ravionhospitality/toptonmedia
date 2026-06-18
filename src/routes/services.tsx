@@ -86,27 +86,35 @@ function ServicesPage() {
                     <Link
                       to="/services/$slug"
                       params={{ slug: service.slug }}
-                      className="group flex flex-col h-full bg-ivory border border-sand rounded-2xl p-7 hover:border-gold hover:shadow-lg transition-all"
+                      className="service-card group flex flex-col h-full bg-ivory border border-sand rounded-2xl overflow-hidden hover:border-gold hover:shadow-lg transition-all"
                     >
-                      <div className="flex items-start justify-between mb-5">
-                        <div className="w-12 h-12 rounded-xl bg-maroon/10 flex items-center justify-center">
-                          <Icon size={22} className="text-maroon" strokeWidth={1.5} />
+                      <div className="relative aspect-[16/10] overflow-hidden">
+                        <img
+                          src={service.cardImage}
+                          alt={`${service.name} services — Topton Media`}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                          loading="lazy"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-charcoal/70 via-transparent to-transparent" />
+                        <div className="absolute top-4 left-4 w-10 h-10 rounded-xl bg-ivory/90 backdrop-blur-sm flex items-center justify-center">
+                          <Icon size={18} className="text-maroon" strokeWidth={1.5} />
                         </div>
-                        <span className="font-[Space_Grotesk] text-[10px] uppercase tracking-[0.12em] text-charcoal/40">
+                        <span className="absolute bottom-3 left-4 font-[Space_Grotesk] text-[10px] uppercase tracking-[0.12em] text-gold">
                           {service.category}
                         </span>
                       </div>
-                      <h2 className="font-display text-xl font-semibold text-charcoal mb-2">
-                        {service.name}
-                      </h2>
-                      <p className="text-sm text-charcoal/60 leading-relaxed mb-5 flex-1">
-                        {service.pitch}
-                      </p>
-                      <div className="flex items-center justify-between pt-4 border-t border-sand">
-                        <span className="text-xs font-semibold text-maroon">From {service.priceFrom}</span>
-                        <span className="inline-flex items-center gap-1 text-xs font-semibold text-gold group-hover:gap-2 transition-all">
-                          Learn More <ArrowRight size={12} />
-                        </span>
+                      <div className="p-7 flex flex-col flex-1">
+                        <h2 className="font-display text-xl font-semibold text-charcoal mb-2">
+                          {service.name}
+                        </h2>
+                        <p className="text-sm text-charcoal/60 leading-relaxed mb-5 flex-1">
+                          {service.pitch}
+                        </p>
+                        <div className="flex items-center justify-end pt-4 border-t border-sand">
+                          <span className="inline-flex items-center gap-1 text-xs font-semibold text-gold group-hover:gap-2 transition-all">
+                            Read More <ArrowRight size={12} />
+                          </span>
+                        </div>
                       </div>
                     </Link>
                   </Reveal>

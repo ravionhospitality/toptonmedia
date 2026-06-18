@@ -1,48 +1,51 @@
-import { useEffect, useState } from 'react'
-import { useReveal } from '../lib/useReveal'
+import { useEffect, useRef, useState } from 'react'
 
-interface StatCounterProps {
+interface Props {
   value: string
   label: string
 }
 
-// Parses values like "40+", "₦500M+", "4.2x", "8+"
-function parseValue(value: string): { prefix: string; number: number; suffix: string; decimals: number } {
-  const match = value.match(/^([^\d.]*)([\d.]+)(.*)$/)
-  if (!match) return { prefix: '', number: 0, suffix: value, decimals: 0 }
-  const [, prefix, numStr, suffix] = match
-  const decimals = numStr.includes('.') ? numStr.split('.')[1].length : 0
-  return { prefix, number: parseFloat(numStr), suffix, decimals }
+function parseValue(val: string) {
+  const match = val.match(/[\d.]+/)
+  return match ? parseFloat(match[0]) : 0
 }
 
-export function StatCounter({ value, label }: StatCounterProps) {
-  const { ref, visible } = useReveal<HTMLDivElement>()
-  const [current, setCurrent] = useState(0)
-  const { prefix, number, suffix, decimals } = parseValue(value)
+function formatValue(val: string, current: number) {
+  const prefix = val.match(/^[^\d]*/)?.[0] ?? ''
+  const suffix = val.match(/[^\d.]+$/)?.[0] ?? ''
+  const num = parseValue(val)
+  const isDecimal = val.includes('.')
+  const displayed = isDecimal ? current.toFixed(1) : Math.floor(current).toString()
+  return `${prefix}${displayed}${suffix}`
+}
+
+export function StatCounter({ value, label }: Props) {
+  const target = parseValue(value)
+  const [current, setCurrent] = useState(target) // start at final value for SSR
+  const hasAnimated = useRef(false)
 
   useEffect(() => {
-    if (!visible) return
-    const duration = 1400
+    if (hasAnimated.current || target === 0) return
+    hasAnimated.current = true
+    setCurrent(0)
+    const duration = 1800
     const start = performance.now()
-
     function tick(now: number) {
       const progress = Math.min((now - start) / duration, 1)
       const eased = 1 - Math.pow(1 - progress, 3)
-      setCurrent(number * eased)
+      setCurrent(eased * target)
       if (progress < 1) requestAnimationFrame(tick)
+      else setCurrent(target)
     }
-
     requestAnimationFrame(tick)
-  }, [visible, number])
-
-  const display = decimals > 0 ? current.toFixed(decimals) : Math.round(current).toString()
+  }, [target])
 
   return (
-    <div ref={ref} className="text-center">
-      <p className="font-display text-4xl sm:text-5xl font-extrabold text-ivory tabular">
-        {prefix}{display}{suffix}
+    <div className="text-center">
+      <p className="font-display text-4xl sm:text-5xl font-extrabold text-gold mb-2">
+        {formatValue(value, current)}
       </p>
-      <p className="mt-2 text-sm text-ivory/60">{label}</p>
+      <p className="text-sm text-ivory/60 uppercase tracking-widest font-[Space_Grotesk]">{label}</p>
     </div>
   )
 }

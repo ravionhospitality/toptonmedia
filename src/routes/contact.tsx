@@ -6,7 +6,8 @@ import { SiteFooter } from '../components/SiteFooter'
 import { FAQAccordion } from '../components/FAQAccordion'
 import { Reveal } from '../lib/useReveal'
 import { CONTACT, CONTACT_FAQS } from '../lib/site-data'
-import { seoMeta, seoLinks, breadcrumbSchema, faqSchema } from '../lib/seo'
+import { supabase } from '../lib/supabase'
+import { seoMeta, seoLinks, breadcrumbSchema, faqSchema, contactPageSchema } from '../lib/seo'
 
 export const Route = createFileRoute('/contact')({
   head: () => ({
@@ -28,6 +29,10 @@ export const Route = createFileRoute('/contact')({
         type: 'application/ld+json',
         children: JSON.stringify(faqSchema(CONTACT_FAQS)),
       },
+      {
+        type: 'application/ld+json',
+        children: JSON.stringify(contactPageSchema()),
+      },
     ],
   }),
   component: ContactPage,
@@ -40,10 +45,30 @@ function ContactPage() {
   const [submitted, setSubmitted] = useState(false)
   const [loading, setLoading] = useState(false)
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  const [submitError, setSubmitError] = useState('')
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
+    setSubmitError('')
     setLoading(true)
-    window.setTimeout(() => { setLoading(false); setSubmitted(true) }, 700)
+
+    const formData = new FormData(e.currentTarget)
+    const { error } = await supabase.from('contact_submissions').insert({
+      name: formData.get('name'),
+      company: formData.get('company') || null,
+      email: formData.get('email'),
+      phone: formData.get('phone') || null,
+      service: formData.get('service'),
+      budget: formData.get('budget') || null,
+      message: formData.get('message') || null,
+    })
+
+    setLoading(false)
+    if (error) {
+      setSubmitError('Something went wrong sending your message. Please try again or email us directly.')
+      return
+    }
+    setSubmitted(true)
   }
 
   return (
@@ -153,6 +178,9 @@ function ContactPage() {
                       <label htmlFor="message" className="block text-sm font-medium text-charcoal mb-2">Tell us about your goals</label>
                       <textarea id="message" name="message" rows={4} className="w-full rounded-xl border border-sand bg-ivory px-4 py-3 text-charcoal focus:outline-none focus:ring-2 focus:ring-maroon/30 focus:border-maroon transition-colors resize-none" placeholder="What are you trying to grow, and what's gotten in the way so far?" />
                     </div>
+                    {submitError && (
+                      <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-xl px-4 py-3">{submitError}</p>
+                    )}
                     <button type="submit" disabled={loading} className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full bg-gradient-to-r from-gold to-gold-bright text-charcoal text-sm font-semibold hover:opacity-90 disabled:opacity-60 transition-opacity">
                       {loading ? 'Sending…' : 'Send Message'} {!loading && <ArrowRight size={16} />}
                     </button>

@@ -72,6 +72,10 @@ const Check = createLucideIcon("Check", [["path", { d: "M20 6 9 17l-5-5", key: "
 const ChevronDown = createLucideIcon("ChevronDown", [
   ["path", { d: "m6 9 6 6 6-6", key: "qrunsl" }]
 ]);
+const Clock = createLucideIcon("Clock", [
+  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
+  ["polyline", { points: "12 6 12 12 16 14", key: "68esgv" }]
+]);
 const Compass = createLucideIcon("Compass", [
   [
     "path",
@@ -109,6 +113,22 @@ const GraduationCap = createLucideIcon("GraduationCap", [
   ],
   ["path", { d: "M22 10v6", key: "1lu8f3" }],
   ["path", { d: "M6 12.5V16a6 3 0 0 0 12 0v-3.5", key: "1r8lef" }]
+]);
+const Instagram = createLucideIcon("Instagram", [
+  ["rect", { width: "20", height: "20", x: "2", y: "2", rx: "5", ry: "5", key: "2e1cvw" }],
+  ["path", { d: "M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z", key: "9exkf1" }],
+  ["line", { x1: "17.5", x2: "17.51", y1: "6.5", y2: "6.5", key: "r4j83e" }]
+]);
+const Linkedin = createLucideIcon("Linkedin", [
+  [
+    "path",
+    {
+      d: "M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z",
+      key: "c2jq9f"
+    }
+  ],
+  ["rect", { width: "4", height: "12", x: "2", y: "9", key: "mk3on5" }],
+  ["circle", { cx: "4", cy: "4", r: "2", key: "bt5ra8" }]
 ]);
 const Mail = createLucideIcon("Mail", [
   ["rect", { width: "20", height: "16", x: "2", y: "4", rx: "2", key: "18n3k1" }],
@@ -212,6 +232,15 @@ const TrendingUp = createLucideIcon("TrendingUp", [
   ["polyline", { points: "22 7 13.5 15.5 8.5 10.5 2 17", key: "126l90" }],
   ["polyline", { points: "16 7 22 7 22 13", key: "kwv8wd" }]
 ]);
+const Twitter = createLucideIcon("Twitter", [
+  [
+    "path",
+    {
+      d: "M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z",
+      key: "pff0z6"
+    }
+  ]
+]);
 const Users = createLucideIcon("Users", [
   ["path", { d: "M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2", key: "1yyitq" }],
   ["circle", { cx: "9", cy: "7", r: "4", key: "nufk8" }],
@@ -236,26 +265,30 @@ export {
   ArrowRight as A,
   ChevronDown as C,
   GraduationCap as G,
+  Instagram as I,
+  Linkedin as L,
   Menu as M,
-  Palette as P,
+  Phone as P,
   Search as S,
-  TrendingUp as T,
+  Twitter as T,
   Users as U,
   Video as V,
   X,
   Mail as a,
-  Compass as b,
-  Gift as c,
-  Printer as d,
-  PartyPopper as e,
-  Megaphone as f,
-  Share2 as g,
-  Globe as h,
-  Target as i,
-  Phone as j,
-  MessageCircle as k,
-  MapPin as l,
-  ArrowUpRight as m,
-  ArrowDown as n,
-  Check as o
+  MapPin as b,
+  Compass as c,
+  Palette as d,
+  Gift as e,
+  Printer as f,
+  PartyPopper as g,
+  Megaphone as h,
+  Share2 as i,
+  Globe as j,
+  TrendingUp as k,
+  Target as l,
+  MessageCircle as m,
+  ArrowUpRight as n,
+  ArrowDown as o,
+  Check as p,
+  Clock as q
 };
