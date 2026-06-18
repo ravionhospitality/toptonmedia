@@ -1,5 +1,12 @@
 import { Link } from '@tanstack/react-router'
-import { Instagram, Linkedin, Twitter, Mail, Phone, MapPin } from 'lucide-react'
+import {
+  InstagramIcon,
+  LinkedinIcon,
+  TwitterIcon,
+  Mail,
+  Phone,
+  MapPin
+} from 'lucide-react'
 import { CONTACT } from '../lib/site-data'
 
 const FOOTER_SERVICES = [
