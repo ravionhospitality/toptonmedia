@@ -77,10 +77,10 @@ function HomePage() {
                 </p>
                 <div className="mt-10 flex flex-wrap items-center gap-4">
                   <Link
-                    to="/contact"
+                    to="/apply"
                     className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-gradient-to-r from-gold to-gold-bright text-charcoal text-sm font-semibold tracking-wide hover:opacity-90 transition-opacity"
                   >
-                    Start Growing Today
+                    See If We're a Fit
                     <ArrowRight size={16} />
                   </Link>
                   <a

@@ -155,7 +155,8 @@ function BlogPostPage() {
               src={post.hero_image}
               alt={post.title}
               className="w-full aspect-[16/9] object-cover rounded-2xl shadow-xl"
-              loading="lazy"
+              loading="eager"
+              fetchPriority="high"
              width="1400" height="788" />
           </div>
         </section>

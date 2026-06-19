@@ -23,10 +23,7 @@ export const Route = createRootRoute({
       { rel: 'dns-prefetch', href: 'https://images.unsplash.com' },
       { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
       { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossOrigin: 'anonymous' },
-      {
-        rel: 'stylesheet',
-        href: 'https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500&family=Space+Grotesk:wght@500&display=swap',
-      },
+      { rel: 'preload', as: 'style', href: 'https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500&family=Space+Grotesk:wght@500&display=swap' },
       { rel: 'stylesheet', href: appCss },
       { rel: 'icon', href: 'https://i.imgur.com/yuWmsVc.png' },
       { rel: 'alternate', type: 'application/rss+xml', title: 'Topton Media Blog RSS Feed', href: 'https://toptonmedia.com/rss.xml' },
