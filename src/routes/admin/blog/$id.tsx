@@ -26,6 +26,7 @@ function EditPostPage() {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
+  const [saved, setSaved] = useState(false)
   const [form, setForm] = useState({
     title: '', slug: '', category: CATEGORIES[0], relatedService: SERVICE_SLUGS[0],
     excerpt: '', quickAnswer: '', heroImage: '', metaTitle: '', metaDescription: '',
@@ -111,7 +112,8 @@ function EditPostPage() {
       setError(updateError.message)
       return
     }
-    navigate({ to: '/admin' })
+    setSaved(true)
+    setTimeout(() => setSaved(false), 3000)
   }
 
   if (loading) {
@@ -133,6 +135,11 @@ function EditPostPage() {
         {error && (
           <div className="mb-6 bg-red-900/30 border border-red-700/40 rounded-xl px-5 py-3 text-sm text-red-300">
             {error}
+          </div>
+        )}
+        {saved && (
+          <div className="mb-6 bg-green-900/30 border border-green-700/40 rounded-xl px-5 py-3 text-sm text-green-300">
+            ✓ Post saved successfully.
           </div>
         )}
 

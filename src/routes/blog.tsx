@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from '@tanstack/react-router'
+import { createFileRoute, Link, Outlet, useMatchRoute } from '@tanstack/react-router'
 import { useState } from 'react'
 import { SiteNav } from '../components/SiteNav'
 import { SiteFooter } from '../components/SiteFooter'
@@ -52,10 +52,17 @@ export const Route = createFileRoute('/blog')({
     const posts = await fetchPublishedPosts()
     return { posts }
   },
-  component: BlogPage,
+  component: BlogLayout,
 })
 
-function BlogPage() {
+function BlogLayout() {
+  const matchRoute = useMatchRoute()
+  const isSlug = matchRoute({ to: '/blog/$slug', fuzzy: false })
+  if (isSlug) return <Outlet />
+  return <BlogPageInner />
+}
+
+function BlogPageInner() {
   const { posts } = Route.useLoaderData()
   const [activeCategory, setActiveCategory] = useState('All')
 
