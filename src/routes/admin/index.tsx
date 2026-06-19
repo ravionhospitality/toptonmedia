@@ -30,9 +30,9 @@ const STATUS_COLORS: Record<Status, string> = {
 }
 
 function AdminPage() {
-  const [authed, setAuthed] = useState(false)
+  const [authed, setAuthed] = useState(() => sessionStorage.getItem('topton_admin') === '1')
   const [pw, setPw] = useState('')
-  const [tab, setTab] = useState<'submissions' | 'blog'>('submissions')
+  const [tab, setTab] = useState<'submissions' | 'blog' | 'services'>('submissions')
   const [submissions, setSubmissions] = useState<any[]>([])
   const [posts, setPosts] = useState<any[]>([])
   const [loading, setLoading] = useState(false)
@@ -41,7 +41,7 @@ function AdminPage() {
   const [noteDrafts, setNoteDrafts] = useState<Record<string, string>>({})
 
   function login() {
-    if (pw === ADMIN_PASSWORD) setAuthed(true)
+    if (pw === ADMIN_PASSWORD) { setAuthed(true); sessionStorage.setItem('topton_admin', '1') }
     else alert('Wrong password')
   }
 
@@ -165,14 +165,17 @@ function AdminPage() {
       <div className="max-w-6xl mx-auto px-6 py-10">
         <div className="flex items-center justify-between mb-8">
           <h1 className="font-display text-3xl font-bold text-ivory">Topton Media Admin</h1>
-          <Link to="/" className="text-sm text-gold hover:underline">View Site</Link>
+          <div className="flex items-center gap-4">
+            <Link to="/" className="text-sm text-gold hover:underline">View Site</Link>
+            <button onClick={() => { sessionStorage.removeItem('topton_admin'); setAuthed(false) }} className="text-sm text-ivory/40 hover:text-ivory">Logout</button>
+          </div>
         </div>
 
         <div className="flex gap-3 mb-8 items-center flex-wrap">
-          {(['submissions', 'blog'] as const).map(t => (
+          {(['submissions', 'blog', 'services'] as const).map(t => (
             <button key={t} onClick={() => setTab(t)}
               className={`px-5 py-2 rounded-full text-sm font-semibold transition-colors ${tab === t ? 'bg-gold text-charcoal' : 'border border-gold/30 text-ivory/70 hover:border-gold'}`}>
-              {t === 'submissions' ? 'Contact Submissions' : 'Blog Posts'}
+              {t === 'submissions' ? 'Contact Submissions' : t === 'blog' ? 'Blog Posts' : 'Services'}
             </button>
           ))}
           {tab === 'submissions' && overdueCount > 0 && (
@@ -328,6 +331,40 @@ function AdminPage() {
                   className="text-xs px-3 py-1.5 rounded-lg border border-red-900/40 text-red-400 hover:border-red-400 transition-colors">
                   Delete
                 </button>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {!loading && tab === 'services' && (
+          <div className="space-y-3">
+            <p className="text-ivory/50 text-sm mb-4">Services are defined in <code className="text-gold">src/lib/services.ts</code>. To edit a service, use the admin blog editor as a reference — direct service editing via this portal is coming soon. For now, edit the file directly and redeploy.</p>
+            {[
+              {slug:'user-acquisition',name:'User Acquisition'},
+              {slug:'lead-generation',name:'Lead Generation'},
+              {slug:'performance-marketing',name:'Performance Marketing'},
+              {slug:'web-design-cro',name:'Web Design & CRO'},
+              {slug:'social-media-management',name:'Social Media Management'},
+              {slug:'seo',name:'SEO'},
+              {slug:'pr-communications',name:'PR & Communications'},
+              {slug:'market-activations',name:'Market Activations'},
+              {slug:'printing-services',name:'Printing Services'},
+              {slug:'branded-gifts',name:'Branded Corporate Gifts'},
+              {slug:'brand-strategy',name:'Brand Strategy & Creative'},
+              {slug:'media-production',name:'Media Production'},
+              {slug:'training-workshops',name:'Training & Workshops'},
+              {slug:'africa-market-entry',name:'Africa Market Entry'},
+              {slug:'email-crm',name:'Email & CRM Marketing'},
+            ].map(s => (
+              <div key={s.slug} className="bg-cardbrown border border-gold/10 rounded-xl px-6 py-4 flex items-center gap-4">
+                <div className="flex-1">
+                  <p className="font-semibold text-ivory">{s.name}</p>
+                  <p className="text-xs text-ivory/40 mt-0.5">/services/{s.slug}</p>
+                </div>
+                <a href={`/services/${s.slug}`} target="_blank" rel="noopener noreferrer"
+                  className="text-xs px-3 py-1.5 rounded-lg border border-gold/30 text-gold hover:border-gold">
+                  View Live
+                </a>
               </div>
             ))}
           </div>

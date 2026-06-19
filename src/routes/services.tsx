@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from '@tanstack/react-router'
+import { createFileRoute, Link, Outlet, useMatchRoute } from '@tanstack/react-router'
 import { useState } from 'react'
 import { ArrowRight } from 'lucide-react'
 import { SiteNav } from '../components/SiteNav'
@@ -25,10 +25,17 @@ export const Route = createFileRoute('/services')({
       ])),
     }],
   }),
-  component: ServicesPage,
+  component: ServicesLayout,
 })
 
-function ServicesPage() {
+function ServicesLayout() {
+  const matchRoute = useMatchRoute()
+  const isSlug = matchRoute({ to: '/services/$slug', fuzzy: false })
+  if (isSlug) return <Outlet />
+  return <ServicesPageInner />
+}
+
+function ServicesPageInner() {
   const [activeCategory, setActiveCategory] = useState('All')
 
   const filtered = activeCategory === 'All'

@@ -111,7 +111,7 @@ function BlogPostPage() {
       <SiteNav />
       <main className="flex-1">
         {/* ─── Hero ─────────────────────────────────────────────── */}
-        <section className="relative bg-charcoal overflow-hidden pt-20 pb-16">
+        <section className="relative bg-charcoal overflow-hidden pt-24 pb-20">
           <div
             className="absolute inset-0 pointer-events-none"
             style={{ background: 'radial-gradient(circle at 80% 20%, rgba(123,13,42,0.4) 0%, transparent 60%)' }}
@@ -162,7 +162,7 @@ function BlogPostPage() {
 
         {/* ─── Content ──────────────────────────────────────────── */}
         <section className="bg-ivory py-16">
-          <div className="max-w-4xl mx-auto px-6 lg:px-10">
+          <div className="max-w-3xl mx-auto px-6 lg:px-10">
             {post.quick_answer && (
               <div className="quick-answer mb-12 bg-sand/40 border-l-4 border-maroon rounded-xl px-6 py-5">
                 <p className="font-[Space_Grotesk] text-[11px] uppercase tracking-[0.12em] text-maroon mb-2">
@@ -173,15 +173,15 @@ function BlogPostPage() {
                 </p>
               </div>
             )}
-            <article className="space-y-12">
+            <article className="space-y-10 prose-article">
               {post.content.map((section, i) => (
                 <Reveal key={i} delay={Math.min(i * 40, 200)}>
-                  <h2 className="font-display text-2xl sm:text-3xl font-bold text-charcoal mb-5">
+                  <h2 className="font-display text-2xl sm:text-3xl font-bold text-charcoal mb-4 mt-2">
                     {section.heading}
                   </h2>
                   <div className="space-y-4">
                     {section.paragraphs.map((p, pi) => (
-                      <p key={pi} className="text-charcoal/70 leading-[1.75]">{p}</p>
+                      <p key={pi} className="text-charcoal/75 leading-[1.85] text-[16px]">{p}</p>
                     ))}
                   </div>
                   {section.bullets && (
