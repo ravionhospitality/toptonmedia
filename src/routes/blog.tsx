@@ -115,7 +115,7 @@ function BlogPage() {
                       className="service-card group grid grid-cols-1 lg:grid-cols-2 gap-8 bg-ivory border border-sand rounded-2xl overflow-hidden hover:border-gold hover:shadow-xl transition-all"
                     >
                       <div className="aspect-[16/9] lg:aspect-auto overflow-hidden">
-                        <img src={featured.hero_image} alt={featured.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+                        <img src={featured.hero_image} alt={featured.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy"  width="1400" height="788" />
                       </div>
                       <div className="p-8 flex flex-col justify-center">
                         <div className="flex items-center gap-3 mb-4">
@@ -142,7 +142,7 @@ function BlogPage() {
                         className="service-card group bg-ivory border border-sand rounded-2xl overflow-hidden hover:border-gold hover:shadow-lg transition-all h-full flex flex-col"
                       >
                         <div className="aspect-[16/9] overflow-hidden">
-                          <img src={post.hero_image} alt={post.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+                          <img src={post.hero_image} alt={post.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy"  width="1400" height="788" />
                         </div>
                         <div className="p-6 flex flex-col flex-1">
                           <div className="flex items-center gap-3 mb-3">

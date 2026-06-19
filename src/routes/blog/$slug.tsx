@@ -27,8 +27,13 @@ interface DbBlogPost {
 }
 
 async function fetchPostBySlug(slug: string): Promise<DbBlogPost | null> {
-  const { data } = await supabase.from('blog_posts').select('*').eq('slug', slug).eq('published', true).single()
-  return data ?? null
+  try {
+    const { data, error } = await supabase.from('blog_posts').select('*').eq('slug', slug).eq('published', true).single()
+    if (error) return null
+    return data ?? null
+  } catch {
+    return null
+  }
 }
 
 async function fetchRelatedPosts(currentSlug: string, relatedService: string): Promise<DbBlogPost[]> {
@@ -151,7 +156,7 @@ function BlogPostPage() {
               alt={post.title}
               className="w-full aspect-[16/9] object-cover rounded-2xl shadow-xl"
               loading="lazy"
-            />
+             width="1400" height="788" />
           </div>
         </section>
 
@@ -251,7 +256,7 @@ function BlogPostPage() {
                     className="service-card group bg-ivory border border-sand rounded-2xl overflow-hidden hover:border-gold hover:shadow-lg transition-all"
                   >
                     <div className="aspect-[16/9] overflow-hidden">
-                      <img src={rp.hero_image} alt={rp.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+                      <img src={rp.hero_image} alt={rp.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy"  width="1400" height="788" />
                     </div>
                     <div className="p-5">
                       <h3 className="font-display text-base font-semibold text-charcoal leading-snug mb-2">{rp.title}</h3>

@@ -128,14 +128,14 @@ function HomePage() {
         {/* ─── Services marketplace preview ────────────────────── */}
         <section id="services" className="bg-charcoal py-24">
           <div className="max-w-7xl mx-auto px-6 lg:px-10">
-            <Reveal className="max-w-2xl mb-16">
+            <div className="max-w-2xl mb-16">
               <p className="font-[Space_Grotesk] text-xs uppercase tracking-[0.12em] text-gold mb-4">
                 What We Do
               </p>
               <h2 className="font-display text-4xl sm:text-5xl font-bold tracking-tight text-ivory">
                 Every Service Built to Drive One Thing: Growth
               </h2>
-            </Reveal>
+            </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {SERVICES.filter(s => s.featuredOnHome).map((service, i) => {

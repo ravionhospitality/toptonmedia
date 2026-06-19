@@ -19,6 +19,8 @@ export const Route = createRootRoute({
       { property: 'og:image:height', content: '630' },
     ],
     links: [
+      { rel: 'preload', href: 'https://i.imgur.com/yuWmsVc.png', as: 'image' },
+      { rel: 'dns-prefetch', href: 'https://images.unsplash.com' },
       { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
       { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossOrigin: 'anonymous' },
       {
