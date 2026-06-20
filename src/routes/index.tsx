@@ -39,7 +39,15 @@ export const Route = createFileRoute('/')({
   component: HomePage,
 })
 
-const LOGO_PLACEHOLDERS = Array.from({ length: 8 }, (_, i) => `Brand ${i + 1}`)
+const CLIENT_LOGOS = [
+  { name: 'Utiva', url: 'https://ahjhwqcrxcljmenoqyex.supabase.co/storage/v1/object/public/logos/utivacolored.7364336b.svg' },
+  { name: 'FxBud', url: 'https://ahjhwqcrxcljmenoqyex.supabase.co/storage/v1/object/public/logos/fxbud_logo%20(1).svg' },
+  { name: 'Hara', url: 'https://ahjhwqcrxcljmenoqyex.supabase.co/storage/v1/object/public/logos/hara.png' },
+  { name: 'Dantown', url: 'https://ahjhwqcrxcljmenoqyex.supabase.co/storage/v1/object/public/logos/dantown.jpg' },
+  { name: 'Credite Capital Finance', url: 'https://ahjhwqcrxcljmenoqyex.supabase.co/storage/v1/object/public/logos/credite.png' },
+  { name: 'KCMFB Limited', url: 'https://ahjhwqcrxcljmenoqyex.supabase.co/storage/v1/object/public/logos/kcmfb.jpeg' },
+  { name: 'Trendy Lady Barber', url: 'https://ahjhwqcrxcljmenoqyex.supabase.co/storage/v1/object/public/logos/TRENDY%20BARBER%20png.png' },
+]
 
 function HomePage() {
   return (
@@ -109,16 +117,18 @@ function HomePage() {
         {/* ─── Logos bar ────────────────────────────────────────── */}
         <section className="bg-ivory py-14">
           <div className="max-w-7xl mx-auto px-6 lg:px-10">
-            <p className="font-[Space_Grotesk] text-xs uppercase tracking-[0.12em] text-charcoal/40 text-center mb-8">
+            <p className="font-[Space_Grotesk] text-xs uppercase tracking-[0.12em] text-charcoal/40 text-center mb-10">
               Brands That Trust Us
             </p>
-            <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-6 items-center">
-              {LOGO_PLACEHOLDERS.map(name => (
-                <div
-                  key={name}
-                  className="h-12 rounded-lg bg-sand/60 flex items-center justify-center grayscale opacity-60"
-                >
-                  <span className="font-display text-xs font-semibold text-charcoal/40">{name}</span>
+            <div className="flex flex-wrap justify-center items-center gap-8 lg:gap-12">
+              {CLIENT_LOGOS.map(logo => (
+                <div key={logo.name} className="flex items-center justify-center h-12 grayscale opacity-60 hover:grayscale-0 hover:opacity-100 transition-all duration-300">
+                  <img
+                    src={logo.url}
+                    alt={logo.name}
+                    className="max-h-10 max-w-[120px] w-auto object-contain"
+                    loading="lazy"
+                  />
                 </div>
               ))}
             </div>

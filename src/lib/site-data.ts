@@ -116,7 +116,7 @@ export const TEAM: TeamMember[] = [
     skills: ['TikTok Strategy', 'Organic Social', 'Influencer Coordination', 'Short-form Video'],
   },
   {
-    name: 'Funmilayo Adesanya',
+    name: 'Ayomide Olugbemiga',
     role: 'Client Success Manager',
     bio: 'Account management background at two Lagos agencies. Ensures deliverables are on time, on brief, and actually moving the metrics that matter.',
     skills: ['Client Relations', 'Project Management', 'Reporting', 'Strategy QA'],

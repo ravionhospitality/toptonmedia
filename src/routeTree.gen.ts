@@ -14,12 +14,16 @@ import { Route as ServicesRouteImport } from './routes/services'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as CaseStudiesRouteImport } from './routes/case-studies'
 import { Route as BlogRouteImport } from './routes/blog'
+import { Route as ApplyRouteImport } from './routes/apply'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ShopIndexRouteImport } from './routes/shop/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as SitemapXmlRouteImport } from './routes/sitemap.xml'
+import { Route as ShopSlugRouteImport } from './routes/shop/$slug'
 import { Route as ServicesSlugRouteImport } from './routes/services/$slug'
 import { Route as RssXmlRouteImport } from './routes/rss.xml'
+import { Route as OrderConfirmationRouteImport } from './routes/order/confirmation'
 import { Route as BlogSlugRouteImport } from './routes/blog/$slug'
 import { Route as AdminBlogNewRouteImport } from './routes/admin/blog/new'
 import { Route as AdminBlogIdRouteImport } from './routes/admin/blog/$id'
@@ -49,6 +53,11 @@ const BlogRoute = BlogRouteImport.update({
   path: '/blog',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApplyRoute = ApplyRouteImport.update({
+  id: '/apply',
+  path: '/apply',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
@@ -57,6 +66,11 @@ const AboutRoute = AboutRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ShopIndexRoute = ShopIndexRouteImport.update({
+  id: '/shop/',
+  path: '/shop/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
@@ -69,6 +83,11 @@ const SitemapXmlRoute = SitemapXmlRouteImport.update({
   path: '/sitemap/xml',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ShopSlugRoute = ShopSlugRouteImport.update({
+  id: '/shop/$slug',
+  path: '/shop/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ServicesSlugRoute = ServicesSlugRouteImport.update({
   id: '/$slug',
   path: '/$slug',
@@ -77,6 +96,11 @@ const ServicesSlugRoute = ServicesSlugRouteImport.update({
 const RssXmlRoute = RssXmlRouteImport.update({
   id: '/rss/xml',
   path: '/rss/xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OrderConfirmationRoute = OrderConfirmationRouteImport.update({
+  id: '/order/confirmation',
+  path: '/order/confirmation',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BlogSlugRoute = BlogSlugRouteImport.update({
@@ -98,32 +122,40 @@ const AdminBlogIdRoute = AdminBlogIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/apply': typeof ApplyRoute
   '/blog': typeof BlogRouteWithChildren
   '/case-studies': typeof CaseStudiesRoute
   '/contact': typeof ContactRoute
   '/services': typeof ServicesRouteWithChildren
   '/team': typeof TeamRoute
   '/blog/$slug': typeof BlogSlugRoute
+  '/order/confirmation': typeof OrderConfirmationRoute
   '/rss/xml': typeof RssXmlRoute
   '/services/$slug': typeof ServicesSlugRoute
+  '/shop/$slug': typeof ShopSlugRoute
   '/sitemap/xml': typeof SitemapXmlRoute
   '/admin/': typeof AdminIndexRoute
+  '/shop/': typeof ShopIndexRoute
   '/admin/blog/$id': typeof AdminBlogIdRoute
   '/admin/blog/new': typeof AdminBlogNewRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/apply': typeof ApplyRoute
   '/blog': typeof BlogRouteWithChildren
   '/case-studies': typeof CaseStudiesRoute
   '/contact': typeof ContactRoute
   '/services': typeof ServicesRouteWithChildren
   '/team': typeof TeamRoute
   '/blog/$slug': typeof BlogSlugRoute
+  '/order/confirmation': typeof OrderConfirmationRoute
   '/rss/xml': typeof RssXmlRoute
   '/services/$slug': typeof ServicesSlugRoute
+  '/shop/$slug': typeof ShopSlugRoute
   '/sitemap/xml': typeof SitemapXmlRoute
   '/admin': typeof AdminIndexRoute
+  '/shop': typeof ShopIndexRoute
   '/admin/blog/$id': typeof AdminBlogIdRoute
   '/admin/blog/new': typeof AdminBlogNewRoute
 }
@@ -131,16 +163,20 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/apply': typeof ApplyRoute
   '/blog': typeof BlogRouteWithChildren
   '/case-studies': typeof CaseStudiesRoute
   '/contact': typeof ContactRoute
   '/services': typeof ServicesRouteWithChildren
   '/team': typeof TeamRoute
   '/blog/$slug': typeof BlogSlugRoute
+  '/order/confirmation': typeof OrderConfirmationRoute
   '/rss/xml': typeof RssXmlRoute
   '/services/$slug': typeof ServicesSlugRoute
+  '/shop/$slug': typeof ShopSlugRoute
   '/sitemap/xml': typeof SitemapXmlRoute
   '/admin/': typeof AdminIndexRoute
+  '/shop/': typeof ShopIndexRoute
   '/admin/blog/$id': typeof AdminBlogIdRoute
   '/admin/blog/new': typeof AdminBlogNewRoute
 }
@@ -149,48 +185,60 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
+    | '/apply'
     | '/blog'
     | '/case-studies'
     | '/contact'
     | '/services'
     | '/team'
     | '/blog/$slug'
+    | '/order/confirmation'
     | '/rss/xml'
     | '/services/$slug'
+    | '/shop/$slug'
     | '/sitemap/xml'
     | '/admin/'
+    | '/shop/'
     | '/admin/blog/$id'
     | '/admin/blog/new'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/about'
+    | '/apply'
     | '/blog'
     | '/case-studies'
     | '/contact'
     | '/services'
     | '/team'
     | '/blog/$slug'
+    | '/order/confirmation'
     | '/rss/xml'
     | '/services/$slug'
+    | '/shop/$slug'
     | '/sitemap/xml'
     | '/admin'
+    | '/shop'
     | '/admin/blog/$id'
     | '/admin/blog/new'
   id:
     | '__root__'
     | '/'
     | '/about'
+    | '/apply'
     | '/blog'
     | '/case-studies'
     | '/contact'
     | '/services'
     | '/team'
     | '/blog/$slug'
+    | '/order/confirmation'
     | '/rss/xml'
     | '/services/$slug'
+    | '/shop/$slug'
     | '/sitemap/xml'
     | '/admin/'
+    | '/shop/'
     | '/admin/blog/$id'
     | '/admin/blog/new'
   fileRoutesById: FileRoutesById
@@ -198,14 +246,18 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  ApplyRoute: typeof ApplyRoute
   BlogRoute: typeof BlogRouteWithChildren
   CaseStudiesRoute: typeof CaseStudiesRoute
   ContactRoute: typeof ContactRoute
   ServicesRoute: typeof ServicesRouteWithChildren
   TeamRoute: typeof TeamRoute
+  OrderConfirmationRoute: typeof OrderConfirmationRoute
   RssXmlRoute: typeof RssXmlRoute
+  ShopSlugRoute: typeof ShopSlugRoute
   SitemapXmlRoute: typeof SitemapXmlRoute
   AdminIndexRoute: typeof AdminIndexRoute
+  ShopIndexRoute: typeof ShopIndexRoute
   AdminBlogIdRoute: typeof AdminBlogIdRoute
   AdminBlogNewRoute: typeof AdminBlogNewRoute
 }
@@ -247,6 +299,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BlogRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/apply': {
+      id: '/apply'
+      path: '/apply'
+      fullPath: '/apply'
+      preLoaderRoute: typeof ApplyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/about': {
       id: '/about'
       path: '/about'
@@ -259,6 +318,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/shop/': {
+      id: '/shop/'
+      path: '/shop'
+      fullPath: '/shop/'
+      preLoaderRoute: typeof ShopIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/': {
@@ -275,6 +341,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SitemapXmlRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/shop/$slug': {
+      id: '/shop/$slug'
+      path: '/shop/$slug'
+      fullPath: '/shop/$slug'
+      preLoaderRoute: typeof ShopSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/services/$slug': {
       id: '/services/$slug'
       path: '/$slug'
@@ -287,6 +360,13 @@ declare module '@tanstack/react-router' {
       path: '/rss/xml'
       fullPath: '/rss/xml'
       preLoaderRoute: typeof RssXmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/order/confirmation': {
+      id: '/order/confirmation'
+      path: '/order/confirmation'
+      fullPath: '/order/confirmation'
+      preLoaderRoute: typeof OrderConfirmationRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/blog/$slug': {
@@ -338,14 +418,18 @@ const ServicesRouteWithChildren = ServicesRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  ApplyRoute: ApplyRoute,
   BlogRoute: BlogRouteWithChildren,
   CaseStudiesRoute: CaseStudiesRoute,
   ContactRoute: ContactRoute,
   ServicesRoute: ServicesRouteWithChildren,
   TeamRoute: TeamRoute,
+  OrderConfirmationRoute: OrderConfirmationRoute,
   RssXmlRoute: RssXmlRoute,
+  ShopSlugRoute: ShopSlugRoute,
   SitemapXmlRoute: SitemapXmlRoute,
   AdminIndexRoute: AdminIndexRoute,
+  ShopIndexRoute: ShopIndexRoute,
   AdminBlogIdRoute: AdminBlogIdRoute,
   AdminBlogNewRoute: AdminBlogNewRoute,
 }

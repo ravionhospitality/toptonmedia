@@ -1,9 +1,8 @@
 import { createFileRoute, Link, notFound } from '@tanstack/react-router'
-import { ArrowRight, Clock } from 'lucide-react'
+import { ArrowRight, Clock, Calendar } from 'lucide-react'
 import { SiteNav } from '../../components/SiteNav'
 import { SiteFooter } from '../../components/SiteFooter'
 import { FAQAccordion } from '../../components/FAQAccordion'
-import { Reveal } from '../../lib/useReveal'
 import { getServiceBySlug } from '../../lib/services'
 import { seoMeta, seoLinks, breadcrumbSchema, articleSchema, faqSchema } from '../../lib/seo'
 import { supabase } from '../../lib/supabase'
@@ -22,28 +21,40 @@ interface DbBlogPost {
   read_minutes: number
   keywords: string[]
   content: { heading: string; paragraphs: string[]; bullets?: string[] }[]
+  body_html: string | null
   faqs: { question: string; answer: string }[]
   created_at: string
 }
 
 async function fetchPostBySlug(slug: string): Promise<DbBlogPost | null> {
-  try {
-    const { data, error } = await supabase.from('blog_posts').select('*').eq('slug', slug).eq('published', true).single()
-    if (error) return null
-    return data ?? null
-  } catch {
-    return null
-  }
-}
-
-async function fetchRelatedPosts(currentSlug: string, relatedService: string): Promise<DbBlogPost[]> {
   const { data } = await supabase
     .from('blog_posts')
     .select('*')
-    .eq('related_service', relatedService)
+    .eq('slug', slug)
     .eq('published', true)
+    .single()
+  return data ?? null
+}
+
+async function fetchRelatedPosts(currentSlug: string, category: string): Promise<DbBlogPost[]> {
+  const { data } = await supabase
+    .from('blog_posts')
+    .select('slug,title,hero_image,category,created_at,excerpt,read_minutes')
+    .eq('published', true)
+    .eq('category', category)
     .neq('slug', currentSlug)
     .limit(3)
+  return data ?? []
+}
+
+async function fetchLatestPosts(currentSlug: string): Promise<DbBlogPost[]> {
+  const { data } = await supabase
+    .from('blog_posts')
+    .select('slug,title,hero_image,category,created_at,read_minutes')
+    .eq('published', true)
+    .neq('slug', currentSlug)
+    .order('created_at', { ascending: false })
+    .limit(5)
   return data ?? []
 }
 
@@ -67,6 +78,7 @@ export const Route = createFileRoute('/blog/$slug')({
           children: JSON.stringify(breadcrumbSchema([
             { name: 'Home', url: 'https://toptonmedia.com' },
             { name: 'Blog', url: 'https://toptonmedia.com/blog' },
+            { name: post.category, url: `https://toptonmedia.com/blog?category=${post.category}` },
             { name: post.title, url: `https://toptonmedia.com/blog/${post.slug}` },
           ])),
         },
@@ -81,15 +93,33 @@ export const Route = createFileRoute('/blog/$slug')({
             keywords: post.keywords,
           })),
         },
-        ...(post.faqs?.length ? [{ type: 'application/ld+json', children: JSON.stringify(faqSchema(post.faqs)) }] : []),
+        ...(post.faqs?.length ? [{
+          type: 'application/ld+json',
+          children: JSON.stringify(faqSchema(post.faqs)),
+        }] : []),
       ],
     }
   },
   loader: async ({ params }) => {
     const post = await fetchPostBySlug(params.slug)
     if (!post) throw notFound()
-    const related = await fetchRelatedPosts(post.slug, post.related_service)
-    return { post, related }
+
+    const [relatedResult, latestResult] = await Promise.allSettled([
+      fetchRelatedPosts(post.slug, post.category),
+      fetchLatestPosts(post.slug),
+    ])
+
+    const related = relatedResult.status === 'fulfilled' ? relatedResult.value : []
+    const latest = latestResult.status === 'fulfilled' ? latestResult.value : []
+
+    if (relatedResult.status === 'rejected') {
+      console.error('Failed to load related posts:', relatedResult.reason)
+    }
+    if (latestResult.status === 'rejected') {
+      console.error('Failed to load latest posts:', latestResult.reason)
+    }
+
+    return { post, related, latest }
   },
   component: BlogPostPage,
   notFoundComponent: () => (
@@ -102,23 +132,46 @@ export const Route = createFileRoute('/blog/$slug')({
   ),
 })
 
+function formatDate(dateStr: string) {
+  return new Date(dateStr).toLocaleDateString('en-NG', {
+    day: 'numeric', month: 'long', year: 'numeric',
+  })
+}
+
+// Convert old JSON content to HTML for legacy posts that haven't been edited yet
+function contentToHtml(content: DbBlogPost['content']): string {
+  if (!content?.length) return ''
+  return content.map(section => {
+    const heading = section.heading ? `<h2>${section.heading}</h2>` : ''
+    const paras = (section.paragraphs ?? []).map(p => `<p>${p}</p>`).join('')
+    const bullets = section.bullets?.length
+      ? `<ul>${section.bullets.map(b => `<li>${b}</li>`).join('')}</ul>`
+      : ''
+    return heading + paras + bullets
+  }).join('')
+}
+
 function BlogPostPage() {
-  const { post, related } = Route.useLoaderData()
+  const { post, related, latest } = Route.useLoaderData()
   const service = getServiceBySlug(post.related_service)
+
+  // Use body_html if edited via rich editor, otherwise fall back to legacy JSON content
+  const articleHtml = post.body_html || contentToHtml(post.content)
 
   return (
     <div className="min-h-screen flex flex-col">
       <SiteNav />
       <main className="flex-1">
         {/* ─── Hero ─────────────────────────────────────────────── */}
-        <section className="relative bg-charcoal overflow-hidden pt-24 pb-20">
+        <section className="relative bg-charcoal overflow-hidden pt-20 pb-24">
           <div
             className="absolute inset-0 pointer-events-none"
             style={{ background: 'radial-gradient(circle at 80% 20%, rgba(123,13,42,0.4) 0%, transparent 60%)' }}
           />
-          <div className="relative max-w-4xl mx-auto px-6 lg:px-10">
+          <div className="relative max-w-7xl mx-auto px-6 lg:px-10">
+            {/* Breadcrumb */}
             <nav aria-label="Breadcrumb" className="mb-8">
-              <ol className="flex items-center gap-2 text-xs text-ivory/40 flex-wrap">
+              <ol className="flex items-center gap-2 text-xs text-ivory/40">
                 <li><Link to="/" className="hover:text-ivory transition-colors">Home</Link></li>
                 <li>/</li>
                 <li><Link to="/blog" className="hover:text-ivory transition-colors">Blog</Link></li>
@@ -127,45 +180,52 @@ function BlogPostPage() {
               </ol>
             </nav>
 
-            <div className="flex items-center gap-3 mb-6">
-              <span className="font-[Space_Grotesk] text-xs uppercase tracking-[0.12em] text-gold">
-                {post.category}
-              </span>
-              <span className="text-ivory/30">&middot;</span>
-              <time dateTime={post.created_at} className="text-xs text-ivory/50">
-                {new Date(post.created_at).toLocaleDateString('en-NG', { day: 'numeric', month: 'long', year: 'numeric' })}
-              </time>
-              <span className="text-ivory/30">&middot;</span>
-              <span className="flex items-center gap-1 text-xs text-ivory/50">
-                <Clock size={12} /> {post.read_minutes} min read
-              </span>
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+              <div className="lg:col-span-7">
+                <div className="flex items-center gap-3 mb-6">
+                  <span className="font-[Space_Grotesk] text-xs uppercase tracking-[0.12em] text-gold">
+                    {post.category}
+                  </span>
+                </div>
+                <h1 className="font-display text-5xl sm:text-6xl font-extrabold leading-[1.1] text-ivory mb-6">
+                  {post.title}
+                </h1>
+                <p className="text-lg text-sand/90 leading-[1.7] mb-8 max-w-xl">
+                  {post.excerpt}
+                </p>
+                <div className="flex flex-wrap items-center gap-5 text-sm text-ivory/60">
+                  <span className="flex items-center gap-1.5">
+                    <Calendar size={14} />
+                    {formatDate(post.created_at)}
+                  </span>
+                  <span className="flex items-center gap-1.5">
+                    <Clock size={14} />
+                    {post.read_minutes} min read
+                  </span>
+                  <span className="font-medium text-ivory/80">Topton Media</span>
+                </div>
+              </div>
+
+              <div className="lg:col-span-5">
+                <div className="relative">
+                  <div className="absolute -inset-4 bg-gold/10 rounded-3xl blur-2xl" />
+                  <img
+                    src={post.hero_image}
+                    alt={post.title}
+                    className="relative rounded-2xl w-full aspect-[4/3] object-cover"
+                    loading="lazy"
+                  />
+                </div>
+              </div>
             </div>
-
-            <h1 className="font-display text-4xl sm:text-5xl font-extrabold leading-[1.15] text-ivory mb-6">
-              {post.title}
-            </h1>
-            <p className="article-excerpt text-lg text-sand/80 leading-[1.7]">{post.excerpt}</p>
           </div>
         </section>
 
-        {/* ─── Hero image ───────────────────────────────────────── */}
-        <section className="bg-ivory">
-          <div className="max-w-4xl mx-auto px-6 lg:px-10 -mt-10 relative z-10">
-            <img
-              src={post.hero_image}
-              alt={post.title}
-              className="w-full aspect-[16/9] object-cover rounded-2xl shadow-xl"
-              loading="eager"
-              fetchPriority="high"
-             width="1400" height="788" />
-          </div>
-        </section>
-
-        {/* ─── Content ──────────────────────────────────────────── */}
-        <section className="bg-ivory py-16">
-          <div className="max-w-3xl mx-auto px-6 lg:px-10">
-            {post.quick_answer && (
-              <div className="quick-answer mb-12 bg-sand/40 border-l-4 border-maroon rounded-xl px-6 py-5">
+        {/* ─── Quick Answer ─────────────────────────────────────── */}
+        {post.quick_answer && (
+          <section className="bg-ivory py-16">
+            <div className="max-w-4xl mx-auto px-6 lg:px-10">
+              <div className="quick-answer bg-maroon/5 border-l-4 border-maroon rounded-r-xl px-6 py-5">
                 <p className="font-[Space_Grotesk] text-[11px] uppercase tracking-[0.12em] text-maroon mb-2">
                   Quick Answer
                 </p>
@@ -173,95 +233,95 @@ function BlogPostPage() {
                   {post.quick_answer}
                 </p>
               </div>
-            )}
-            <article className="space-y-10 prose-article">
-              {post.content.map((section, i) => (
-                <Reveal key={i} delay={Math.min(i * 40, 200)}>
-                  <h2 className="font-display text-2xl sm:text-3xl font-bold text-charcoal mb-4 mt-2">
-                    {section.heading}
-                  </h2>
-                  <div className="space-y-4">
-                    {section.paragraphs.map((p, pi) => (
-                      <p key={pi} className="text-charcoal/75 leading-[1.85] text-[16px]">{p}</p>
-                    ))}
-                  </div>
-                  {section.bullets && (
-                    <ul className="mt-4 space-y-2.5">
-                      {section.bullets.map(b => (
-                        <li key={b} className="flex items-start gap-2.5 text-charcoal/70 leading-relaxed">
-                          <span className="w-1.5 h-1.5 rounded-full bg-gold mt-2 flex-shrink-0" />
-                          {b}
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </Reveal>
-              ))}
-            </article>
+            </div>
+          </section>
+        )}
 
-            {/* Inline CTA */}
-            {service && (
-              <Reveal delay={150} className="mt-14 bg-charcoal rounded-2xl p-8 lg:p-10 text-center">
+        {/* ─── Article body ──────────────────────────────────────── */}
+        <section className={post.quick_answer ? 'bg-ivory pb-24' : 'bg-ivory py-24'}>
+          <div className="max-w-4xl mx-auto px-6 lg:px-10">
+            <div
+              className="article-body"
+              dangerouslySetInnerHTML={{ __html: articleHtml }}
+            />
+          </div>
+        </section>
+
+        {/* ─── Related Service CTA ──────────────────────────────── */}
+        {service && (
+          <section className="bg-charcoal py-24">
+            <div className="max-w-4xl mx-auto px-6 lg:px-10">
+              <div className="bg-cardbrown rounded-2xl p-10 text-center">
                 <p className="font-[Space_Grotesk] text-xs uppercase tracking-[0.12em] text-gold mb-3">
                   Need Help With This?
                 </p>
-                <h3 className="font-display text-2xl font-bold text-ivory mb-4">
+                <h3 className="font-display text-2xl sm:text-3xl font-bold text-ivory mb-3">
                   Let's Talk About Your {service.name}
                 </h3>
                 <p className="text-ivory/60 mb-7 max-w-md mx-auto">
                   Book a free 30-minute audit and we'll show you exactly where the opportunity is.
                 </p>
-                <div className="flex flex-wrap items-center justify-center gap-4">
+                <div className="flex flex-wrap items-center justify-center gap-3">
                   <a
                     href={service.bookingUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="cta-glow inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-gradient-to-r from-gold to-gold-bright text-charcoal text-sm font-semibold hover:opacity-90 transition-opacity"
+                    className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-gold to-gold-bright text-charcoal text-sm font-semibold hover:opacity-90 transition-opacity"
                   >
-                    Book Free Audit <ArrowRight size={16} />
+                    Book Free Audit <ArrowRight size={15} />
                   </a>
                   <Link
                     to="/services/$slug"
                     params={{ slug: service.slug }}
-                    className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full border border-gold/40 text-ivory text-sm font-semibold hover:border-gold transition-colors"
+                    className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-gold/40 text-ivory text-sm font-semibold hover:border-gold transition-colors"
                   >
                     Explore {service.name}
                   </Link>
                 </div>
-              </Reveal>
-            )}
-
-            {/* FAQs */}
-            {post.faqs?.length > 0 && (
-              <div className="mt-16 pt-12 border-t border-sand">
-                <h2 className="font-display text-2xl font-bold text-charcoal mb-8">Frequently Asked Questions</h2>
-                <FAQAccordion faqs={post.faqs} />
               </div>
-            )}
-          </div>
-        </section>
+            </div>
+          </section>
+        )}
+
+        {/* ─── FAQs ─────────────────────────────────────────────── */}
+        {post.faqs?.length > 0 && (
+          <section className="bg-sand/20 py-24 border-t border-sand">
+            <div className="max-w-4xl mx-auto px-6 lg:px-10">
+              <div className="mb-12">
+                <p className="font-[Space_Grotesk] text-xs uppercase tracking-[0.12em] text-maroon mb-4">FAQs</p>
+                <h2 className="font-display text-3xl sm:text-4xl font-bold text-charcoal">
+                  Frequently Asked Questions
+                </h2>
+              </div>
+              <FAQAccordion faqs={post.faqs} />
+            </div>
+          </section>
+        )}
 
         {/* ─── Related posts ────────────────────────────────────── */}
         {related.length > 0 && (
-          <section className="bg-sand/20 py-20 border-t border-sand">
+          <section className="bg-ivory py-24">
             <div className="max-w-7xl mx-auto px-6 lg:px-10">
-              <h2 className="font-display text-2xl sm:text-3xl font-bold text-charcoal mb-10">
-                More on {post.category}
-              </h2>
+              <div className="mb-12">
+                <p className="font-[Space_Grotesk] text-xs uppercase tracking-[0.12em] text-maroon mb-4">Keep Reading</p>
+                <h2 className="font-display text-3xl sm:text-4xl font-bold text-charcoal">
+                  More on {post.category}
+                </h2>
+              </div>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                 {related.map(rp => (
                   <Link
                     key={rp.slug}
                     to="/blog/$slug"
                     params={{ slug: rp.slug }}
-                    className="service-card group bg-ivory border border-sand rounded-2xl overflow-hidden hover:border-gold hover:shadow-lg transition-all"
+                    className="group block rounded-2xl overflow-hidden border border-sand hover:border-gold hover:shadow-lg transition-all"
                   >
                     <div className="aspect-[16/9] overflow-hidden">
-                      <img src={rp.hero_image} alt={rp.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy"  width="1400" height="788" />
+                      <img src={rp.hero_image} alt={rp.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
                     </div>
-                    <div className="p-5">
-                      <h3 className="font-display text-base font-semibold text-charcoal leading-snug mb-2">{rp.title}</h3>
-                      <span className="text-xs font-semibold text-gold">Read More &rarr;</span>
+                    <div className="p-6">
+                      <p className="font-[Space_Grotesk] text-[10px] uppercase tracking-wide text-maroon mb-1.5">{rp.category}</p>
+                      <h3 className="font-display text-base font-semibold text-charcoal leading-snug">{rp.title}</h3>
                     </div>
                   </Link>
                 ))}
@@ -269,8 +329,76 @@ function BlogPostPage() {
             </div>
           </section>
         )}
+
+        {/* ─── Latest posts strip (replaces sidebar) ────────────── */}
+        {latest.length > 0 && (
+          <section className="bg-cardbrown py-20">
+            <div className="max-w-7xl mx-auto px-6 lg:px-10">
+              <div className="mb-10">
+                <p className="font-[Space_Grotesk] text-xs uppercase tracking-[0.12em] text-gold mb-4">Latest Posts</p>
+                <h2 className="font-display text-2xl sm:text-3xl font-bold text-ivory">
+                  Fresh From the Blog
+                </h2>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5">
+                {latest.map(lp => (
+                  <Link
+                    key={lp.slug}
+                    to="/blog/$slug"
+                    params={{ slug: lp.slug }}
+                    className="group block"
+                  >
+                    <div className="aspect-[4/3] overflow-hidden rounded-xl mb-3">
+                      <img src={lp.hero_image} alt={lp.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" />
+                    </div>
+                    <p className="font-[Space_Grotesk] text-[10px] uppercase tracking-wide text-gold mb-1">{lp.category}</p>
+                    <h4 className="text-sm font-semibold text-ivory leading-snug group-hover:text-gold transition-colors line-clamp-2">
+                      {lp.title}
+                    </h4>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* ─── Final CTA ────────────────────────────────────────── */}
+        <section className="bg-maroon py-20">
+          <div className="max-w-7xl mx-auto px-6 lg:px-10 text-center">
+            <h2 className="font-display text-3xl sm:text-4xl font-bold text-ivory mb-4">
+              Is Your Marketing Actually Working?
+            </h2>
+            <p className="text-ivory/70 mb-8 max-w-xl mx-auto">
+              Book a free 30-minute audit and we'll walk you through exactly where the opportunity is.
+            </p>
+            <a
+              href="https://zcal.co/i/gABtQS4_"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-gradient-to-r from-gold to-gold-bright text-charcoal text-sm font-semibold hover:opacity-90 transition-opacity"
+            >
+              Book Free Audit <ArrowRight size={16} />
+            </a>
+          </div>
+        </section>
       </main>
       <SiteFooter />
+
+      <style>{`
+        .article-body h2 { font-family: var(--font-display, 'Sora', sans-serif); font-size: 1.4rem; font-weight: 700; color: #1A0E10; margin: 2rem 0 0.75rem; line-height: 1.3; }
+        .article-body h3 { font-family: var(--font-display, 'Sora', sans-serif); font-size: 1.15rem; font-weight: 600; color: #1A0E10; margin: 1.5rem 0 0.5rem; }
+        .article-body p { color: rgba(26,14,16,0.75); line-height: 1.8; margin-bottom: 1rem; font-size: 1.05rem; }
+        .article-body ul, .article-body ol { padding-left: 1.5rem; margin-bottom: 1rem; }
+        .article-body li { color: rgba(26,14,16,0.75); line-height: 1.7; margin-bottom: 0.4rem; font-size: 1rem; }
+        .article-body blockquote { border-left: 4px solid #7B0D2A; padding: 0.75rem 1.25rem; margin: 1.5rem 0; background: rgba(123,13,42,0.05); border-radius: 0 0.5rem 0.5rem 0; }
+        .article-body blockquote p { color: rgba(26,14,16,0.65); font-style: italic; margin: 0; }
+        .article-body strong { color: #1A0E10; font-weight: 600; }
+        .article-body a { color: #7B0D2A; text-decoration: underline; }
+        .article-body a:hover { color: #5A0A1F; }
+        .article-body code { background: rgba(123,13,42,0.08); padding: 0.15rem 0.4rem; border-radius: 0.25rem; font-size: 0.88em; color: #7B0D2A; }
+        .article-body img { max-width: 100%; border-radius: 0.75rem; margin: 1.5rem 0; }
+        .article-body hr { border: none; border-top: 1px solid #E8DCC4; margin: 2rem 0; }
+      `}</style>
     </div>
   )
 }

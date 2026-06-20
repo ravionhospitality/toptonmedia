@@ -5,7 +5,8 @@ import { SiteNav } from '../components/SiteNav'
 import { SiteFooter } from '../components/SiteFooter'
 import { ResultsTicker } from '../components/ResultsTicker'
 import { Reveal } from '../lib/useReveal'
-import { SERVICES, SERVICE_CATEGORIES } from '../lib/services'
+import { SERVICE_CATEGORIES } from '../lib/services'
+import { fetchAllServices } from '../lib/services-db'
 import { SERVICE_ICONS } from '../lib/service-icons'
 import { seoMeta, seoLinks, breadcrumbSchema } from '../lib/seo'
 
@@ -25,6 +26,10 @@ export const Route = createFileRoute('/services')({
       ])),
     }],
   }),
+  loader: async () => {
+    const services = await fetchAllServices()
+    return { services }
+  },
   component: ServicesLayout,
 })
 
@@ -36,11 +41,12 @@ function ServicesLayout() {
 }
 
 function ServicesPageInner() {
+  const { services } = Route.useLoaderData()
   const [activeCategory, setActiveCategory] = useState('All')
 
   const filtered = activeCategory === 'All'
-    ? SERVICES
-    : SERVICES.filter(s => s.category.toLowerCase().includes(activeCategory.toLowerCase()))
+    ? services
+    : services.filter(s => s.category.toLowerCase().includes(activeCategory.toLowerCase()))
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -85,6 +91,10 @@ function ServicesPageInner() {
             </div>
 
             {/* Services grid */}
+            {services.length === 0 && (
+              <p className="text-charcoal/40 py-12 text-center">No services found. Check back soon.</p>
+            )}
+
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {filtered.map((service, i) => {
                 const Icon = SERVICE_ICONS[service.slug]
@@ -104,7 +114,7 @@ function ServicesPageInner() {
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-charcoal/70 via-transparent to-transparent" />
                         <div className="absolute top-4 left-4 w-10 h-10 rounded-xl bg-ivory/90 backdrop-blur-sm flex items-center justify-center">
-                          <Icon size={18} className="text-maroon" strokeWidth={1.5} />
+                          {Icon && <Icon size={18} className="text-maroon" strokeWidth={1.5} />}
                         </div>
                         <span className="absolute bottom-3 left-4 font-[Space_Grotesk] text-[10px] uppercase tracking-[0.12em] text-gold">
                           {service.category}

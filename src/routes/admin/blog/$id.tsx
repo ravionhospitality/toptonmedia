@@ -1,6 +1,8 @@
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { useState, useEffect } from 'react'
 import { supabase } from '../../../lib/supabase'
+import { RichEditor } from '../../../components/RichEditor'
+import { ImageUpload } from '../../../components/ImageUpload'
 
 export const Route = createFileRoute('/admin/blog/$id')({
   component: EditPostPage,
@@ -26,20 +28,29 @@ function EditPostPage() {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
-  const [saved, setSaved] = useState(false)
   const [form, setForm] = useState({
     title: '', slug: '', category: CATEGORIES[0], relatedService: SERVICE_SLUGS[0],
     excerpt: '', quickAnswer: '', heroImage: '', metaTitle: '', metaDescription: '',
-    keywords: '', readMinutes: 6, contentRaw: '', faqsRaw: '', published: false,
+    keywords: '', readMinutes: 6, bodyHtml: '', faqsRaw: '', published: false,
   })
 
   useEffect(() => {
     supabase.from('blog_posts').select('*').eq('id', id).single().then(({ data, error: fetchErr }) => {
-      if (fetchErr || !data) {
-        setError('Could not load this post.')
-        setLoading(false)
-        return
+      if (fetchErr || !data) { setError('Could not load this post.'); setLoading(false); return }
+
+      // Convert old JSON content to readable HTML if body_html is empty
+      let bodyHtml = data.body_html ?? ''
+      if (!bodyHtml && data.content && Array.isArray(data.content) && data.content.length > 0) {
+        bodyHtml = data.content.map((section: any) => {
+          const heading = section.heading ? `<h2>${section.heading}</h2>` : ''
+          const paras = (section.paragraphs ?? []).map((p: string) => `<p>${p}</p>`).join('')
+          const bullets = section.bullets?.length
+            ? `<ul>${section.bullets.map((b: string) => `<li>${b}</li>`).join('')}</ul>`
+            : ''
+          return heading + paras + bullets
+        }).join('')
       }
+
       setForm({
         title: data.title ?? '',
         slug: data.slug ?? '',
@@ -52,8 +63,8 @@ function EditPostPage() {
         metaDescription: data.meta_description ?? '',
         keywords: (data.keywords ?? []).join(', '),
         readMinutes: data.read_minutes ?? 6,
-        contentRaw: JSON.stringify(data.content ?? [], null, 2),
-        faqsRaw: JSON.stringify(data.faqs ?? [], null, 2),
+        bodyHtml,
+        faqsRaw: data.faqs?.length ? JSON.stringify(data.faqs, null, 2) : '',
         published: data.published ?? false,
       })
       setLoading(false)
@@ -66,26 +77,14 @@ function EditPostPage() {
 
   async function handleSave() {
     setError('')
-    if (!form.title || !form.slug) {
-      setError('Title and slug are required.')
-      return
-    }
+    if (!form.title || !form.slug) { setError('Title and slug are required.'); return }
     setSaving(true)
-
-    let content: unknown[] = []
-    try {
-      content = form.contentRaw.trim() ? JSON.parse(form.contentRaw) : []
-    } catch {
-      setError('Content JSON is invalid. Check the format and try again.')
-      setSaving(false)
-      return
-    }
 
     let faqs: unknown[] = []
     try {
       faqs = form.faqsRaw.trim() ? JSON.parse(form.faqsRaw) : []
     } catch {
-      setError('FAQs JSON is invalid. Check the format and try again.')
+      setError('FAQs JSON is invalid. Format: [{"question":"...","answer":"..."}]')
       setSaving(false)
       return
     }
@@ -100,7 +99,7 @@ function EditPostPage() {
       excerpt: form.excerpt,
       quick_answer: form.quickAnswer,
       hero_image: form.heroImage,
-      content,
+      body_html: form.bodyHtml,
       faqs,
       keywords: form.keywords.split(',').map(k => k.trim()).filter(Boolean),
       read_minutes: form.readMinutes,
@@ -108,42 +107,26 @@ function EditPostPage() {
     }).eq('id', id)
 
     setSaving(false)
-    if (updateError) {
-      setError(updateError.message)
-      return
-    }
-    setSaved(true)
-    setTimeout(() => setSaved(false), 3000)
+    if (updateError) { setError(updateError.message); return }
+    navigate({ to: '/admin' })
   }
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-charcoal text-ivory flex items-center justify-center">
-        <p className="text-ivory/50">Loading…</p>
-      </div>
-    )
-  }
+  if (loading) return <div className="min-h-screen bg-charcoal flex items-center justify-center text-ivory/50">Loading…</div>
 
   return (
     <div className="min-h-screen bg-charcoal text-ivory">
-      <div className="max-w-3xl mx-auto px-6 py-10">
+      <div className="max-w-4xl mx-auto px-6 py-10">
         <div className="flex items-center justify-between mb-8">
-          <h1 className="font-display text-2xl font-bold">Edit Blog Post</h1>
-          <Link to="/admin" className="text-sm text-gold hover:underline">&larr; Back to Admin</Link>
+          <h1 className="font-display text-2xl font-bold">Edit Post</h1>
+          <div className="flex items-center gap-4">
+            <a href={`/blog/${form.slug}`} target="_blank" rel="noopener noreferrer" className="text-sm text-gold hover:underline">Preview →</a>
+            <Link to="/admin" className="text-sm text-ivory/50 hover:underline">← Admin</Link>
+          </div>
         </div>
 
-        {error && (
-          <div className="mb-6 bg-red-900/30 border border-red-700/40 rounded-xl px-5 py-3 text-sm text-red-300">
-            {error}
-          </div>
-        )}
-        {saved && (
-          <div className="mb-6 bg-green-900/30 border border-green-700/40 rounded-xl px-5 py-3 text-sm text-green-300">
-            ✓ Post saved successfully.
-          </div>
-        )}
+        {error && <div className="mb-6 bg-red-900/30 border border-red-700/40 rounded-xl px-5 py-3 text-sm text-red-300">{error}</div>}
 
-        <div className="space-y-5">
+        <div className="space-y-6">
           <Field label="Title *">
             <input value={form.title} onChange={e => update('title', e.target.value)} className="admin-input" />
           </Field>
@@ -155,26 +138,36 @@ function EditPostPage() {
           <div className="grid grid-cols-2 gap-5">
             <Field label="Category">
               <select value={form.category} onChange={e => update('category', e.target.value)} className="admin-input">
-                {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+                {CATEGORIES.map(c => <option key={c}>{c}</option>)}
               </select>
             </Field>
-            <Field label="Related Service Slug">
+            <Field label="Related Service">
               <select value={form.relatedService} onChange={e => update('relatedService', e.target.value)} className="admin-input">
-                {SERVICE_SLUGS.map(s => <option key={s} value={s}>{s}</option>)}
+                {SERVICE_SLUGS.map(s => <option key={s}>{s}</option>)}
               </select>
             </Field>
           </div>
 
-          <Field label="Hero Image URL">
-            <input value={form.heroImage} onChange={e => update('heroImage', e.target.value)} className="admin-input" />
-          </Field>
+          <ImageUpload value={form.heroImage} onChange={v => update('heroImage', v)} />
 
-          <Field label="Excerpt">
+          <Field label="Excerpt" hint="1-2 sentences shown on the blog index">
             <textarea value={form.excerpt} onChange={e => update('excerpt', e.target.value)} rows={2} className="admin-input" />
           </Field>
 
-          <Field label="Quick Answer" hint="Short direct answer shown in a highlighted box — important for AI/search visibility">
+          <Field label="Quick Answer" hint="Short direct answer for AI Overview / featured snippet">
             <textarea value={form.quickAnswer} onChange={e => update('quickAnswer', e.target.value)} rows={2} className="admin-input" />
+          </Field>
+
+          <Field label="Article Body" hint="Write freely — bold, headings, lists, links, images all supported">
+            <RichEditor
+              value={form.bodyHtml}
+              onChange={html => update('bodyHtml', html)}
+              minHeight={500}
+            />
+          </Field>
+
+          <Field label="FAQs (JSON)" hint='Optional. Format: [{"question": "...", "answer": "..."}]'>
+            <textarea value={form.faqsRaw} onChange={e => update('faqsRaw', e.target.value)} rows={5} className="admin-input font-mono text-xs" />
           </Field>
 
           <div className="grid grid-cols-2 gap-5">
@@ -194,46 +187,20 @@ function EditPostPage() {
             <input value={form.keywords} onChange={e => update('keywords', e.target.value)} className="admin-input" />
           </Field>
 
-          <Field label="Content Sections (JSON)" hint='Format: [{"heading": "...", "paragraphs": ["..."], "bullets": ["..."]}]'>
-            <textarea value={form.contentRaw} onChange={e => update('contentRaw', e.target.value)} rows={12} className="admin-input font-mono text-xs" />
-          </Field>
-
-          <Field label="FAQs (JSON)" hint='Format: [{"question": "...", "answer": "..."}]'>
-            <textarea value={form.faqsRaw} onChange={e => update('faqsRaw', e.target.value)} rows={6} className="admin-input font-mono text-xs" />
-          </Field>
-
-          <label className="flex items-center gap-2 text-sm text-ivory/70">
+          <label className="flex items-center gap-2 text-sm text-ivory/70 cursor-pointer">
             <input type="checkbox" checked={form.published} onChange={e => update('published', e.target.checked)} />
             Published
           </label>
 
           <div className="flex gap-3 pt-2">
-            <button
-              onClick={handleSave}
-              disabled={saving}
-              className="px-6 py-3 rounded-full bg-gradient-to-r from-gold to-gold-bright text-charcoal font-semibold disabled:opacity-50"
-            >
+            <button onClick={handleSave} disabled={saving} className="px-6 py-3 rounded-full bg-gradient-to-r from-gold to-gold-bright text-charcoal font-semibold disabled:opacity-50">
               {saving ? 'Saving…' : 'Save Changes'}
             </button>
-            <Link to="/admin" className="px-6 py-3 rounded-full border border-ivory/20 text-ivory/70">
-              Cancel
-            </Link>
+            <Link to="/admin" className="px-6 py-3 rounded-full border border-ivory/20 text-ivory/70">Cancel</Link>
           </div>
         </div>
       </div>
-
-      <style>{`
-        .admin-input {
-          width: 100%;
-          background: #1A0E10;
-          border: 1px solid rgba(201,168,76,0.2);
-          border-radius: 0.75rem;
-          padding: 0.7rem 1rem;
-          color: #FAF6F0;
-          font-size: 0.9rem;
-        }
-        .admin-input:focus { outline: none; border-color: #C9A84C; }
-      `}</style>
+      <style>{`.admin-input { width: 100%; background: #1A0E10; border: 1px solid rgba(201,168,76,0.2); border-radius: 0.75rem; padding: 0.7rem 1rem; color: #FAF6F0; font-size: 0.9rem; } .admin-input:focus { outline: none; border-color: #C9A84C; }`}</style>
     </div>
   )
 }
@@ -244,6 +211,6 @@ function Field({ label, hint, children }: { label: string; hint?: string; childr
       <label className="block text-sm font-medium text-ivory/80 mb-1.5">{label}</label>
       {hint && <p className="text-xs text-ivory/40 mb-1.5">{hint}</p>}
       {children}
-    </div>
+    </div>               
   )
 }

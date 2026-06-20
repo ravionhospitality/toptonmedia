@@ -58,7 +58,7 @@ function downloadCSV(rows: any[]) {
   const cols = ['name','email','phone','company','service','budget','status','source','follow_up_date','notes','message','created_at']
   const escape = (v: any) => {
     if (v == null) return ''
-    const s = String(v).replace(/"/g,'""')
+    const s = String(v).replace(/"/g,'\"\\"\"')
     return s.includes(',') || s.includes('\n') || s.includes('"')?`"${s}"`:s
   }
   const lines = [cols.join(','), ...rows.map(r => cols.map(c => escape(r[c])).join(','))]
@@ -69,8 +69,7 @@ function downloadCSV(rows: any[]) {
 }
 
 function AdminPage() {
-  const [authed, setAuthed] = useState(false)
-  const [authChecked, setAuthChecked] = useState(false)
+  const [authed, setAuthed] = useState(() => typeof window !== 'undefined' && sessionStorage.getItem('topton_admin') === '1')
   const [pw, setPw] = useState('')
   const [tab, setTab] = useState<'submissions'|'blog'|'services'>('submissions')
   const [submissions, setSubmissions] = useState<any[]>([])
@@ -86,16 +85,7 @@ function AdminPage() {
   const [serviceForm, setServiceForm] = useState<Omit<ServiceRow,'id'>>(blankService())
   const [serviceSaving, setServiceSaving] = useState(false)
   const [serviceError, setServiceError] = useState('')
-  const [serviceSaved, setServiceSaved] = useState(false)
   const [seedingServices, setSeedingServices] = useState(false)
-  const [seedMessage, setSeedMessage] = useState('')
-
-  useEffect(() => {
-    if (typeof window !== 'undefined' && sessionStorage.getItem('topton_admin') === '1') {
-      setAuthed(true)
-    }
-    setAuthChecked(true)
-  }, [])
 
   function login() {
     if (pw === ADMIN_PASSWORD) { setAuthed(true); sessionStorage.setItem('topton_admin','1') }
@@ -127,10 +117,8 @@ function AdminPage() {
 
   async function seedServices() {
     setSeedingServices(true)
-    setServiceError('')
-    setSeedMessage('')
     for (const s of SERVICES) {
-      const { error } = await supabase.from('services').upsert({
+      await supabase.from('services').upsert({
         slug: s.slug, name: s.name, category: s.category, pitch: s.pitch,
         price_from: s.priceFrom, booking_url: s.bookingUrl,
         card_image: s.cardImage, hero_image: s.heroImage,
@@ -141,16 +129,8 @@ function AdminPage() {
         seo_title: s.seoTitle, seo_description: s.seoDescription,
         featured_on_home: s.featuredOnHome ?? false,
       }, { onConflict: 'slug' })
-
-      if (error) {
-        console.error('Seed failed for', s.slug, error)
-        setServiceError(`Failed on "${s.slug}": ${error.message}`)
-        setSeedingServices(false)
-        return
-      }
     }
     setSeedingServices(false)
-    setSeedMessage(`Imported ${SERVICES.length} services successfully.`)
     loadServices()
   }
 
@@ -221,7 +201,6 @@ function AdminPage() {
     setEditingService({id:'new',...blankService()} as ServiceRow)
     setServiceForm(blankService())
     setServiceError('')
-    setServiceSaved(false)
   }
   function openEditService(svc:ServiceRow) {
     setEditingService(svc)
@@ -235,13 +214,10 @@ function AdminPage() {
       result_stat:{...svc.result_stat}, pricing_note:svc.pricing_note??''
     })
     setServiceError('')
-    setServiceSaved(false)
   }
   async function saveService() {
     if (!serviceForm.name||!serviceForm.slug) { setServiceError('Name and slug are required'); return }
     setServiceSaving(true)
-    setServiceError('')
-    setServiceSaved(false)
     const payload = { ...serviceForm, slug: slugify(serviceForm.slug) }
     if (editingService?.id==='new') {
       const {error} = await supabase.from('services').insert(payload)
@@ -250,9 +226,7 @@ function AdminPage() {
       const {error} = await supabase.from('services').update(payload).eq('id',editingService!.id)
       if (error) { setServiceError(error.message); setServiceSaving(false); return }
     }
-    setServiceSaving(false)
-    setServiceSaved(true)
-    loadServices()
+    setServiceSaving(false); setEditingService(null); loadServices()
   }
   async function deleteService(id:string) {
     if (!confirm('Delete this service permanently?')) return
@@ -267,10 +241,6 @@ function AdminPage() {
   const filteredSubmissions = statusFilter==='all' ? submissions : submissions.filter(s=>(s.status??'new')===statusFilter)
   const today = new Date().toISOString().slice(0,10)
   const overdueCount = submissions.filter(s=>s.follow_up_date&&s.follow_up_date<today&&!['won','lost'].includes(s.status)).length
-
-  if (!authChecked) {
-    return null
-  }
 
   if (!authed) return (
     <div className="min-h-screen bg-charcoal flex items-center justify-center">
@@ -291,8 +261,7 @@ function AdminPage() {
           <h1 className="font-display text-2xl font-bold">{editingService.id==='new'?'New Service':'Edit Service'}</h1>
           <button onClick={()=>setEditingService(null)} className="text-sm text-ivory/50 hover:text-ivory">← Back to Admin</button>
         </div>
-        {serviceError && <div className="mb-6 bg-red-900/30 border border-red-700/40 rounded-xl px-5 py-3 text-sm text-red-300">⚠ {serviceError}</div>}
-        {serviceSaved && !serviceError && <div className="mb-6 bg-green-900/30 border border-green-700/40 rounded-xl px-5 py-3 text-sm text-green-300">✓ Saved successfully.</div>}
+        {serviceError && <div className="mb-6 bg-red-900/30 border border-red-700/40 rounded-xl px-5 py-3 text-sm text-red-300">{serviceError}</div>}
         <div className="space-y-6">
           <div className="grid grid-cols-2 gap-5">
             <SField label="Service Name *"><input value={serviceForm.name} onChange={e=>{sfUp('name',e.target.value);if(!serviceForm.slug||editingService.id==='new')sfUp('slug',slugify(e.target.value))}} className="admin-input" /></SField>
@@ -322,18 +291,6 @@ function AdminPage() {
               </div>
             ))}
             <button onClick={()=>sfUp('what_it_is',[...serviceForm.what_it_is,''])} className="text-xs text-gold hover:underline">+ Add paragraph</button>
-          </SField>
-          <SField label="Deliverables (what the client gets)">
-            {serviceForm.deliverables.map((d,i)=>(
-              <div key={i} className="bg-charcoal/50 rounded-xl p-3 mb-3 space-y-2">
-                <div className="flex gap-2">
-                  <input value={d.name} onChange={e=>{ const arr=[...serviceForm.deliverables]; arr[i]={...arr[i],name:e.target.value}; sfUp('deliverables',arr) }} className="admin-input flex-1" placeholder="Deliverable name" />
-                  {serviceForm.deliverables.length>1&&<button onClick={()=>sfUp('deliverables',serviceForm.deliverables.filter((_,j)=>j!==i))} className="text-red-400 text-xs px-2">✕</button>}
-                </div>
-                <textarea value={d.detail} onChange={e=>{ const arr=[...serviceForm.deliverables]; arr[i]={...arr[i],detail:e.target.value}; sfUp('deliverables',arr) }} rows={2} className="admin-input w-full" placeholder="Detail / description" />
-              </div>
-            ))}
-            <button onClick={()=>sfUp('deliverables',[...serviceForm.deliverables,{name:'',detail:''}])} className="text-xs text-gold hover:underline">+ Add deliverable</button>
           </SField>
           <SField label="Who It's For (comma-separated tags)">
             <input value={serviceForm.who_for.join(', ')} onChange={e=>sfUp('who_for',e.target.value.split(',').map(s=>s.trim()).filter(Boolean))} className="admin-input" placeholder="E-commerce brands, Fintechs" />
@@ -388,7 +345,7 @@ function AdminPage() {
           </div>
         </div>
       </div>
-      <style>{`.admin-input { width: 100%; background: #1A0E10; border: 1px solid rgba(201,168,76,0.2); border-radius: 0.75rem; padding: 0.7rem 1rem; color: #FAF6F0; font-size: 0.9rem; } .admin-input:focus { outline: none; border-color: #C9A84C; }`}</style>
+      <style>{\`.admin-input { width: 100%; background: #1A0E10; border: 1px solid rgba(201,168,76,0.2); border-radius: 0.75rem; padding: 0.7rem 1rem; color: #FAF6F0; font-size: 0.9rem; } .admin-input:focus { outline: none; border-color: #C9A84C; }\`}</style>
     </div>
   )
 
@@ -540,8 +497,6 @@ function AdminPage() {
 
         {!loading&&tab==='services'&&(
           <div className="space-y-3">
-            {seedMessage && <div className="mb-4 bg-green-900/30 border border-green-700/40 rounded-xl px-5 py-3 text-sm text-green-300">✓ {seedMessage}</div>}
-            {serviceError && services.length===0 && <div className="mb-4 bg-red-900/30 border border-red-700/40 rounded-xl px-5 py-3 text-sm text-red-300">⚠ {serviceError}</div>}
             {services.length===0?(
               <div className="text-center py-12">
                 <p className="text-ivory/40 mb-4">No services in database yet.</p>

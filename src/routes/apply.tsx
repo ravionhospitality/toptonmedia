@@ -7,7 +7,7 @@ import { supabase } from '../lib/supabase'
 export const Route = createFileRoute('/apply')({
   head: () => ({
     meta: seoMeta({
-      title: 'Apply to Work With Topton Media | Growth Marketing Agency Lagos',
+      title: 'Quick Survey to Work With Topton Media | Growth Marketing Agency Lagos',
       description: 'Quick qualifier to see if we are the right growth partner for your business. Honest questions, honest answers.',
       path: '/apply',
     }),
@@ -21,7 +21,7 @@ const QUESTIONS = [
     id: 'budget',
     question: 'What is your current monthly advertising budget across all digital channels?',
     options: [
-      'Under $500 (~₦800,000)/month — I\'m just starting',
+      "Under $500 (~₦800,000)/month — I'm just starting",
       '$500–$1,500 (~₦800k–₦2.4M)/month',
       '$1,500–$3,000 (~₦2.4M–₦4.8M)/month',
       '$3,000–$10,000 (~₦4.8M–₦16M)/month',
@@ -88,7 +88,7 @@ const QUESTIONS = [
       'High cost per lead or acquisition',
       'Inconsistent results from campaigns',
       'No clear strategy or direction',
-      'Tracking — I can\'t tell what\'s working',
+      "Tracking — I can't tell what's working",
     ],
   },
   {
@@ -112,6 +112,12 @@ const QUESTIONS = [
     placeholder: 'Your name',
   },
   {
+    id: 'phone',
+    question: 'What is your phone number?',
+    type: 'text',
+    placeholder: 'Your phone number',
+  },
+  {
     id: 'email',
     question: 'And the best email to send your growth blueprint to?',
     type: 'email',
@@ -132,7 +138,7 @@ function isQualified(answers: Record<string, string>): boolean {
 function ApplyPage() {
   const [step, setStep] = useState(0)
   const [answers, setAnswers] = useState<Record<string, string>>({})
-  const [textVal, setTextVal] = useState(\'\')
+  const [textVal, setTextVal] = useState('')
   const [submitted, setSubmitted] = useState(false)
   const [qualified, setQualified] = useState(false)
   const [submitting, setSubmitting] = useState(false)
@@ -153,7 +159,7 @@ function ApplyPage() {
     if (!textVal.trim()) return
     const updated = { ...answers, [q.id]: textVal.trim() }
     setAnswers(updated)
-    setTextVal(\'\')
+    setTextVal('')
     if (step < total - 1) {
       setStep(s => s + 1)
     } else {
@@ -164,14 +170,14 @@ function ApplyPage() {
   async function handleSubmit(finalAnswers: Record<string, string>) {
     setSubmitting(true)
     const qual = isQualified(finalAnswers)
-    await supabase.from(\'contact_submissions\').insert({
-      name: finalAnswers.name ?? \'Unknown\',
-      email: finalAnswers.email ?? \'\',
+    await supabase.from('contact_submissions').insert({
+      name: finalAnswers.name ?? 'Unknown',
+      email: finalAnswers.email ?? '',
       message: JSON.stringify(finalAnswers, null, 2),
-      service: finalAnswers.goal ?? \'Qualifier form\',
-      budget: finalAnswers.budget ?? \'\',
-      source: \'qualifier_form\',
-      status: qual ? \'qualified\' : \'new\',
+      service: finalAnswers.goal ?? 'Qualifier form',
+      budget: finalAnswers.budget ?? '',
+      source: 'qualifier_form',
+      status: qual ? 'qualified' : 'new',
     })
     setQualified(qual)
     setSubmitting(false)
@@ -196,12 +202,12 @@ function ApplyPage() {
               <span className="text-2xl">✓</span>
             </div>
             <h1 className="font-display text-3xl font-bold text-ivory mb-4">
-              You\'re a great fit.
+              You're a great fit.
             </h1>
             <p className="text-ivory/60 leading-relaxed mb-8">
               Based on your answers, we can help you grow. Check your inbox — your private growth blueprint is on its way. In the meantime, book a free 30-minute strategy call so we can talk through your specific situation.
             </p>
-            
+            <a
               href={CONTACT.discoveryCallUrl}
               target="_blank"
               rel="noopener noreferrer"
@@ -217,9 +223,9 @@ function ApplyPage() {
               Thanks for being honest.
             </h1>
             <p className="text-ivory/60 leading-relaxed mb-8">
-              Based on where you are right now, a full-service retainer might not be the right fit yet — but that doesn\'t mean we can\'t help. We\'ll send you some resources to help you get ready, and we\'d love to hear from you when the time is right.
+              Based on where you are right now, a full-service retainer might not be the right fit yet — but that doesn't mean we can't help. We'll send you some resources to help you get ready, and we'd love to hear from you when the time is right.
             </p>
-            
+            <a
               href="/"
               className="inline-flex items-center gap-2 px-8 py-4 rounded-full border border-gold/40 text-ivory font-semibold hover:border-gold transition-colors"
             >
@@ -243,14 +249,14 @@ function ApplyPage() {
       {/* Hero text */}
       <div className="px-6 pt-6 pb-4 text-center max-w-2xl mx-auto">
         <p className="text-xs font-semibold uppercase tracking-widest text-[#7B0D2A] mb-3">
-          Apply to work with Topton Media
+          Quick Survey to Work With Topton Media
         </p>
         <h1 className="font-display text-4xl sm:text-5xl font-extrabold leading-[1.15] text-charcoal">
-          Are you the kind of Business we{\' \'}
+          Are you the kind of Business we{' '}
           <span className="text-[#C9A84C]">build empires</span> with?
         </h1>
         <p className="mt-4 text-charcoal/60 leading-relaxed">
-          Quick questions. Honest answers only. If you\'re a fit, we\'ll unlock your private growth blueprint on the next page.
+          Quick questions. Honest answers only. If you're a fit, we'll unlock your private growth blueprint on the next page.
         </p>
       </div>
 
@@ -278,13 +284,13 @@ function ApplyPage() {
             {q.question}
           </h2>
 
-          {q.type === \'text\' || q.type === \'email\' ? (
+          {q.type === 'text' || q.type === 'email' ? (
             <div className="space-y-3">
               <input
                 type={q.type}
                 value={textVal}
                 onChange={e => setTextVal(e.target.value)}
-                onKeyDown={e => e.key === \'Enter\' && handleText()}
+                onKeyDown={e => e.key === 'Enter' && handleText()}
                 placeholder={q.placeholder}
                 autoFocus
                 className="w-full border border-charcoal/20 rounded-xl px-4 py-3.5 text-charcoal text-base focus:outline-none focus:border-[#C9A84C]"
@@ -294,7 +300,7 @@ function ApplyPage() {
                 disabled={!textVal.trim()}
                 className="w-full py-3.5 rounded-xl bg-charcoal text-ivory font-semibold text-sm disabled:opacity-40 hover:opacity-90 transition-opacity"
               >
-                {step === total - 1 ? \'Get My Growth Blueprint →\' : \'Continue →\'}
+                {step === total - 1 ? 'Get My Growth Blueprint →' : 'Continue →'}
               </button>
             </div>
           ) : (
@@ -305,12 +311,12 @@ function ApplyPage() {
                   onClick={() => selectOption(opt)}
                   className={`w-full text-left px-5 py-3.5 rounded-xl border text-sm font-medium transition-all ${
                     answers[q.id] === opt
-                      ? \'border-[#C9A84C] bg-[#C9A84C]/10 text-charcoal\'
-                      : \'border-charcoal/15 bg-white text-charcoal/80 hover:border-[#C9A84C]/50 hover:bg-[#C9A84C]/5\'
+                      ? 'border-[#C9A84C] bg-[#C9A84C]/10 text-charcoal'
+                      : 'border-charcoal/15 bg-white text-charcoal/80 hover:border-[#C9A84C]/50 hover:bg-[#C9A84C]/5'
                   }`}
                 >
                   <span className="flex items-center gap-3">
-                    <span className={`w-4 h-4 rounded-full border-2 flex-shrink-0 ${answers[q.id] === opt ? \'border-[#C9A84C] bg-[#C9A84C]\' : \'border-charcoal/25\'}`} />
+                    <span className={`w-4 h-4 rounded-full border-2 flex-shrink-0 ${answers[q.id] === opt ? 'border-[#C9A84C] bg-[#C9A84C]' : 'border-charcoal/25'}`} />
                     {opt}
                   </span>
                 </button>

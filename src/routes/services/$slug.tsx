@@ -4,14 +4,14 @@ import { SiteNav } from '../../components/SiteNav'
 import { SiteFooter } from '../../components/SiteFooter'
 import { FAQAccordion } from '../../components/FAQAccordion'
 import { Reveal } from '../../lib/useReveal'
-import { getServiceBySlug } from '../../lib/services'
+import { fetchServiceBySlug } from '../../lib/services-db'
 import { CASE_STUDIES } from '../../lib/site-data'
 import { SERVICE_ICONS } from '../../lib/service-icons'
 import { seoMeta, seoLinks, breadcrumbSchema, faqSchema, serviceSchema } from '../../lib/seo'
 
 export const Route = createFileRoute('/services/$slug')({
-  head: ({ params }) => {
-    const service = getServiceBySlug(params.slug)
+  head: async ({ params }) => {
+    const service = await fetchServiceBySlug(params.slug)
     if (!service) return { meta: [], links: [] }
     return {
       meta: seoMeta({ title: service.seoTitle, description: service.seoDescription, path: `/services/${service.slug}`, image: service.heroImage }),
@@ -40,8 +40,8 @@ export const Route = createFileRoute('/services/$slug')({
       ],
     }
   },
-  loader: ({ params }) => {
-    const service = getServiceBySlug(params.slug)
+  loader: async ({ params }) => {
+    const service = await fetchServiceBySlug(params.slug)
     if (!service) throw notFound()
     return service
   },
@@ -87,7 +87,7 @@ function ServiceDetailPage() {
               <div className="lg:col-span-7">
                 <div className="flex items-center gap-3 mb-6">
                   <div className="w-12 h-12 rounded-xl bg-gold/15 flex items-center justify-center">
-                    <Icon size={24} className="text-gold" strokeWidth={1.5} />
+                    {Icon && <Icon size={24} className="text-gold" strokeWidth={1.5} />}
                   </div>
                   <span className="font-[Space_Grotesk] text-xs uppercase tracking-[0.12em] text-gold">
                     {service.category}

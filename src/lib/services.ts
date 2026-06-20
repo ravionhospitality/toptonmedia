@@ -43,7 +43,7 @@ export const SERVICES: ServiceData[] = [
     category: 'GROWTH MARKETING',
     pitch: 'Precision-targeted campaigns that bring in users who actually activate, pay, and stay — not just those who click.',
     priceFrom: '₦400,000/month',
-    bookingUrl: 'https://toptonleads.lovable.app/user-acquisition',
+    bookingUrl: 'https://toptonmedia.com/apply',
     cardImage: 'https://images.unsplash.com/photo-1533750349088-cd871a92f312?w=800&q=80',
     heroImage: 'https://images.unsplash.com/photo-1533750349088-cd871a92f312?w=1400&q=80',
     bullets: [
@@ -92,7 +92,7 @@ export const SERVICES: ServiceData[] = [
     category: 'GROWTH MARKETING',
     pitch: 'High-intent leads for B2B and B2C brands, delivered into your CRM — not just your inbox.',
     priceFrom: '₦400,000/month',
-    bookingUrl: 'https://toptonleads.lovable.app/lead-generation',
+    bookingUrl: 'https://toptonmedia.com/apply',
     cardImage: 'https://images.unsplash.com/photo-1432888622747-4eb9a8efeb07?w=800&q=80',
     heroImage: 'https://images.unsplash.com/photo-1432888622747-4eb9a8efeb07?w=1400&q=80',
     bullets: [
@@ -139,7 +139,7 @@ export const SERVICES: ServiceData[] = [
     category: 'GROWTH MARKETING',
     pitch: 'Full-funnel paid media measured exclusively on revenue outcomes, not vanity metrics.',
     priceFrom: '₦400,000/month',
-    bookingUrl: 'https://toptonleads.lovable.app/performance-marketing',
+    bookingUrl: 'https://toptonmedia.com/apply',
     cardImage: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80',
     heroImage: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1400&q=80',
     bullets: [
@@ -185,7 +185,7 @@ export const SERVICES: ServiceData[] = [
     category: 'TECH & WEB',
     pitch: 'Marketing websites built fast, designed sharp, and optimised to hold paid traffic and convert it into pipeline.',
     priceFrom: '₦200,000',
-    bookingUrl: 'https://toptonleads.lovable.app/web-design-cro',
+    bookingUrl: 'https://toptonmedia.com/apply',
     cardImage: 'https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=800&q=80',
     heroImage: 'https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=1400&q=80',
     bullets: [
@@ -234,7 +234,7 @@ export const SERVICES: ServiceData[] = [
     category: 'GROWTH MARKETING',
     pitch: 'Content strategy and community management that builds brand trust without burning your team.',
     priceFrom: '₦300,000/month',
-    bookingUrl: 'https://toptonleads.lovable.app/social-media-management',
+    bookingUrl: 'https://toptonmedia.com/apply',
     cardImage: 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=800&q=80',
     heroImage: 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=1400&q=80',
     bullets: [
@@ -278,7 +278,7 @@ export const SERVICES: ServiceData[] = [
     category: 'PR & COMMS',
     pitch: 'Strategic media relations, executive profiling, and crisis management that shapes how your brand is seen.',
     priceFrom: '₦500,000/month',
-    bookingUrl: 'https://toptonleads.lovable.app/pr-communications',
+    bookingUrl: 'https://toptonmedia.com/apply',
     cardImage: 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=800&q=80',
     heroImage: 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=1400&q=80',
     bullets: [
@@ -324,7 +324,7 @@ export const SERVICES: ServiceData[] = [
     category: 'ACTIVATIONS',
     pitch: 'On-ground brand experiences, product launches, and event executions that get people talking — and buying.',
     priceFrom: '₦500,000/project',
-    bookingUrl: 'https://toptonleads.lovable.app/market-activations',
+    bookingUrl: 'https://toptonmedia.com/apply',
     cardImage: 'https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=800&q=80',
     heroImage: 'https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=1400&q=80',
     bullets: [
@@ -368,7 +368,7 @@ export const SERVICES: ServiceData[] = [
     category: 'PRINTING',
     pitch: 'End-to-end print services for brands — from stationery to outdoor signage. Design, print, and delivery.',
     priceFrom: '₦15,000',
-    bookingUrl: 'https://toptonleads.lovable.app/printing-services',
+    bookingUrl: 'https://toptonmedia.com/apply',
     cardImage: 'https://images.unsplash.com/photo-1562564055-71e051d33c19?w=800&q=80',
     heroImage: 'https://images.unsplash.com/photo-1562564055-71e051d33c19?w=1400&q=80',
     bullets: [
@@ -419,7 +419,7 @@ export const SERVICES: ServiceData[] = [
     category: 'GIFTING',
     pitch: 'High-quality branded gifts for staff, clients, and events — sourced, branded, packaged, and delivered by us.',
     priceFrom: '₦8,000/unit',
-    bookingUrl: 'https://toptonleads.lovable.app/branded-gifts',
+    bookingUrl: 'https://toptonmedia.com/apply',
     cardImage: 'https://images.unsplash.com/photo-1512909006721-3d6018887383?w=800&q=80',
     heroImage: 'https://images.unsplash.com/photo-1512909006721-3d6018887383?w=1400&q=80',
     bullets: [
@@ -467,7 +467,7 @@ export const SERVICES: ServiceData[] = [
     category: 'BRAND & CREATIVE',
     pitch: 'Brand identity, positioning, and creative campaigns built to make your brand unmistakable in any market.',
     priceFrom: '₦400,000',
-    bookingUrl: 'https://toptonleads.lovable.app/brand-strategy',
+    bookingUrl: 'https://toptonmedia.com/apply',
     cardImage: 'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=800&q=80',
     heroImage: 'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=1400&q=80',
     bullets: [
@@ -512,7 +512,7 @@ export const SERVICES: ServiceData[] = [
     category: 'PRODUCTION',
     pitch: 'Brand films, product photography, and social content — produced at a standard that actually performs.',
     priceFrom: '₦150,000',
-    bookingUrl: 'https://toptonleads.lovable.app/media-production',
+    bookingUrl: 'https://toptonmedia.com/apply',
     cardImage: 'https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=800&q=80',
     heroImage: 'https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=1400&q=80',
     bullets: [
@@ -559,7 +559,7 @@ export const SERVICES: ServiceData[] = [
     category: 'TRAINING',
     pitch: 'Practical digital marketing and brand strategy training for teams, SMEs, and corporate organisations.',
     priceFrom: '₦200,000/session',
-    bookingUrl: 'https://toptonleads.lovable.app/training-workshops',
+    bookingUrl: 'https://toptonmedia.com/apply',
     cardImage: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=800&q=80',
     heroImage: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=1400&q=80',
     bullets: [
@@ -604,7 +604,7 @@ export const SERVICES: ServiceData[] = [
     category: 'STRATEGY',
     pitch: 'For international brands entering Nigeria and West Africa — research, localisation, and full launch execution.',
     priceFrom: 'GBP 2,500',
-    bookingUrl: 'https://toptonleads.lovable.app/africa-market-entry',
+    bookingUrl: 'https://toptonmedia.com/apply',
     cardImage: 'https://images.unsplash.com/photo-1580060839134-75a5edca2e99?w=800&q=80',
     heroImage: 'https://images.unsplash.com/photo-1580060839134-75a5edca2e99?w=1400&q=80',
     bullets: [
@@ -647,7 +647,7 @@ export const SERVICES: ServiceData[] = [
     category: 'GROWTH MARKETING',
     pitch: 'Lifecycle marketing and automation that turns your list into a revenue channel — not just a broadcast tool.',
     priceFrom: '₦200,000/month',
-    bookingUrl: 'https://toptonleads.lovable.app/email-crm',
+    bookingUrl: 'https://toptonmedia.com/apply',
     cardImage: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80',
     heroImage: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1400&q=80',
     bullets: [
@@ -691,7 +691,7 @@ export const SERVICES: ServiceData[] = [
     category: 'GROWTH MARKETING',
     pitch: 'Rank higher on Google and get found by the people already searching for what you sell.',
     priceFrom: '₦300,000/month (min 3 months)',
-    bookingUrl: 'https://toptonleads.lovable.app/seo',
+    bookingUrl: 'https://toptonmedia.com/apply',
     cardImage: 'https://images.unsplash.com/photo-1562577309-4932fdd64cd1?w=800&q=80',
     heroImage: 'https://images.unsplash.com/photo-1562577309-4932fdd64cd1?w=1400&q=80',
     bullets: [
