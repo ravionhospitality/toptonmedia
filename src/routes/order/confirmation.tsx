@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react'
 import { CheckCircle2, XCircle, Loader2, ArrowRight } from 'lucide-react'
 import { SiteNav } from '../../components/SiteNav'
 import { SiteFooter } from '../../components/SiteFooter'
-import { verifyOrderPayment } from '../../lib/payments.server'
 import { supabase } from '../../lib/supabase'
 
 interface SearchParams {
@@ -41,23 +40,27 @@ function OrderConfirmationPage() {
       }
 
       try {
-        const result = await verifyOrderPayment({
-          data: {
-            orderId: search.order_id,
-            processor: search.processor,
-            sessionId: search.session_id,
-          },
-        })
+        // Fetch order directly from Supabase
+        const { data: orderData, error: orderError } = await supabase
+          .from('orders')
+          .select('*')
+          .eq('id', search.order_id)
+          .single()
 
-        setOrder(result.order)
+        if (orderError || !orderData) {
+          setState('failed')
+          return
+        }
 
-        if (result.verified) {
+        setOrder(orderData)
+
+        if (orderData.status === 'paid' || orderData.status === 'completed') {
           setState('success')
-          if (result.order?.product_slug) {
+          if (orderData.product_slug) {
             const { data: productData } = await supabase
               .from('products')
               .select('*')
-              .eq('slug', result.order.product_slug)
+              .eq('slug', orderData.product_slug)
               .single()
             setProduct(productData)
           }
