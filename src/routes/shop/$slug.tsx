@@ -5,7 +5,7 @@ import { SiteNav } from '../../components/SiteNav'
 import { SiteFooter } from '../../components/SiteFooter'
 import { supabase } from '../../lib/supabase'
 import { seoMeta, seoLinks, breadcrumbSchema } from '../../lib/seo'
-import { createPendingOrder, startPaystackCheckout, startStripeCheckout } from '../../lib/payments.server'
+import { createPendingOrder, startPaystackCheckout, startStripeCheckout } from '../../lib/payments-api'
 
 interface ProductPlan {
   label: string
