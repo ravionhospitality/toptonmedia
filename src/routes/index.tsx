@@ -47,6 +47,10 @@ const CLIENT_LOGOS = [
   { name: 'Credite Capital Finance', url: 'https://ahjhwqcrxcljmenoqyex.supabase.co/storage/v1/object/public/logos/credite.png' },
   { name: 'KCMFB Limited', url: 'https://ahjhwqcrxcljmenoqyex.supabase.co/storage/v1/object/public/logos/kcmfb.jpeg' },
   { name: 'Trendy Lady Barber', url: 'https://ahjhwqcrxcljmenoqyex.supabase.co/storage/v1/object/public/logos/TRENDY%20BARBER%20png.png' },
+  { name: 'Broadshift', url: 'https://ahjhwqcrxcljmenoqyex.supabase.co/storage/v1/object/public/logos/broadshift-BR_9oZOd.png' },
+  { name: 'Hootsuite', url: 'https://ahjhwqcrxcljmenoqyex.supabase.co/storage/v1/object/public/logos/Hootsuite.6f43348b.png' },
+  { name: 'Thrive Agric', url: 'https://ahjhwqcrxcljmenoqyex.supabase.co/storage/v1/object/public/logos/thrive_agric.e92719e7.jpeg' },
+  { name: 'Kuda Bank', url: 'https://ahjhwqcrxcljmenoqyex.supabase.co/storage/v1/object/public/logos/Kuda-Bank.png' },
 ]
 
 function HomePage() {
@@ -115,24 +119,37 @@ function HomePage() {
         <ResultsTicker />
 
         {/* ─── Logos bar ────────────────────────────────────────── */}
-        <section className="bg-ivory py-14">
-          <div className="max-w-7xl mx-auto px-6 lg:px-10">
-            <p className="font-[Space_Grotesk] text-xs uppercase tracking-[0.12em] text-charcoal/40 text-center mb-10">
-              Brands That Trust Us
-            </p>
-            <div className="flex flex-wrap justify-center items-center gap-10 lg:gap-16">
-              {CLIENT_LOGOS.map(logo => (
-                <div key={logo.name} className="flex items-center justify-center h-16 grayscale opacity-75 hover:grayscale-0 hover:opacity-100 transition-all duration-300">
+        <section className="bg-ivory py-14 overflow-hidden">
+          <p className="font-[Space_Grotesk] text-xs uppercase tracking-[0.12em] text-charcoal/40 text-center mb-10">
+            Brands That Trust Us
+          </p>
+          <div className="relative">
+            <div className="logo-track flex items-center gap-14">
+              {[...CLIENT_LOGOS, ...CLIENT_LOGOS].map((logo, i) => (
+                <div key={i} className="flex-shrink-0 flex items-center justify-center h-16">
                   <img
                     src={logo.url}
                     alt={logo.name}
-                    className="max-h-14 max-w-[150px] w-auto object-contain"
+                    className="max-h-14 max-w-[160px] w-auto object-contain grayscale opacity-70 hover:grayscale-0 hover:opacity-100 transition-all duration-300"
                     loading="lazy"
                   />
                 </div>
               ))}
             </div>
           </div>
+          <style>{`
+            .logo-track {
+              animation: logo-scroll 30s linear infinite;
+              width: max-content;
+            }
+            .logo-track:hover {
+              animation-play-state: paused;
+            }
+            @keyframes logo-scroll {
+              0% { transform: translateX(0); }
+              100% { transform: translateX(-50%); }
+            }
+          `}</style>
         </section>
 
         {/* ─── Services marketplace preview ────────────────────── */}
