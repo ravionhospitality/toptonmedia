@@ -120,13 +120,13 @@ function HomePage() {
             <p className="font-[Space_Grotesk] text-xs uppercase tracking-[0.12em] text-charcoal/40 text-center mb-10">
               Brands That Trust Us
             </p>
-            <div className="flex flex-wrap justify-center items-center gap-8 lg:gap-12">
+            <div className="flex flex-wrap justify-center items-center gap-10 lg:gap-16">
               {CLIENT_LOGOS.map(logo => (
-                <div key={logo.name} className="flex items-center justify-center h-12 grayscale opacity-60 hover:grayscale-0 hover:opacity-100 transition-all duration-300">
+                <div key={logo.name} className="flex items-center justify-center h-16 grayscale opacity-75 hover:grayscale-0 hover:opacity-100 transition-all duration-300">
                   <img
                     src={logo.url}
                     alt={logo.name}
-                    className="max-h-10 max-w-[120px] w-auto object-contain"
+                    className="max-h-14 max-w-[150px] w-auto object-contain"
                     loading="lazy"
                   />
                 </div>
