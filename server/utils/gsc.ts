@@ -2,16 +2,20 @@ import fs from 'fs'
 import path from 'path'
 
 export async function fetchGSCData(days: number) {
-  // Import ONLY here on server
   const { google } = await import('googleapis')
   
-  const keyPath = path.resolve(process.cwd(), 'google-search-console-key.json')
+  let keyData
   
-  if (!fs.existsSync(keyPath)) {
-    throw new Error('Service account key file not found')
+  if (process.env.GOOGLE_SERVICE_ACCOUNT_KEY) {
+    const decoded = Buffer.from(process.env.GOOGLE_SERVICE_ACCOUNT_KEY, 'base64').toString('utf-8')
+    keyData = JSON.parse(decoded)
+  } else {
+    const keyPath = path.resolve(process.cwd(), 'google-search-console-key.json')
+    if (!fs.existsSync(keyPath)) {
+      throw new Error('Service account key not found')
+    }
+    keyData = JSON.parse(fs.readFileSync(keyPath, 'utf-8'))
   }
-  
-  const keyData = JSON.parse(fs.readFileSync(keyPath, 'utf-8'))
   
   const auth = new google.auth.GoogleAuth({
     credentials: keyData,
