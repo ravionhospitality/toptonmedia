@@ -1,7 +1,8 @@
+import { createFileRoute } from '@tanstack/react-router'
 import fs from 'fs'
 import path from 'path'
 
-export async function fetchGSCData(days: number) {
+async function fetchGSCData(days: number) {
   const { google } = await import('googleapis')
   
   let keyData
@@ -64,3 +65,17 @@ export async function fetchGSCData(days: number) {
     })),
   }
 }
+
+export const Route = createFileRoute('/api/gsc')({
+  beforeLoad: async ({ search }: { search: any }) => {
+    const days = parseInt(search.days) || 7
+    const data = await fetchGSCData(days)
+    return {
+      success: true,
+      data: {
+        period: `Last ${days} days`,
+        ...data,
+      },
+    }
+  },
+})

@@ -25,6 +25,7 @@ import { Route as ServicesSlugRouteImport } from './routes/services/$slug'
 import { Route as RssXmlRouteImport } from './routes/rss.xml'
 import { Route as OrderConfirmationRouteImport } from './routes/order/confirmation'
 import { Route as BlogSlugRouteImport } from './routes/blog/$slug'
+import { Route as ApiGscRouteImport } from './routes/api/gsc'
 import { Route as AdminBlogNewRouteImport } from './routes/admin/blog/new'
 import { Route as AdminBlogIdRouteImport } from './routes/admin/blog/$id'
 
@@ -108,6 +109,11 @@ const BlogSlugRoute = BlogSlugRouteImport.update({
   path: '/$slug',
   getParentRoute: () => BlogRoute,
 } as any)
+const ApiGscRoute = ApiGscRouteImport.update({
+  id: '/api/gsc',
+  path: '/api/gsc',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminBlogNewRoute = AdminBlogNewRouteImport.update({
   id: '/admin/blog/new',
   path: '/admin/blog/new',
@@ -128,6 +134,7 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/services': typeof ServicesRouteWithChildren
   '/team': typeof TeamRoute
+  '/api/gsc': typeof ApiGscRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/order/confirmation': typeof OrderConfirmationRoute
   '/rss/xml': typeof RssXmlRoute
@@ -148,6 +155,7 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/services': typeof ServicesRouteWithChildren
   '/team': typeof TeamRoute
+  '/api/gsc': typeof ApiGscRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/order/confirmation': typeof OrderConfirmationRoute
   '/rss/xml': typeof RssXmlRoute
@@ -169,6 +177,7 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/services': typeof ServicesRouteWithChildren
   '/team': typeof TeamRoute
+  '/api/gsc': typeof ApiGscRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/order/confirmation': typeof OrderConfirmationRoute
   '/rss/xml': typeof RssXmlRoute
@@ -191,6 +200,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/services'
     | '/team'
+    | '/api/gsc'
     | '/blog/$slug'
     | '/order/confirmation'
     | '/rss/xml'
@@ -211,6 +221,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/services'
     | '/team'
+    | '/api/gsc'
     | '/blog/$slug'
     | '/order/confirmation'
     | '/rss/xml'
@@ -231,6 +242,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/services'
     | '/team'
+    | '/api/gsc'
     | '/blog/$slug'
     | '/order/confirmation'
     | '/rss/xml'
@@ -252,6 +264,7 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   ServicesRoute: typeof ServicesRouteWithChildren
   TeamRoute: typeof TeamRoute
+  ApiGscRoute: typeof ApiGscRoute
   OrderConfirmationRoute: typeof OrderConfirmationRoute
   RssXmlRoute: typeof RssXmlRoute
   ShopSlugRoute: typeof ShopSlugRoute
@@ -376,6 +389,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BlogSlugRouteImport
       parentRoute: typeof BlogRoute
     }
+    '/api/gsc': {
+      id: '/api/gsc'
+      path: '/api/gsc'
+      fullPath: '/api/gsc'
+      preLoaderRoute: typeof ApiGscRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/blog/new': {
       id: '/admin/blog/new'
       path: '/admin/blog/new'
@@ -424,6 +444,7 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   ServicesRoute: ServicesRouteWithChildren,
   TeamRoute: TeamRoute,
+  ApiGscRoute: ApiGscRoute,
   OrderConfirmationRoute: OrderConfirmationRoute,
   RssXmlRoute: RssXmlRoute,
   ShopSlugRoute: ShopSlugRoute,
