@@ -37,6 +37,7 @@
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^4.7.0",
     "autoprefixer": "10.4.19",
+    "nitropack": "^2.13.4",
     "postcss": "8.4.38",
     "terser": "^5.48.0",
     "typescript": "^5.6.0",
