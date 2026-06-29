@@ -54,5 +54,112 @@
         }
       ]
     }
+  ],
+  "redirects": [
+    {
+      "source": "/ppc-marketing/",
+      "destination": "/services/performance-marketing",
+      "permanent": true
+    },
+    {
+      "source": "/email-marketing/",
+      "destination": "/services/email-crm",
+      "permanent": true
+    },
+    {
+      "source": "/social-media-marketing/",
+      "destination": "/services/social-media-management",
+      "permanent": true
+    },
+    {
+      "source": "/web-design/",
+      "destination": "/services/web-design-cro",
+      "permanent": true
+    },
+    {
+      "source": "/seo-for-your-business/",
+      "destination": "/services/seo",
+      "permanent": true
+    },
+    {
+      "source": "/corporate-training-for-newbies/",
+      "destination": "/services/training-workshops",
+      "permanent": true
+    },
+    {
+      "source": "/service/",
+      "destination": "/services",
+      "permanent": true
+    },
+    {
+      "source": "/contact-us/",
+      "destination": "/contact",
+      "permanent": true
+    },
+    {
+      "source": "/contact-us-copy/",
+      "destination": "/contact",
+      "permanent": true
+    },
+    {
+      "source": "/home/",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/get-to-know-more-about-us-today/",
+      "destination": "/about",
+      "permanent": true
+    },
+    {
+      "source": "/why-you-should-have-a-digital-strategy-in-2025/",
+      "destination": "/services/brand-strategy",
+      "permanent": true
+    },
+    {
+      "source": "/google-my-business-profile-how-to-set-it-up-amp-why-you-should-have-one-in-2025/",
+      "destination": "/blog/local-seo-nigerian-businesses-guide",
+      "permanent": true
+    },
+    {
+      "source": "/11-best-content-automation-tools-topton-media/",
+      "destination": "/blog",
+      "permanent": true
+    },
+    {
+      "source": "/top-7-crypto-influencer-marketing-agencies-2024/",
+      "destination": "/blog/influencer-collaboration-nigerian-brands",
+      "permanent": true
+    },
+    {
+      "source": "/how-much-does-digital-marketing-cost-in-nigeria-in-2025/",
+      "destination": "/blog",
+      "permanent": true
+    },
+    {
+      "source": "/content-marketing-vs-digital-marketing/",
+      "destination": "/blog",
+      "permanent": true
+    },
+    {
+      "source": "/22-content-marketing-books-must-read-in-2025/",
+      "destination": "/blog",
+      "permanent": true
+    },
+    {
+      "source": "/2025/02/14/",
+      "destination": "/blog",
+      "permanent": true
+    },
+    {
+      "source": "/2025/02/24/",
+      "destination": "/blog",
+      "permanent": true
+    },
+    {
+      "source": "/2024/03/03/",
+      "destination": "/blog",
+      "permanent": true
+    }
   ]
 }
