@@ -21,17 +21,8 @@ export default defineConfig({
         drop_debugger: true,
       },
     },
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          'react-vendor': ['react', 'react-dom'],
-          'router': ['@tanstack/react-router', '@tanstack/react-start'],
-          'tiptap': ['@tiptap/react', '@tiptap/starter-kit'],
-        },
-      },
-    },
   },
   ssr: {
-    external: ['isbot'],
+    external: ['isbot', 'googleapis', 'google-auth-library', 'googleapis-common'],
   },
 })

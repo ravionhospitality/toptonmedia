@@ -72,7 +72,7 @@ function AdminPage() {
   const [authed, setAuthed] = useState(false)
   const [authChecked, setAuthChecked] = useState(false)
   const [pw, setPw] = useState('')
-  const [tab, setTab] = useState<'submissions'|'blog'|'services'>('submissions')
+  const [tab, setTab] = useState<'submissions'|'blog'|'services'|'analytics'>('submissions')
   const [submissions, setSubmissions] = useState<any[]>([])
   const [posts, setPosts] = useState<any[]>([])
   const [services, setServices] = useState<ServiceRow[]>([])
@@ -89,6 +89,30 @@ function AdminPage() {
   const [serviceSaved, setServiceSaved] = useState(false)
   const [seedingServices, setSeedingServices] = useState(false)
   const [seedMessage, setSeedMessage] = useState('')
+  const [gscData, setGscData] = useState<any>(null)
+  const [gscLoading, setGscLoading] = useState(false)
+  const [gscDays, setGscDays] = useState(7)
+  const [gscError, setGscError] = useState('')
+
+  async function loadGSCData(days: number) {
+    setGscLoading(true)
+    setGscError('')
+    try {
+      const res = await fetch(`/gsc?days=${days}`)
+      const result = await res.json()
+      
+      if (!result.success) {
+        setGscError(result.error || 'Failed to fetch GSC data')
+        setGscLoading(false)
+        return
+      }
+      
+      setGscData(result.data)
+    } catch (err) {
+      setGscError(String(err))
+    }
+    setGscLoading(false)
+  }
 
   useEffect(() => {
     if (typeof window !== 'undefined' && sessionStorage.getItem('topton_admin') === '1') {
@@ -158,6 +182,10 @@ function AdminPage() {
     if (!authed) return
     setLoading(true)
     if (tab === 'submissions') loadSubmissions()
+    else if (tab === 'analytics') {
+      loadGSCData(gscDays)
+      setLoading(false)
+    }
     else if (tab === 'blog') {
       supabase.from('blog_posts').select('id,slug,title,category,published,created_at').order('created_at',{ascending:false})
         .then(({data,error}) => {
@@ -404,10 +432,10 @@ function AdminPage() {
         </div>
 
         <div className="flex gap-3 mb-8 items-center flex-wrap">
-          {(['submissions','blog','services'] as const).map(t => (
+          {(['submissions','blog','services','analytics'] as const).map(t => (
             <button key={t} onClick={()=>setTab(t)}
               className={`px-5 py-2 rounded-full text-sm font-semibold transition-colors ${tab===t?'bg-gold text-charcoal':'border border-gold/30 text-ivory/70 hover:border-gold'}`}>
-              {t==='submissions'?'Contact Submissions':t==='blog'?'Blog Posts':'Services'}
+              {t==='submissions'?'Contact Submissions':t==='blog'?'Blog Posts':t==='services'?'Services':'Analytics'}
             </button>
           ))}
           {tab==='submissions'&&overdueCount>0&&(
@@ -562,6 +590,60 @@ function AdminPage() {
                   <button onClick={()=>deleteService(svc.id)} className="text-xs px-3 py-1.5 rounded-lg border border-red-900/40 text-red-400 hover:border-red-400 transition-colors">Delete</button>
                 </div>
               ))
+            )}
+          </div>
+        )}
+
+        {!loading&&tab==='analytics'&&(
+          <div className="space-y-6">
+            <div className="flex gap-3 mb-6">
+              <button onClick={()=>{setGscDays(7);loadGSCData(7)}} className={`px-4 py-2 rounded-full text-sm font-semibold ${gscDays===7?'bg-gold text-charcoal':'border border-gold/30 text-ivory/70'}`}>Last 7 days</button>
+              <button onClick={()=>{setGscDays(30);loadGSCData(30)}} className={`px-4 py-2 rounded-full text-sm font-semibold ${gscDays===30?'bg-gold text-charcoal':'border border-gold/30 text-ivory/70'}`}>Last 30 days</button>
+              <button onClick={()=>{setGscDays(90);loadGSCData(90)}} className={`px-4 py-2 rounded-full text-sm font-semibold ${gscDays===90?'bg-gold text-charcoal':'border border-gold/30 text-ivory/70'}`}>Last 90 days</button>
+            </div>
+
+            {gscLoading&&<p className="text-ivory/50">Loading analytics…</p>}
+            {gscError&&<div className="bg-red-900/30 border border-red-700/40 rounded-xl px-5 py-3 text-sm text-red-300">⚠ {gscError}</div>}
+
+            {gscData&&!gscLoading&&(
+              <div className="space-y-6">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                  <div className="bg-cardbrown border border-gold/10 rounded-xl p-6">
+                    <p className="text-ivory/60 text-sm mb-2">Impressions</p>
+                    <p className="font-display text-3xl font-bold text-gold">{(gscData.impressions || 0).toLocaleString()}</p>
+                  </div>
+                  <div className="bg-cardbrown border border-gold/10 rounded-xl p-6">
+                    <p className="text-ivory/60 text-sm mb-2">Clicks</p>
+                    <p className="font-display text-3xl font-bold text-gold">{(gscData.clicks || 0).toLocaleString()}</p>
+                  </div>
+                  <div className="bg-cardbrown border border-gold/10 rounded-xl p-6">
+                    <p className="text-ivory/60 text-sm mb-2">CTR</p>
+                    <p className="font-display text-3xl font-bold text-gold">{gscData.ctr}%</p>
+                  </div>
+                  <div className="bg-cardbrown border border-gold/10 rounded-xl p-6">
+                    <p className="text-ivory/60 text-sm mb-2">Avg Position</p>
+                    <p className="font-display text-3xl font-bold text-gold">{gscData.avgPosition}</p>
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="text-lg font-semibold text-ivory mb-4">Top Keywords</h3>
+                  <div className="space-y-3">
+                    {(gscData.topQueries || []).map((q: any, i: number) => (
+                      <div key={i} className="bg-cardbrown border border-gold/10 rounded-xl p-4 flex items-center justify-between flex-wrap gap-4">
+                        <div>
+                          <p className="font-semibold text-ivory">{q.query}</p>
+                          <p className="text-xs text-ivory/40 mt-1">{q.impressions} impressions · CTR {q.ctr}%</p>
+                        </div>
+                        <div className="text-right">
+                          <p className="font-semibold text-gold text-lg">{q.clicks} clicks</p>
+                          <p className="text-xs text-ivory/40">Avg pos: {q.position}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
             )}
           </div>
         )}
