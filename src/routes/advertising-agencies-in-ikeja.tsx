@@ -185,7 +185,7 @@ function AdvertisingAgenciesIkeja() {
 
       {/* SECTION 4: Why Local Matters */}
       <section className="max-w-7xl mx-auto px-6 py-20 bg-ivory/5 rounded-lg p-12">
-        <h2 className="text-4xl font-bold mb-8">Why Local Agency > Big International Agency</h2>
+        <h2 className="text-4xl font-bold mb-8">Why Local Agency vs Big International Agency</h2>
         
         <div className="overflow-x-auto">
           <table className="w-full text-left">
