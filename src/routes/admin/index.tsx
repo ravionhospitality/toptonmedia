@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
+import { fetchGSCDataServer } from '../../lib/gsc-server'
 import { useState, useEffect, useRef } from 'react'
 import { supabase } from '../../lib/supabase'
 import { SERVICES } from '../../lib/services'
@@ -98,18 +99,10 @@ function AdminPage() {
     setGscLoading(true)
     setGscError('')
     try {
-      const res = await fetch(`/gsc?days=${days}`)
-      const result = await res.json()
-      
-      if (!result.success) {
-        setGscError(result.error || 'Failed to fetch GSC data')
-        setGscLoading(false)
-        return
-      }
-      
-      setGscData(result.data)
-    } catch (err) {
-      setGscError(String(err))
+      const data = await fetchGSCDataServer({ data: days })
+      setGscData(data)
+    } catch (err: any) {
+      setGscError(err.message || String(err))
     }
     setGscLoading(false)
   }
