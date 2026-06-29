@@ -11,10 +11,15 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TeamRouteImport } from './routes/team'
 import { Route as ServicesRouteImport } from './routes/services'
+import { Route as MarketingAgencyNigeriaRouteImport } from './routes/marketing-agency-nigeria'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as CaseStudiesRouteImport } from './routes/case-studies'
 import { Route as BlogRouteImport } from './routes/blog'
+import { Route as B2bLeadGenerationAgencyInNigeriaRouteImport } from './routes/b2b-lead-generation-agency-in-nigeria'
 import { Route as ApplyRouteImport } from './routes/apply'
+import { Route as AdvertisingCompanyLagosRouteImport } from './routes/advertising-company-lagos'
+import { Route as AdvertisingAgencyLagosRouteImport } from './routes/advertising-agency-lagos'
+import { Route as AdvertisingAgenciesInIkejaRouteImport } from './routes/advertising-agencies-in-ikeja'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ShopIndexRouteImport } from './routes/shop/index'
@@ -38,6 +43,11 @@ const ServicesRoute = ServicesRouteImport.update({
   path: '/services',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MarketingAgencyNigeriaRoute = MarketingAgencyNigeriaRouteImport.update({
+  id: '/marketing-agency-nigeria',
+  path: '/marketing-agency-nigeria',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ContactRoute = ContactRouteImport.update({
   id: '/contact',
   path: '/contact',
@@ -53,11 +63,33 @@ const BlogRoute = BlogRouteImport.update({
   path: '/blog',
   getParentRoute: () => rootRouteImport,
 } as any)
+const B2bLeadGenerationAgencyInNigeriaRoute =
+  B2bLeadGenerationAgencyInNigeriaRouteImport.update({
+    id: '/b2b-lead-generation-agency-in-nigeria',
+    path: '/b2b-lead-generation-agency-in-nigeria',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApplyRoute = ApplyRouteImport.update({
   id: '/apply',
   path: '/apply',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdvertisingCompanyLagosRoute = AdvertisingCompanyLagosRouteImport.update({
+  id: '/advertising-company-lagos',
+  path: '/advertising-company-lagos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdvertisingAgencyLagosRoute = AdvertisingAgencyLagosRouteImport.update({
+  id: '/advertising-agency-lagos',
+  path: '/advertising-agency-lagos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdvertisingAgenciesInIkejaRoute =
+  AdvertisingAgenciesInIkejaRouteImport.update({
+    id: '/advertising-agencies-in-ikeja',
+    path: '/advertising-agencies-in-ikeja',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
@@ -122,10 +154,15 @@ const AdminBlogIdRoute = AdminBlogIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/advertising-agencies-in-ikeja': typeof AdvertisingAgenciesInIkejaRoute
+  '/advertising-agency-lagos': typeof AdvertisingAgencyLagosRoute
+  '/advertising-company-lagos': typeof AdvertisingCompanyLagosRoute
   '/apply': typeof ApplyRoute
+  '/b2b-lead-generation-agency-in-nigeria': typeof B2bLeadGenerationAgencyInNigeriaRoute
   '/blog': typeof BlogRouteWithChildren
   '/case-studies': typeof CaseStudiesRoute
   '/contact': typeof ContactRoute
+  '/marketing-agency-nigeria': typeof MarketingAgencyNigeriaRoute
   '/services': typeof ServicesRouteWithChildren
   '/team': typeof TeamRoute
   '/blog/$slug': typeof BlogSlugRoute
@@ -142,10 +179,15 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/advertising-agencies-in-ikeja': typeof AdvertisingAgenciesInIkejaRoute
+  '/advertising-agency-lagos': typeof AdvertisingAgencyLagosRoute
+  '/advertising-company-lagos': typeof AdvertisingCompanyLagosRoute
   '/apply': typeof ApplyRoute
+  '/b2b-lead-generation-agency-in-nigeria': typeof B2bLeadGenerationAgencyInNigeriaRoute
   '/blog': typeof BlogRouteWithChildren
   '/case-studies': typeof CaseStudiesRoute
   '/contact': typeof ContactRoute
+  '/marketing-agency-nigeria': typeof MarketingAgencyNigeriaRoute
   '/services': typeof ServicesRouteWithChildren
   '/team': typeof TeamRoute
   '/blog/$slug': typeof BlogSlugRoute
@@ -163,10 +205,15 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/advertising-agencies-in-ikeja': typeof AdvertisingAgenciesInIkejaRoute
+  '/advertising-agency-lagos': typeof AdvertisingAgencyLagosRoute
+  '/advertising-company-lagos': typeof AdvertisingCompanyLagosRoute
   '/apply': typeof ApplyRoute
+  '/b2b-lead-generation-agency-in-nigeria': typeof B2bLeadGenerationAgencyInNigeriaRoute
   '/blog': typeof BlogRouteWithChildren
   '/case-studies': typeof CaseStudiesRoute
   '/contact': typeof ContactRoute
+  '/marketing-agency-nigeria': typeof MarketingAgencyNigeriaRoute
   '/services': typeof ServicesRouteWithChildren
   '/team': typeof TeamRoute
   '/blog/$slug': typeof BlogSlugRoute
@@ -185,10 +232,15 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
+    | '/advertising-agencies-in-ikeja'
+    | '/advertising-agency-lagos'
+    | '/advertising-company-lagos'
     | '/apply'
+    | '/b2b-lead-generation-agency-in-nigeria'
     | '/blog'
     | '/case-studies'
     | '/contact'
+    | '/marketing-agency-nigeria'
     | '/services'
     | '/team'
     | '/blog/$slug'
@@ -205,10 +257,15 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/about'
+    | '/advertising-agencies-in-ikeja'
+    | '/advertising-agency-lagos'
+    | '/advertising-company-lagos'
     | '/apply'
+    | '/b2b-lead-generation-agency-in-nigeria'
     | '/blog'
     | '/case-studies'
     | '/contact'
+    | '/marketing-agency-nigeria'
     | '/services'
     | '/team'
     | '/blog/$slug'
@@ -225,10 +282,15 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/about'
+    | '/advertising-agencies-in-ikeja'
+    | '/advertising-agency-lagos'
+    | '/advertising-company-lagos'
     | '/apply'
+    | '/b2b-lead-generation-agency-in-nigeria'
     | '/blog'
     | '/case-studies'
     | '/contact'
+    | '/marketing-agency-nigeria'
     | '/services'
     | '/team'
     | '/blog/$slug'
@@ -246,10 +308,15 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  AdvertisingAgenciesInIkejaRoute: typeof AdvertisingAgenciesInIkejaRoute
+  AdvertisingAgencyLagosRoute: typeof AdvertisingAgencyLagosRoute
+  AdvertisingCompanyLagosRoute: typeof AdvertisingCompanyLagosRoute
   ApplyRoute: typeof ApplyRoute
+  B2bLeadGenerationAgencyInNigeriaRoute: typeof B2bLeadGenerationAgencyInNigeriaRoute
   BlogRoute: typeof BlogRouteWithChildren
   CaseStudiesRoute: typeof CaseStudiesRoute
   ContactRoute: typeof ContactRoute
+  MarketingAgencyNigeriaRoute: typeof MarketingAgencyNigeriaRoute
   ServicesRoute: typeof ServicesRouteWithChildren
   TeamRoute: typeof TeamRoute
   OrderConfirmationRoute: typeof OrderConfirmationRoute
@@ -278,6 +345,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ServicesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/marketing-agency-nigeria': {
+      id: '/marketing-agency-nigeria'
+      path: '/marketing-agency-nigeria'
+      fullPath: '/marketing-agency-nigeria'
+      preLoaderRoute: typeof MarketingAgencyNigeriaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/contact': {
       id: '/contact'
       path: '/contact'
@@ -299,11 +373,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BlogRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/b2b-lead-generation-agency-in-nigeria': {
+      id: '/b2b-lead-generation-agency-in-nigeria'
+      path: '/b2b-lead-generation-agency-in-nigeria'
+      fullPath: '/b2b-lead-generation-agency-in-nigeria'
+      preLoaderRoute: typeof B2bLeadGenerationAgencyInNigeriaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/apply': {
       id: '/apply'
       path: '/apply'
       fullPath: '/apply'
       preLoaderRoute: typeof ApplyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/advertising-company-lagos': {
+      id: '/advertising-company-lagos'
+      path: '/advertising-company-lagos'
+      fullPath: '/advertising-company-lagos'
+      preLoaderRoute: typeof AdvertisingCompanyLagosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/advertising-agency-lagos': {
+      id: '/advertising-agency-lagos'
+      path: '/advertising-agency-lagos'
+      fullPath: '/advertising-agency-lagos'
+      preLoaderRoute: typeof AdvertisingAgencyLagosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/advertising-agencies-in-ikeja': {
+      id: '/advertising-agencies-in-ikeja'
+      path: '/advertising-agencies-in-ikeja'
+      fullPath: '/advertising-agencies-in-ikeja'
+      preLoaderRoute: typeof AdvertisingAgenciesInIkejaRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/about': {
@@ -418,10 +520,15 @@ const ServicesRouteWithChildren = ServicesRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  AdvertisingAgenciesInIkejaRoute: AdvertisingAgenciesInIkejaRoute,
+  AdvertisingAgencyLagosRoute: AdvertisingAgencyLagosRoute,
+  AdvertisingCompanyLagosRoute: AdvertisingCompanyLagosRoute,
   ApplyRoute: ApplyRoute,
+  B2bLeadGenerationAgencyInNigeriaRoute: B2bLeadGenerationAgencyInNigeriaRoute,
   BlogRoute: BlogRouteWithChildren,
   CaseStudiesRoute: CaseStudiesRoute,
   ContactRoute: ContactRoute,
+  MarketingAgencyNigeriaRoute: MarketingAgencyNigeriaRoute,
   ServicesRoute: ServicesRouteWithChildren,
   TeamRoute: TeamRoute,
   OrderConfirmationRoute: OrderConfirmationRoute,
