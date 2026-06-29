@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { seoMeta, seoLinks } from '../lib/seo'
 import { CONTACT } from '../lib/site-data'
 import { supabase } from '../lib/supabase'
+import { generateDiagnosticReport, type DiagnosticReport } from '../lib/revenue-diagnostic'
 
 export const Route = createFileRoute('/apply')({
   head: () => ({
@@ -26,6 +27,17 @@ const QUESTIONS = [
       '$1,500–$3,000 (~₦2.4M–₦4.8M)/month',
       '$3,000–$10,000 (~₦4.8M–₦16M)/month',
       '$10,000+ (~₦16M+)/month',
+    ],
+  },
+  {
+    id: 'revenue',
+    question: 'What is your current monthly revenue?',
+    options: [
+      'Under ₦2,000,000/month',
+      '₦2,000,000–₦5,000,000/month',
+      '₦5,000,000–₦15,000,000/month',
+      '₦15,000,000–₦40,000,000/month',
+      '₦40,000,000+/month',
     ],
   },
   {
@@ -106,6 +118,17 @@ const QUESTIONS = [
     ],
   },
   {
+    id: 'acquisition',
+    question: 'How do you currently get most of your clients?',
+    options: [
+      'Paid ads (Meta, Google, TikTok)',
+      'Referrals / word of mouth',
+      'Organic social media',
+      'Cold outreach / sales team',
+      'A mix of several channels',
+    ],
+  },
+  {
     id: 'name',
     question: 'Almost done — what should we call you?',
     type: 'text',
@@ -142,6 +165,7 @@ function ApplyPage() {
   const [submitted, setSubmitted] = useState(false)
   const [qualified, setQualified] = useState(false)
   const [submitting, setSubmitting] = useState(false)
+  const [report, setReport] = useState<DiagnosticReport | null>(null)
 
   const q = QUESTIONS[step]
   const total = QUESTIONS.length
@@ -170,25 +194,118 @@ function ApplyPage() {
   async function handleSubmit(finalAnswers: Record<string, string>) {
     setSubmitting(true)
     const qual = isQualified(finalAnswers)
+
+    const diagnosticReport = generateDiagnosticReport({
+      name: finalAnswers.name ?? 'there',
+      industry: finalAnswers.industry ?? 'Other',
+      monthlySpendRange: finalAnswers.budget ?? '',
+      challenge: finalAnswers.challenge ?? '',
+      teamAnswer: finalAnswers.team ?? '',
+      acquisitionMethod: finalAnswers.acquisition,
+    })
+
     await supabase.from('contact_submissions').insert({
       name: finalAnswers.name ?? 'Unknown',
       email: finalAnswers.email ?? '',
-      message: JSON.stringify(finalAnswers, null, 2),
+      message: JSON.stringify({ answers: finalAnswers, report: diagnosticReport }, null, 2),
       service: finalAnswers.goal ?? 'Qualifier form',
       budget: finalAnswers.budget ?? '',
       source: 'qualifier_form',
       status: qual ? 'qualified' : 'new',
     })
+
     setQualified(qual)
+    setReport(diagnosticReport)
     setSubmitting(false)
     setSubmitted(true)
   }
 
   if (submitting) return (
-    <div className="min-h-screen bg-charcoal flex items-center justify-center">
+    <div className="min-h-screen bg-[#FAF6F0] flex items-center justify-center">
       <div className="text-center">
-        <div className="w-10 h-10 border-2 border-gold border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-        <p className="text-ivory/60 text-sm">Preparing your blueprint…</p>
+        <div className="w-10 h-10 border-2 border-[#C9A84C] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+        <p className="text-charcoal/60 text-sm">Diagnosing your revenue leak…</p>
+      </div>
+    </div>
+  )
+
+  if (submitted && report) return (
+    <div className="min-h-screen bg-[#FAF6F0] px-5 sm:px-6 py-12 sm:py-16">
+      <div className="max-w-2xl mx-auto">
+
+        <div className="text-center mb-8">
+          <span
+            className={`inline-block px-4 py-1.5 rounded-full text-xs font-bold tracking-widest uppercase ${
+              report.severity_level === 'critical'
+                ? 'bg-red-600/10 text-red-700'
+                : report.severity_level === 'high'
+                ? 'bg-orange-600/10 text-orange-700'
+                : 'bg-yellow-600/10 text-yellow-700'
+            }`}
+          >
+            {report.severity_label}
+          </span>
+        </div>
+
+        <h1 className="font-display text-3xl sm:text-4xl font-bold text-charcoal text-center leading-tight mb-10">
+          {report.headline}
+        </h1>
+
+        <div className="bg-white border border-charcoal/10 rounded-2xl shadow-sm p-6 sm:p-9 mb-8">
+
+          <div className="space-y-6 mb-8">
+            <div className="border-b border-charcoal/10 pb-5">
+              <p className="text-[10px] uppercase tracking-widest text-charcoal/40 mb-1">Monthly Spend</p>
+              <p className="text-charcoal font-bold text-lg">{report.monthly_spend_range}</p>
+            </div>
+
+            <div className="border-b border-charcoal/10 pb-5">
+              <p className="text-[10px] uppercase tracking-widest text-charcoal/40 mb-1">In-House Cost</p>
+              <p className="text-charcoal font-bold text-lg mb-2">
+                {report.in_house_cost > 0 ? `₦${report.in_house_cost.toLocaleString('en-NG')}/mo` : 'None'}
+              </p>
+              <p className="text-charcoal/60 text-sm leading-relaxed">{report.in_house_cost_breakdown}</p>
+            </div>
+
+            <div className="border-b border-charcoal/10 pb-5">
+              <p className="text-[10px] uppercase tracking-widest text-charcoal/40 mb-1">Clients You're Missing</p>
+              <p className="text-charcoal font-bold text-lg mb-2">{report.additional_clients_needed}/month</p>
+              <p className="text-charcoal/60 text-sm leading-relaxed">{report.additional_clients_breakdown}</p>
+            </div>
+
+            <div className="pb-1">
+              <p className="text-[10px] uppercase tracking-widest text-charcoal/40 mb-1">Assumed Client Value</p>
+              <p className="text-charcoal font-bold text-lg mb-2">₦{report.assumed_client_value.toLocaleString('en-NG')}</p>
+              <p className="text-charcoal/60 text-sm leading-relaxed">{report.assumed_client_value_breakdown}</p>
+            </div>
+          </div>
+
+          <div className="border-t border-charcoal/10 pt-7 text-center mb-7 bg-[#FAF6F0] rounded-xl -mx-2 px-2 py-6">
+            <p className="text-[10px] uppercase tracking-widest text-[#7B0D2A] font-bold mb-2">Total Monthly Revenue Leak</p>
+            <p className="font-display text-3xl sm:text-4xl font-extrabold text-[#7B0D2A]">{report.total_leak_range}</p>
+          </div>
+
+          <div className="border-t border-charcoal/10 pt-6 mb-6">
+            <p className="text-[10px] uppercase tracking-widest text-charcoal/40 mb-3 font-bold">How We Calculated This</p>
+            <p className="text-charcoal/75 leading-relaxed text-sm">{report.how_we_calculated_this}</p>
+          </div>
+
+          <p className="text-charcoal/75 leading-relaxed text-sm mb-5">{report.reality_check_paragraph}</p>
+          <p className="text-charcoal/75 leading-relaxed text-sm">{report.recommendation_paragraph}</p>
+        </div>
+
+        <div className="text-center">
+          <a
+            href={CONTACT.discoveryCallUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-[#C9A84C] text-charcoal font-bold hover:opacity-90 transition-opacity shadow-md"
+          >
+            {report.cta_text}
+          </a>
+          <p className="mt-6 text-xs text-charcoal/40">No obligation. 30 minutes. Clear next steps either way.</p>
+        </div>
+
       </div>
     </div>
   )
@@ -196,43 +313,18 @@ function ApplyPage() {
   if (submitted) return (
     <div className="min-h-screen bg-charcoal flex items-center justify-center px-6">
       <div className="max-w-lg w-full text-center">
-        {qualified ? (
-          <>
-            <div className="w-16 h-16 rounded-full bg-gold/20 flex items-center justify-center mx-auto mb-6">
-              <span className="text-2xl">✓</span>
-            </div>
-            <h1 className="font-display text-3xl font-bold text-ivory mb-4">
-              You're a great fit.
-            </h1>
-            <p className="text-ivory/60 leading-relaxed mb-8">
-              Based on your answers, we can help you grow. Check your inbox — your private growth blueprint is on its way. In the meantime, book a free 30-minute strategy call so we can talk through your specific situation.
-            </p>
-            <a
-              href={CONTACT.discoveryCallUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-gradient-to-r from-gold to-gold-bright text-charcoal font-semibold hover:opacity-90 transition-opacity"
-            >
-              Book Your Free Strategy Call →
-            </a>
-            <p className="mt-6 text-xs text-ivory/30">No obligation. 30 minutes. Clear next steps either way.</p>
-          </>
-        ) : (
-          <>
-            <h1 className="font-display text-3xl font-bold text-ivory mb-4">
-              Thanks for being honest.
-            </h1>
-            <p className="text-ivory/60 leading-relaxed mb-8">
-              Based on where you are right now, a full-service retainer might not be the right fit yet — but that doesn't mean we can't help. We'll send you some resources to help you get ready, and we'd love to hear from you when the time is right.
-            </p>
-            <a
-              href="/"
-              className="inline-flex items-center gap-2 px-8 py-4 rounded-full border border-gold/40 text-ivory font-semibold hover:border-gold transition-colors"
-            >
-              Explore Topton Media →
-            </a>
-          </>
-        )}
+        <h1 className="font-display text-3xl font-bold text-ivory mb-4">
+          Thanks for being honest.
+        </h1>
+        <p className="text-ivory/60 leading-relaxed mb-8">
+          Based on where you are right now, a full-service retainer might not be the right fit yet — but that doesn't mean we can't help. We'll send you some resources to help you get ready, and we'd love to hear from you when the time is right.
+        </p>
+        <a
+          href="/"
+          className="inline-flex items-center gap-2 px-8 py-4 rounded-full border border-gold/40 text-ivory font-semibold hover:border-gold transition-colors"
+        >
+          Explore Topton Media →
+        </a>
       </div>
     </div>
   )
@@ -256,7 +348,7 @@ function ApplyPage() {
           <span className="text-[#C9A84C]">build empires</span> with?
         </h1>
         <p className="mt-4 text-charcoal/60 leading-relaxed">
-          Quick questions. Honest answers only. If you're a fit, we'll unlock your private growth blueprint on the next page.
+          Quick questions. Honest answers only. If you're a fit, we'll unlock your private revenue leak report on the next page.
         </p>
       </div>
 
@@ -300,7 +392,7 @@ function ApplyPage() {
                 disabled={!textVal.trim()}
                 className="w-full py-3.5 rounded-xl bg-charcoal text-ivory font-semibold text-sm disabled:opacity-40 hover:opacity-90 transition-opacity"
               >
-                {step === total - 1 ? 'Get My Growth Blueprint →' : 'Continue →'}
+                {step === total - 1 ? 'Get My Revenue Leak Report →' : 'Continue →'}
               </button>
             </div>
           ) : (

@@ -465,7 +465,7 @@ function requireReact() {
   return react.exports;
 }
 var reactExports = requireReact();
-const React = /* @__PURE__ */ getDefaultExportFromCjs(reactExports);
+const React4 = /* @__PURE__ */ getDefaultExportFromCjs(reactExports);
 var jsxRuntime = { exports: {} };
 var reactJsxRuntime_production = {};
 var hasRequiredReactJsxRuntime_production;
@@ -507,7 +507,7 @@ function requireJsxRuntime() {
 }
 var jsxRuntimeExports = requireJsxRuntime();
 export {
-  React as R,
+  React4 as R,
   requireReact as a,
   getAugmentedNamespace as b,
   commonjsGlobal as c,

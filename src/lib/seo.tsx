@@ -86,7 +86,7 @@ export const ORGANIZATION_SCHEMA = {
 // ─── LocalBusiness schema (stronger local/AIO signal than Organization alone) ──
 export const LOCAL_BUSINESS_SCHEMA = {
   '@context': 'https://schema.org',
-  '@type': 'ProfessionalService',
+  '@type': 'LocalBusiness',
   '@id': 'https://toptonmedia.com/#localbusiness',
   name: 'Topton Media',
   image: 'https://i.imgur.com/yuWmsVc.png',
@@ -97,11 +97,21 @@ export const LOCAL_BUSINESS_SCHEMA = {
   address: {
     '@type': 'PostalAddress',
     addressLocality: 'Lagos',
+    addressRegion: 'LA',
+    postalCode: '100001',
     addressCountry: 'NG',
   },
-  areaServed: {
-    '@type': 'Country',
-    name: 'Nigeria',
+  areaServed: [
+    { '@type': 'Country', name: 'Nigeria' },
+    { '@type': 'Country', name: 'United Kingdom' },
+    { '@type': 'Country', name: 'United States' },
+    { '@type': 'Country', name: 'Ghana' },
+    { '@type': 'Country', name: 'Kenya' },
+  ],
+  serviceArea: {
+    '@type': 'AdministrativeArea',
+    name: 'Lagos',
+    areaServed: 'NG',
   },
 }
 
@@ -196,4 +206,21 @@ export function contactPageSchema() {
     url: 'https://toptonmedia.com/contact',
     about: { '@type': 'Organization', name: 'Topton Media', '@id': 'https://toptonmedia.com/#organization' },
   }
+}
+
+
+export function hreflangLinks(path: string) {
+  const regions: Array<{ code: string; slug: string }> = [
+    { code: 'en-ng', slug: '' },
+    { code: 'en-gb', slug: '/en-gb' },
+    { code: 'en-us', slug: '/en-us' },
+    { code: 'en-gh', slug: '/en-gh' },
+    { code: 'en-ke', slug: '/en-ke' },
+  ]
+
+  return regions.map(region => ({
+    rel: 'alternate',
+    hreflang: region.code,
+    href: `https://toptonmedia.com${region.slug}${path}`,
+  }))
 }

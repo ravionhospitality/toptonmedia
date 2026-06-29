@@ -85,7 +85,7 @@ function getResponse() {
 }
 var HEADERS = { TSS_SHELL: "X-TSS_SHELL" };
 async function getStartManifest(matchedRoutes) {
-  const { tsrStartManifest } = await import("../_tanstack-start-manifest_v-ClbdRdeZ.mjs");
+  const { tsrStartManifest } = await import("../_tanstack-start-manifest_v-CEUJ4-Ir.mjs");
   const startManifest = tsrStartManifest();
   let routes = startManifest.routes;
   routes[rootRouteId];
@@ -105,6 +105,14 @@ async function getStartManifest(matchedRoutes) {
   };
 }
 const manifest = {
+  "2806b65d9441842e1bc1fd4ba470e1968483adddf18801f81d9e087af8b99ade": {
+    functionName: "startStripeCheckout_createServerFn_handler",
+    importer: () => import("./payments-api-CTfy1j3Z.mjs")
+  },
+  "2a08494259e3bccda9b55bd0e92379fd7ff341d3be2d3006c83a695bcdb59f79": {
+    functionName: "getProductForCheckout_createServerFn_handler",
+    importer: () => import("./payments-api-CTfy1j3Z.mjs")
+  },
   "666366155183ef065408fe26219b9a60139d48945d1c151071579827d71b8a1e": {
     functionName: "generateSitemap_createServerFn_handler",
     importer: () => import("./sitemap.xml-BeWYhCU5.mjs")
@@ -112,6 +120,18 @@ const manifest = {
   "7d005fe24c1d94f348ad8752740972cf352b754058409c8263b0cbe5b3e05ae5": {
     functionName: "generateRssFeed_createServerFn_handler",
     importer: () => import("./rss.xml-BWnpTUhl.mjs")
+  },
+  "9c2a2005b99ade953ecf3b8fa2201bcdcc14790a56a7020295af81efa81caf90": {
+    functionName: "startPaystackCheckout_createServerFn_handler",
+    importer: () => import("./payments-api-CTfy1j3Z.mjs")
+  },
+  "a75457f4626fc77755c1e0c3c2ff8aeece55fa2835dcd24b8c84390abf6d42f7": {
+    functionName: "verifyOrderPayment_createServerFn_handler",
+    importer: () => import("./payments-api-CTfy1j3Z.mjs")
+  },
+  "fa171125e0ea86771b8f627adca362fb9758f62e6b2e65e08b42e65ec7681e28": {
+    functionName: "createPendingOrder_createServerFn_handler",
+    importer: () => import("./payments-api-CTfy1j3Z.mjs")
   }
 };
 async function getServerFnById(id, access) {
@@ -1351,7 +1371,7 @@ var getBaseManifest = getProdBaseManifest;
 var createEarlyHintsForRequest = createEarlyHintsCollector;
 async function loadEntries() {
   const [routerEntry, startEntry, pluginAdapters] = await Promise.all([
-    import("./router-VSIbab2f.mjs").then((n) => n.r),
+    import("./router-BffqhL8K.mjs").then((n) => n.r),
     import("./start-HYkvq4Ni.mjs"),
     import("./empty-plugin-adapters-BFgPZ6_d.mjs")
   ]);

@@ -13,4 +13,25 @@ export default defineConfig({
     nitro(),
     react(),
   ],
+  build: {
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: true,
+        drop_debugger: true,
+      },
+    },
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'react-vendor': ['react', 'react-dom'],
+          'router': ['@tanstack/react-router', '@tanstack/react-start'],
+          'tiptap': ['@tiptap/react', '@tiptap/starter-kit'],
+        },
+      },
+    },
+  },
+  ssr: {
+    external: ['isbot'],
+  },
 })
