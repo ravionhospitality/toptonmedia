@@ -9,13 +9,13 @@ import { Reveal } from '../lib/useReveal'
 import { SERVICES } from '../lib/services'
 import { SERVICE_ICONS } from '../lib/service-icons'
 import { STATS, HOW_WE_WORK, RETAINER_PACKAGES, CONTACT } from '../lib/site-data'
-import { seoMeta, seoLinks } from '../lib/seo'
+import { seoMeta, seoLinks, LOCAL_BUSINESS_SCHEMA } from '../lib/seo'
 
 export const Route = createFileRoute('/')({
   head: () => ({
     meta: seoMeta({
-      title: 'Topton Media | Growth & Performance Marketing Agency in Lagos, Nigeria',
-      description: 'Topton Media is a performance marketing agency in Lagos that turns ad spend into measurable revenue. Paid media, SEO, funnels, branding, printing and corporate gifting.',
+      title: 'Performance Marketing Agency in Lagos | Topton Media',
+      description: 'Topton Media turns ad spend into measurable revenue for Lagos brands — paid media, SEO, funnels, branding, printing and corporate gifting.',
       path: '/',
     }),
     links: seoLinks('/'),
@@ -27,12 +27,11 @@ export const Route = createFileRoute('/')({
           '@type': 'WebSite',
           name: 'Topton Media',
           url: 'https://toptonmedia.com',
-          potentialAction: {
-            '@type': 'SearchAction',
-            target: 'https://toptonmedia.com/search?q={search_term_string}',
-            'query-input': 'required name=search_term_string',
-          },
         }),
+      },
+      {
+        type: 'application/ld+json',
+        children: JSON.stringify(LOCAL_BUSINESS_SCHEMA),
       },
     ],
   }),
@@ -130,6 +129,8 @@ function HomePage() {
                   <img
                     src={logo.url}
                     alt={logo.name}
+                    width={160}
+                    height={56}
                     className="max-h-14 max-w-[160px] w-auto object-contain grayscale opacity-70 hover:grayscale-0 hover:opacity-100 transition-all duration-300"
                     loading="lazy"
                   />

@@ -26,13 +26,6 @@ export const Route = createRootRoute({
       { name: 'geo.region', content: 'NG-LA' },
     ],
     links: [
-      { rel: 'alternate', hrefLang: 'en-ng', href: 'https://toptonmedia.com/' },
-      { rel: 'alternate', hrefLang: 'en-gb', href: 'https://toptonmedia.com/en-gb' },
-      { rel: 'alternate', hrefLang: 'en-us', href: 'https://toptonmedia.com/en-us' },
-      { rel: 'alternate', hrefLang: 'en-gh', href: 'https://toptonmedia.com/en-gh' },
-      { rel: 'alternate', hrefLang: 'en-ke', href: 'https://toptonmedia.com/en-ke' },
-      { rel: 'alternate', hrefLang: 'en', href: 'https://toptonmedia.com/' },
-      { rel: 'alternate', hrefLang: 'x-default', href: 'https://toptonmedia.com/' },
       { rel: 'preload', href: 'https://i.imgur.com/yuWmsVc.png', as: 'image', fetchPriority: 'high' },
       { rel: 'preload', as: 'style', href: 'https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500&family=Space+Grotesk:wght@500&display=swap' },
       { rel: 'preconnect', href: 'https://fonts.googleapis.com' },

@@ -11,6 +11,14 @@ const SERVICES = [
 
 const STATIC_PAGES = ['', 'about', 'services', 'case-studies', 'team', 'blog', 'contact']
 
+const LANDING_PAGES = [
+  'advertising-agency-lagos',
+  'advertising-company-lagos',
+  'advertising-agencies-in-ikeja',
+  'b2b-lead-generation-agency-in-nigeria',
+  'marketing-agency-nigeria',
+]
+
 const generateSitemap = createServerFn({ method: 'GET' }).handler(async () => {
   const { data: posts } = await supabase
     .from('blog_posts')
@@ -24,6 +32,9 @@ const generateSitemap = createServerFn({ method: 'GET' }).handler(async () => {
   }
   for (const s of SERVICES) {
     urls.push({ loc: `https://toptonmedia.com/services/${s}`, priority: '0.8' })
+  }
+  for (const l of LANDING_PAGES) {
+    urls.push({ loc: `https://toptonmedia.com/${l}`, priority: '0.8' })
   }
   for (const post of posts ?? []) {
     urls.push({
@@ -46,7 +57,7 @@ const generateSitemap = createServerFn({ method: 'GET' }).handler(async () => {
 </urlset>`
 })
 
-export const Route = createFileRoute('/sitemap/xml')({
+export const Route = createFileRoute('/sitemap.xml')({
   loader: async () => {
     const xml = await generateSitemap()
     return new Response(xml, {

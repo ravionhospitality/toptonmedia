@@ -1,6 +1,22 @@
 import { createFileRoute } from '@tanstack/react-router'
+import { seoMeta, seoLinks, breadcrumbSchema } from '../lib/seo'
 
 export const Route = createFileRoute('/advertising-agencies-in-ikeja')({
+  head: () => ({
+    meta: seoMeta({
+      title: 'Advertising Agencies in Ikeja | Local Expertise — Topton Media',
+      description: 'Topton Media specializes in growing Ikeja businesses. We know your market, your competition, your customers, and your payment systems.',
+      path: '/advertising-agencies-in-ikeja',
+    }),
+    links: seoLinks('/advertising-agencies-in-ikeja'),
+    scripts: [{
+      type: 'application/ld+json',
+      children: JSON.stringify(breadcrumbSchema([
+        { name: 'Home', url: 'https://toptonmedia.com' },
+        { name: 'Advertising Agencies in Ikeja', url: 'https://toptonmedia.com/advertising-agencies-in-ikeja' },
+      ])),
+    }],
+  }),
   component: AdvertisingAgenciesIkeja,
 })
 

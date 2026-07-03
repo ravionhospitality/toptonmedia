@@ -51,7 +51,7 @@ const generateRssFeed = createServerFn({ method: 'GET' }).handler(async () => {
   return xml
 })
 
-export const Route = createFileRoute('/rss/xml')({
+export const Route = createFileRoute('/rss.xml')({
   loader: async () => {
     const xml = await generateRssFeed()
     return new Response(xml, {

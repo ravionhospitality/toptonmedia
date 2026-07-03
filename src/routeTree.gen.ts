@@ -10,7 +10,9 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TeamRouteImport } from './routes/team'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ServicesRouteImport } from './routes/services'
+import { Route as RssDotxmlRouteImport } from './routes/rss[.]xml'
 import { Route as MarketingAgencyNigeriaRouteImport } from './routes/marketing-agency-nigeria'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as CaseStudiesRouteImport } from './routes/case-studies'
@@ -24,10 +26,8 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ShopIndexRouteImport } from './routes/shop/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
-import { Route as SitemapXmlRouteImport } from './routes/sitemap.xml'
 import { Route as ShopSlugRouteImport } from './routes/shop/$slug'
 import { Route as ServicesSlugRouteImport } from './routes/services/$slug'
-import { Route as RssXmlRouteImport } from './routes/rss.xml'
 import { Route as OrderConfirmationRouteImport } from './routes/order/confirmation'
 import { Route as BlogSlugRouteImport } from './routes/blog/$slug'
 import { Route as AdminBlogNewRouteImport } from './routes/admin/blog/new'
@@ -38,9 +38,19 @@ const TeamRoute = TeamRouteImport.update({
   path: '/team',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ServicesRoute = ServicesRouteImport.update({
   id: '/services',
   path: '/services',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RssDotxmlRoute = RssDotxmlRouteImport.update({
+  id: '/rss.xml',
+  path: '/rss.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MarketingAgencyNigeriaRoute = MarketingAgencyNigeriaRouteImport.update({
@@ -110,11 +120,6 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   path: '/admin/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SitemapXmlRoute = SitemapXmlRouteImport.update({
-  id: '/sitemap/xml',
-  path: '/sitemap/xml',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ShopSlugRoute = ShopSlugRouteImport.update({
   id: '/shop/$slug',
   path: '/shop/$slug',
@@ -124,11 +129,6 @@ const ServicesSlugRoute = ServicesSlugRouteImport.update({
   id: '/$slug',
   path: '/$slug',
   getParentRoute: () => ServicesRoute,
-} as any)
-const RssXmlRoute = RssXmlRouteImport.update({
-  id: '/rss/xml',
-  path: '/rss/xml',
-  getParentRoute: () => rootRouteImport,
 } as any)
 const OrderConfirmationRoute = OrderConfirmationRouteImport.update({
   id: '/order/confirmation',
@@ -163,14 +163,14 @@ export interface FileRoutesByFullPath {
   '/case-studies': typeof CaseStudiesRoute
   '/contact': typeof ContactRoute
   '/marketing-agency-nigeria': typeof MarketingAgencyNigeriaRoute
+  '/rss.xml': typeof RssDotxmlRoute
   '/services': typeof ServicesRouteWithChildren
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/team': typeof TeamRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/order/confirmation': typeof OrderConfirmationRoute
-  '/rss/xml': typeof RssXmlRoute
   '/services/$slug': typeof ServicesSlugRoute
   '/shop/$slug': typeof ShopSlugRoute
-  '/sitemap/xml': typeof SitemapXmlRoute
   '/admin/': typeof AdminIndexRoute
   '/shop/': typeof ShopIndexRoute
   '/admin/blog/$id': typeof AdminBlogIdRoute
@@ -188,14 +188,14 @@ export interface FileRoutesByTo {
   '/case-studies': typeof CaseStudiesRoute
   '/contact': typeof ContactRoute
   '/marketing-agency-nigeria': typeof MarketingAgencyNigeriaRoute
+  '/rss.xml': typeof RssDotxmlRoute
   '/services': typeof ServicesRouteWithChildren
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/team': typeof TeamRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/order/confirmation': typeof OrderConfirmationRoute
-  '/rss/xml': typeof RssXmlRoute
   '/services/$slug': typeof ServicesSlugRoute
   '/shop/$slug': typeof ShopSlugRoute
-  '/sitemap/xml': typeof SitemapXmlRoute
   '/admin': typeof AdminIndexRoute
   '/shop': typeof ShopIndexRoute
   '/admin/blog/$id': typeof AdminBlogIdRoute
@@ -214,14 +214,14 @@ export interface FileRoutesById {
   '/case-studies': typeof CaseStudiesRoute
   '/contact': typeof ContactRoute
   '/marketing-agency-nigeria': typeof MarketingAgencyNigeriaRoute
+  '/rss.xml': typeof RssDotxmlRoute
   '/services': typeof ServicesRouteWithChildren
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/team': typeof TeamRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/order/confirmation': typeof OrderConfirmationRoute
-  '/rss/xml': typeof RssXmlRoute
   '/services/$slug': typeof ServicesSlugRoute
   '/shop/$slug': typeof ShopSlugRoute
-  '/sitemap/xml': typeof SitemapXmlRoute
   '/admin/': typeof AdminIndexRoute
   '/shop/': typeof ShopIndexRoute
   '/admin/blog/$id': typeof AdminBlogIdRoute
@@ -241,14 +241,14 @@ export interface FileRouteTypes {
     | '/case-studies'
     | '/contact'
     | '/marketing-agency-nigeria'
+    | '/rss.xml'
     | '/services'
+    | '/sitemap.xml'
     | '/team'
     | '/blog/$slug'
     | '/order/confirmation'
-    | '/rss/xml'
     | '/services/$slug'
     | '/shop/$slug'
-    | '/sitemap/xml'
     | '/admin/'
     | '/shop/'
     | '/admin/blog/$id'
@@ -266,14 +266,14 @@ export interface FileRouteTypes {
     | '/case-studies'
     | '/contact'
     | '/marketing-agency-nigeria'
+    | '/rss.xml'
     | '/services'
+    | '/sitemap.xml'
     | '/team'
     | '/blog/$slug'
     | '/order/confirmation'
-    | '/rss/xml'
     | '/services/$slug'
     | '/shop/$slug'
-    | '/sitemap/xml'
     | '/admin'
     | '/shop'
     | '/admin/blog/$id'
@@ -291,14 +291,14 @@ export interface FileRouteTypes {
     | '/case-studies'
     | '/contact'
     | '/marketing-agency-nigeria'
+    | '/rss.xml'
     | '/services'
+    | '/sitemap.xml'
     | '/team'
     | '/blog/$slug'
     | '/order/confirmation'
-    | '/rss/xml'
     | '/services/$slug'
     | '/shop/$slug'
-    | '/sitemap/xml'
     | '/admin/'
     | '/shop/'
     | '/admin/blog/$id'
@@ -317,12 +317,12 @@ export interface RootRouteChildren {
   CaseStudiesRoute: typeof CaseStudiesRoute
   ContactRoute: typeof ContactRoute
   MarketingAgencyNigeriaRoute: typeof MarketingAgencyNigeriaRoute
+  RssDotxmlRoute: typeof RssDotxmlRoute
   ServicesRoute: typeof ServicesRouteWithChildren
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TeamRoute: typeof TeamRoute
   OrderConfirmationRoute: typeof OrderConfirmationRoute
-  RssXmlRoute: typeof RssXmlRoute
   ShopSlugRoute: typeof ShopSlugRoute
-  SitemapXmlRoute: typeof SitemapXmlRoute
   AdminIndexRoute: typeof AdminIndexRoute
   ShopIndexRoute: typeof ShopIndexRoute
   AdminBlogIdRoute: typeof AdminBlogIdRoute
@@ -338,11 +338,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TeamRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/services': {
       id: '/services'
       path: '/services'
       fullPath: '/services'
       preLoaderRoute: typeof ServicesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/rss.xml': {
+      id: '/rss.xml'
+      path: '/rss.xml'
+      fullPath: '/rss.xml'
+      preLoaderRoute: typeof RssDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/marketing-agency-nigeria': {
@@ -436,13 +450,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/sitemap/xml': {
-      id: '/sitemap/xml'
-      path: '/sitemap/xml'
-      fullPath: '/sitemap/xml'
-      preLoaderRoute: typeof SitemapXmlRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/shop/$slug': {
       id: '/shop/$slug'
       path: '/shop/$slug'
@@ -456,13 +463,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/services/$slug'
       preLoaderRoute: typeof ServicesSlugRouteImport
       parentRoute: typeof ServicesRoute
-    }
-    '/rss/xml': {
-      id: '/rss/xml'
-      path: '/rss/xml'
-      fullPath: '/rss/xml'
-      preLoaderRoute: typeof RssXmlRouteImport
-      parentRoute: typeof rootRouteImport
     }
     '/order/confirmation': {
       id: '/order/confirmation'
@@ -529,12 +529,12 @@ const rootRouteChildren: RootRouteChildren = {
   CaseStudiesRoute: CaseStudiesRoute,
   ContactRoute: ContactRoute,
   MarketingAgencyNigeriaRoute: MarketingAgencyNigeriaRoute,
+  RssDotxmlRoute: RssDotxmlRoute,
   ServicesRoute: ServicesRouteWithChildren,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   TeamRoute: TeamRoute,
   OrderConfirmationRoute: OrderConfirmationRoute,
-  RssXmlRoute: RssXmlRoute,
   ShopSlugRoute: ShopSlugRoute,
-  SitemapXmlRoute: SitemapXmlRoute,
   AdminIndexRoute: AdminIndexRoute,
   ShopIndexRoute: ShopIndexRoute,
   AdminBlogIdRoute: AdminBlogIdRoute,

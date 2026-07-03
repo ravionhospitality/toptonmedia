@@ -1,6 +1,22 @@
 import { createFileRoute } from '@tanstack/react-router'
+import { seoMeta, seoLinks, breadcrumbSchema } from '../lib/seo'
 
 export const Route = createFileRoute('/b2b-lead-generation-agency-in-nigeria')({
+  head: () => ({
+    meta: seoMeta({
+      title: 'B2B Lead Generation Agency in Nigeria | Qualified Leads — Topton Media',
+      description: 'Topton Media generates real, qualified B2B leads that convert to deals for Nigerian companies — not just clicks or form fills.',
+      path: '/b2b-lead-generation-agency-in-nigeria',
+    }),
+    links: seoLinks('/b2b-lead-generation-agency-in-nigeria'),
+    scripts: [{
+      type: 'application/ld+json',
+      children: JSON.stringify(breadcrumbSchema([
+        { name: 'Home', url: 'https://toptonmedia.com' },
+        { name: 'B2B Lead Generation Agency Nigeria', url: 'https://toptonmedia.com/b2b-lead-generation-agency-in-nigeria' },
+      ])),
+    }],
+  }),
   component: B2BLeadGeneration,
 })
 

@@ -207,20 +207,3 @@ export function contactPageSchema() {
     about: { '@type': 'Organization', name: 'Topton Media', '@id': 'https://toptonmedia.com/#organization' },
   }
 }
-
-
-export function hreflangLinks(path: string) {
-  const regions: Array<{ code: string; slug: string }> = [
-    { code: 'en-ng', slug: '' },
-    { code: 'en-gb', slug: '/en-gb' },
-    { code: 'en-us', slug: '/en-us' },
-    { code: 'en-gh', slug: '/en-gh' },
-    { code: 'en-ke', slug: '/en-ke' },
-  ]
-
-  return regions.map(region => ({
-    rel: 'alternate',
-    hreflang: region.code,
-    href: `https://toptonmedia.com${region.slug}${path}`,
-  }))
-}

@@ -1,6 +1,22 @@
 import { createFileRoute } from '@tanstack/react-router'
+import { seoMeta, seoLinks, breadcrumbSchema } from '../lib/seo'
 
 export const Route = createFileRoute('/advertising-company-lagos')({
+  head: () => ({
+    meta: seoMeta({
+      title: 'Advertising Company in Lagos | Full-Service Growth — Topton Media',
+      description: 'Topton Media is an advertising company in Lagos offering performance marketing, brand campaigns, paid media, and creative services with transparent reporting.',
+      path: '/advertising-company-lagos',
+    }),
+    links: seoLinks('/advertising-company-lagos'),
+    scripts: [{
+      type: 'application/ld+json',
+      children: JSON.stringify(breadcrumbSchema([
+        { name: 'Home', url: 'https://toptonmedia.com' },
+        { name: 'Advertising Company Lagos', url: 'https://toptonmedia.com/advertising-company-lagos' },
+      ])),
+    }],
+  }),
   component: AdvertisingCompanyLagos,
 })
 

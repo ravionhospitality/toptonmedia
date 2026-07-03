@@ -1,6 +1,22 @@
 import { createFileRoute } from '@tanstack/react-router'
+import { seoMeta, seoLinks, breadcrumbSchema } from '../lib/seo'
 
 export const Route = createFileRoute('/marketing-agency-nigeria')({
+  head: () => ({
+    meta: seoMeta({
+      title: 'Performance Marketing Agency in Nigeria | Revenue-Focused — Topton Media',
+      description: 'Topton Media builds revenue machines for ambitious brands across Nigeria, Ghana, Kenya, the UK, and the US — not just campaigns.',
+      path: '/marketing-agency-nigeria',
+    }),
+    links: seoLinks('/marketing-agency-nigeria'),
+    scripts: [{
+      type: 'application/ld+json',
+      children: JSON.stringify(breadcrumbSchema([
+        { name: 'Home', url: 'https://toptonmedia.com' },
+        { name: 'Performance Marketing Agency Nigeria', url: 'https://toptonmedia.com/marketing-agency-nigeria' },
+      ])),
+    }],
+  }),
   component: MarketingAgencyNigeria,
 })
 
