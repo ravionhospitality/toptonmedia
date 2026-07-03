@@ -207,6 +207,7 @@ function ApplyPage() {
     await supabase.from('contact_submissions').insert({
       name: finalAnswers.name ?? 'Unknown',
       email: finalAnswers.email ?? '',
+      phone: finalAnswers.phone ?? '',
       message: JSON.stringify({ answers: finalAnswers, report: diagnosticReport }, null, 2),
       service: finalAnswers.goal ?? 'Qualifier form',
       budget: finalAnswers.budget ?? '',

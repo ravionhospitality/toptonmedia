@@ -54,6 +54,31 @@ function blankService(): Omit<ServiceRow,'id'> {
 
 function slugify(t:string){ return t.toLowerCase().trim().replace(/[^a-z0-9\s-]/g,'').replace(/\s+/g,'-').replace(/-+/g,'-') }
 
+type ProductPlanRow = { label: string; price_ngn: number; price_usd: number; installments: number }
+
+type ProductRow = {
+  id: string; slug: string; name: string;
+  product_type: 'course' | 'tool' | 'service';
+  category: string; short_description: string; description_html: string;
+  card_image: string; hero_image: string;
+  price_ngn: number; price_usd: number;
+  compare_at_price_ngn: number | null; compare_at_price_usd: number | null;
+  plans: ProductPlanRow[]; rating: number | null; review_count: number;
+  featured: boolean; active: boolean;
+}
+
+function blankProduct(): Omit<ProductRow,'id'> {
+  return {
+    slug:'', name:'', product_type:'course', category:'',
+    short_description:'', description_html:'',
+    card_image:'', hero_image:'',
+    price_ngn:0, price_usd:0,
+    compare_at_price_ngn:null, compare_at_price_usd:null,
+    plans:[], rating:null, review_count:0,
+    featured:false, active:true,
+  }
+}
+
 function downloadCSV(rows: any[]) {
   if (!rows.length) { alert('No submissions to export.'); return }
   const cols = ['name','email','phone','company','service','budget','status','source','follow_up_date','notes','message','created_at']
@@ -73,10 +98,11 @@ function AdminPage() {
   const [authed, setAuthed] = useState(false)
   const [authChecked, setAuthChecked] = useState(false)
   const [pw, setPw] = useState('')
-  const [tab, setTab] = useState<'submissions'|'blog'|'services'|'analytics'>('submissions')
+  const [tab, setTab] = useState<'submissions'|'blog'|'services'|'shop'|'analytics'>('submissions')
   const [submissions, setSubmissions] = useState<any[]>([])
   const [posts, setPosts] = useState<any[]>([])
   const [services, setServices] = useState<ServiceRow[]>([])
+  const [products, setProducts] = useState<ProductRow[]>([])
   const [loading, setLoading] = useState(false)
   const [statusFilter, setStatusFilter] = useState<'all'|Status>('all')
   const [expandedId, setExpandedId] = useState<string|null>(null)
@@ -90,6 +116,12 @@ function AdminPage() {
   const [serviceSaved, setServiceSaved] = useState(false)
   const [seedingServices, setSeedingServices] = useState(false)
   const [seedMessage, setSeedMessage] = useState('')
+  // product editor
+  const [editingProduct, setEditingProduct] = useState<ProductRow|null>(null)
+  const [productForm, setProductForm] = useState<Omit<ProductRow,'id'>>(blankProduct())
+  const [productSaving, setProductSaving] = useState(false)
+  const [productError, setProductError] = useState('')
+  const [productSaved, setProductSaved] = useState(false)
   const [gscData, setGscData] = useState<any>(null)
   const [gscLoading, setGscLoading] = useState(false)
   const [gscDays, setGscDays] = useState(7)
@@ -142,6 +174,14 @@ function AdminPage() {
       }).catch(() => { setServices([]); setLoading(false) })
   }
 
+  async function loadProducts() {
+    setLoading(true); setFetchError('')
+    const { data, error } = await supabase.from('products').select('*').order('created_at',{ascending:false})
+    if (error) setFetchError(error.message)
+    setProducts((data as ProductRow[]) ?? [])
+    setLoading(false)
+  }
+
   async function seedServices() {
     setSeedingServices(true)
     setServiceError('')
@@ -185,6 +225,8 @@ function AdminPage() {
           if (error) setFetchError(error.message)
           setPosts(data??[]); setLoading(false)
         }).catch(err => { setFetchError(String(err)); setLoading(false) })
+    } else if (tab === 'shop') {
+      loadProducts()
     } else {
       loadServices()
     }
@@ -283,6 +325,58 @@ function AdminPage() {
 
   function sfUp<K extends keyof typeof serviceForm>(key:K, val: typeof serviceForm[K]) {
     setServiceForm(f => ({...f,[key]:val}))
+  }
+
+  // Product CRUD
+  function openNewProduct() {
+    setEditingProduct({id:'new',...blankProduct()} as ProductRow)
+    setProductForm(blankProduct())
+    setProductError('')
+    setProductSaved(false)
+  }
+  function openEditProduct(p:ProductRow) {
+    setEditingProduct(p)
+    setProductForm({
+      slug:p.slug, name:p.name, product_type:p.product_type, category:p.category??'',
+      short_description:p.short_description??'', description_html:p.description_html??'',
+      card_image:p.card_image??'', hero_image:p.hero_image??'',
+      price_ngn:p.price_ngn??0, price_usd:p.price_usd??0,
+      compare_at_price_ngn:p.compare_at_price_ngn, compare_at_price_usd:p.compare_at_price_usd,
+      plans:Array.isArray(p.plans)?[...p.plans]:[], rating:p.rating, review_count:p.review_count??0,
+      featured:p.featured??false, active:p.active??true,
+    })
+    setProductError('')
+    setProductSaved(false)
+  }
+  async function saveProduct() {
+    if (!productForm.name||!productForm.slug) { setProductError('Name and slug are required'); return }
+    setProductSaving(true)
+    setProductError('')
+    setProductSaved(false)
+    const payload = { ...productForm, slug: slugify(productForm.slug) }
+    if (editingProduct?.id==='new') {
+      const {error} = await supabase.from('products').insert(payload)
+      if (error) { setProductError(error.message); setProductSaving(false); return }
+    } else {
+      const {error} = await supabase.from('products').update(payload).eq('id',editingProduct!.id)
+      if (error) { setProductError(error.message); setProductSaving(false); return }
+    }
+    setProductSaving(false)
+    setProductSaved(true)
+    loadProducts()
+  }
+  async function deleteProduct(id:string) {
+    if (!confirm('Delete this product permanently?')) return
+    await supabase.from('products').delete().eq('id',id)
+    setProducts(list => list.filter(p => p.id!==id))
+  }
+  async function toggleProductActive(p:ProductRow) {
+    await supabase.from('products').update({active:!p.active}).eq('id',p.id)
+    setProducts(list => list.map(x => x.id===p.id?{...x,active:!p.active}:x))
+  }
+
+  function pfUp<K extends keyof typeof productForm>(key:K, val: typeof productForm[K]) {
+    setProductForm(f => ({...f,[key]:val}))
   }
 
   const filteredSubmissions = statusFilter==='all' ? submissions : submissions.filter(s=>(s.status??'new')===statusFilter)
@@ -413,6 +507,81 @@ function AdminPage() {
     </div>
   )
 
+  // ── Product editor modal ──
+  if (editingProduct) return (
+    <div className="min-h-screen bg-charcoal text-ivory">
+      <div className="max-w-4xl mx-auto px-6 py-10">
+        <div className="flex items-center justify-between mb-8">
+          <h1 className="font-display text-2xl font-bold">{editingProduct.id==='new'?'New Product':'Edit Product'}</h1>
+          <button onClick={()=>setEditingProduct(null)} className="text-sm text-ivory/50 hover:text-ivory">← Back to Admin</button>
+        </div>
+        {productError && <div className="mb-6 bg-red-900/30 border border-red-700/40 rounded-xl px-5 py-3 text-sm text-red-300">⚠ {productError}</div>}
+        {productSaved && !productError && <div className="mb-6 bg-green-900/30 border border-green-700/40 rounded-xl px-5 py-3 text-sm text-green-300">✓ Saved successfully.</div>}
+        <div className="space-y-6">
+          <div className="grid grid-cols-2 gap-5">
+            <SField label="Product Name *"><input value={productForm.name} onChange={e=>{pfUp('name',e.target.value);if(!productForm.slug||editingProduct.id==='new')pfUp('slug',slugify(e.target.value))}} className="admin-input" /></SField>
+            <SField label="Slug *"><input value={productForm.slug} onChange={e=>pfUp('slug',slugify(e.target.value))} className="admin-input" /></SField>
+          </div>
+          <div className="grid grid-cols-2 gap-5">
+            <SField label="Type">
+              <select value={productForm.product_type} onChange={e=>pfUp('product_type',e.target.value as ProductRow['product_type'])} className="admin-input">
+                <option value="course">Course</option>
+                <option value="tool">Software / Tool</option>
+                <option value="service">Service</option>
+              </select>
+            </SField>
+            <SField label="Category"><input value={productForm.category} onChange={e=>pfUp('category',e.target.value)} className="admin-input" placeholder="e.g. Marketing Courses" /></SField>
+          </div>
+          <SField label="Short Description (shown on shop cards)"><textarea value={productForm.short_description} onChange={e=>pfUp('short_description',e.target.value)} rows={2} className="admin-input" /></SField>
+          <SField label="Full Description (HTML allowed — shown on product page)"><textarea value={productForm.description_html} onChange={e=>pfUp('description_html',e.target.value)} rows={8} className="admin-input font-mono text-xs" placeholder="<p>What the buyer gets…</p>" /></SField>
+          <ImageUpload value={productForm.card_image} onChange={v=>pfUp('card_image',v)} label="Card Image (square, used on Shop listing)" />
+          <ImageUpload value={productForm.hero_image} onChange={v=>pfUp('hero_image',v)} label="Hero Image (used on product detail page)" />
+          <div className="grid grid-cols-2 gap-5">
+            <SField label="Price ₦ (NGN)"><input type="number" value={productForm.price_ngn} onChange={e=>pfUp('price_ngn',Number(e.target.value)||0)} className="admin-input" /></SField>
+            <SField label="Price $ (USD)"><input type="number" step="0.01" value={productForm.price_usd} onChange={e=>pfUp('price_usd',Number(e.target.value)||0)} className="admin-input" /></SField>
+          </div>
+          <div className="grid grid-cols-2 gap-5">
+            <SField label="Compare-at Price ₦ (optional — shows as strikethrough)"><input type="number" value={productForm.compare_at_price_ngn??''} onChange={e=>pfUp('compare_at_price_ngn',e.target.value===''?null:Number(e.target.value))} className="admin-input" /></SField>
+            <SField label="Compare-at Price $ (optional)"><input type="number" step="0.01" value={productForm.compare_at_price_usd??''} onChange={e=>pfUp('compare_at_price_usd',e.target.value===''?null:Number(e.target.value))} className="admin-input" /></SField>
+          </div>
+          <SField label="Installment Plans (optional)">
+            {productForm.plans.map((plan,i)=>(
+              <div key={i} className="grid grid-cols-[2fr_1fr_1fr_1fr_auto] gap-2 mb-2 items-center">
+                <input value={plan.label} onChange={e=>{ const arr=[...productForm.plans]; arr[i]={...arr[i],label:e.target.value}; pfUp('plans',arr) }} className="admin-input" placeholder="Label e.g. 2 payments" />
+                <input type="number" value={plan.price_ngn} onChange={e=>{ const arr=[...productForm.plans]; arr[i]={...arr[i],price_ngn:Number(e.target.value)||0}; pfUp('plans',arr) }} className="admin-input" placeholder="₦ per payment" />
+                <input type="number" step="0.01" value={plan.price_usd} onChange={e=>{ const arr=[...productForm.plans]; arr[i]={...arr[i],price_usd:Number(e.target.value)||0}; pfUp('plans',arr) }} className="admin-input" placeholder="$ per payment" />
+                <input type="number" value={plan.installments} onChange={e=>{ const arr=[...productForm.plans]; arr[i]={...arr[i],installments:Number(e.target.value)||1}; pfUp('plans',arr) }} className="admin-input" placeholder="# payments" />
+                <button onClick={()=>pfUp('plans',productForm.plans.filter((_,j)=>j!==i))} className="text-red-400 text-xs px-2">✕</button>
+              </div>
+            ))}
+            <button onClick={()=>pfUp('plans',[...productForm.plans,{label:'',price_ngn:0,price_usd:0,installments:2}])} className="text-xs text-gold hover:underline">+ Add installment plan</button>
+          </SField>
+          <div className="grid grid-cols-2 gap-5">
+            <SField label="Rating (0–5, optional)"><input type="number" step="0.01" min="0" max="5" value={productForm.rating??''} onChange={e=>pfUp('rating',e.target.value===''?null:Number(e.target.value))} className="admin-input" /></SField>
+            <SField label="Review Count"><input type="number" value={productForm.review_count} onChange={e=>pfUp('review_count',Number(e.target.value)||0)} className="admin-input" /></SField>
+          </div>
+          <div className="flex gap-8">
+            <label className="flex items-center gap-2 text-sm text-ivory/70 cursor-pointer">
+              <input type="checkbox" checked={productForm.active} onChange={e=>pfUp('active',e.target.checked)} />
+              Active (visible in shop)
+            </label>
+            <label className="flex items-center gap-2 text-sm text-ivory/70 cursor-pointer">
+              <input type="checkbox" checked={productForm.featured} onChange={e=>pfUp('featured',e.target.checked)} />
+              Featured
+            </label>
+          </div>
+          <div className="flex gap-3 pt-2">
+            <button onClick={saveProduct} disabled={productSaving} className="px-6 py-3 rounded-full bg-gradient-to-r from-gold to-gold-bright text-charcoal font-semibold disabled:opacity-50">
+              {productSaving?'Saving…':'Save Product'}
+            </button>
+            <button onClick={()=>setEditingProduct(null)} className="px-6 py-3 rounded-full border border-ivory/20 text-ivory/70">Cancel</button>
+          </div>
+        </div>
+      </div>
+      <style>{`.admin-input { width: 100%; background: #1A0E10; border: 1px solid rgba(201,168,76,0.2); border-radius: 0.75rem; padding: 0.7rem 1rem; color: #FAF6F0; font-size: 0.9rem; } .admin-input:focus { outline: none; border-color: #C9A84C; }`}</style>
+    </div>
+  )
+
   return (
     <div className="min-h-screen bg-charcoal text-ivory">
       <div className="max-w-6xl mx-auto px-6 py-10">
@@ -425,10 +594,10 @@ function AdminPage() {
         </div>
 
         <div className="flex gap-3 mb-8 items-center flex-wrap">
-          {(['submissions','blog','services','analytics'] as const).map(t => (
+          {(['submissions','blog','services','shop','analytics'] as const).map(t => (
             <button key={t} onClick={()=>setTab(t)}
               className={`px-5 py-2 rounded-full text-sm font-semibold transition-colors ${tab===t?'bg-gold text-charcoal':'border border-gold/30 text-ivory/70 hover:border-gold'}`}>
-              {t==='submissions'?'Contact Submissions':t==='blog'?'Blog Posts':t==='services'?'Services':'Analytics'}
+              {t==='submissions'?'Contact Submissions':t==='blog'?'Blog Posts':t==='services'?'Services':t==='shop'?'Shop Products':'Analytics'}
             </button>
           ))}
           {tab==='submissions'&&overdueCount>0&&(
@@ -449,6 +618,11 @@ function AdminPage() {
           {tab==='services'&&(
             <button onClick={openNewService} className="ml-auto px-5 py-2 rounded-full text-sm font-semibold bg-maroon text-ivory hover:opacity-90 transition-opacity">
               + New Service
+            </button>
+          )}
+          {tab==='shop'&&(
+            <button onClick={openNewProduct} className="ml-auto px-5 py-2 rounded-full text-sm font-semibold bg-maroon text-ivory hover:opacity-90 transition-opacity">
+              + New Product
             </button>
           )}
         </div>
@@ -584,6 +758,26 @@ function AdminPage() {
                 </div>
               ))
             )}
+          </div>
+        )}
+
+        {!loading&&tab==='shop'&&(
+          <div className="space-y-3">
+            {products.length===0&&<p className="text-ivory/40">No products yet. Click "+ New Product" to add your first one.</p>}
+            {products.map(p=>(
+              <div key={p.id} className="bg-cardbrown border border-gold/10 rounded-xl px-6 py-4 flex items-center gap-4 flex-wrap">
+                <div className="flex-1 min-w-0">
+                  <p className="font-semibold text-ivory">{p.name}</p>
+                  <p className="text-xs text-ivory/40 mt-0.5 capitalize">{p.product_type==='tool'?'Software':p.product_type}{p.category?` · ${p.category}`:''} · /shop/{p.slug} · ₦{(p.price_ngn??0).toLocaleString('en-NG')}</p>
+                </div>
+                <span className={`px-3 py-1 rounded-full text-xs font-semibold ${p.active?'bg-green-900/40 text-green-400':'bg-sand/20 text-ivory/50'}`}>{p.active?'Active':'Hidden'}</span>
+                {p.featured&&<span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-gold/20 text-gold">Featured</span>}
+                <button onClick={()=>toggleProductActive(p)} className="text-xs px-3 py-1.5 rounded-lg border border-gold/30 text-gold hover:border-gold transition-colors">{p.active?'Hide from shop':'Show in shop'}</button>
+                <a href={`/shop/${p.slug}`} target="_blank" rel="noopener noreferrer" className="text-xs px-3 py-1.5 rounded-lg border border-gold/30 text-gold hover:border-gold transition-colors">View Live</a>
+                <button onClick={()=>openEditProduct(p)} className="text-xs px-3 py-1.5 rounded-lg border border-ivory/20 text-ivory/60 hover:border-ivory/40 transition-colors">Edit</button>
+                <button onClick={()=>deleteProduct(p.id)} className="text-xs px-3 py-1.5 rounded-lg border border-red-900/40 text-red-400 hover:border-red-400 transition-colors">Delete</button>
+              </div>
+            ))}
           </div>
         )}
 
