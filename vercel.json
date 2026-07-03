@@ -231,6 +231,26 @@
       "permanent": true
     },
     {
+      "source": "/team/",
+      "destination": "/team",
+      "permanent": true
+    },
+    {
+      "source": "/blog/",
+      "destination": "/blog",
+      "permanent": true
+    },
+    {
+      "source": "/case-studies/",
+      "destination": "/case-studies",
+      "permanent": true
+    },
+    {
+      "source": "/apply/",
+      "destination": "/apply",
+      "permanent": true
+    },
+    {
       "source": "/content-marketing-world-2024-trends-and-pattern",
       "destination": "/blog",
       "permanent": true
