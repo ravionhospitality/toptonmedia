@@ -141,18 +141,153 @@
       "permanent": true
     },
     {
-      "source": "/2025/02/14/",
+      "source": "/:year(\\d{4})/:month(\\d{2})/:day(\\d{2})",
       "destination": "/blog",
       "permanent": true
     },
     {
-      "source": "/2025/02/24/",
+      "source": "/:year(\\d{4})/:month(\\d{2})/:day(\\d{2})/",
       "destination": "/blog",
       "permanent": true
     },
     {
-      "source": "/2024/03/03/",
+      "source": "/tag/(.*)",
       "destination": "/blog",
+      "permanent": true
+    },
+    {
+      "source": "/product-tag/(.*)",
+      "destination": "/services/training-workshops",
+      "permanent": true
+    },
+    {
+      "source": "/product-category/training",
+      "destination": "/services/training-workshops",
+      "permanent": true
+    },
+    {
+      "source": "/product-category/training/",
+      "destination": "/services/training-workshops",
+      "permanent": true
+    },
+    {
+      "source": "/product-category/(.*)",
+      "destination": "/shop",
+      "permanent": true
+    },
+    {
+      "source": "/corporate-training",
+      "destination": "/services/training-workshops",
+      "permanent": true
+    },
+    {
+      "source": "/corporate-training/",
+      "destination": "/services/training-workshops",
+      "permanent": true
+    },
+    {
+      "source": "/projects",
+      "destination": "/case-studies",
+      "permanent": true
+    },
+    {
+      "source": "/projects/",
+      "destination": "/case-studies",
+      "permanent": true
+    },
+    {
+      "source": "/service",
+      "destination": "/services",
+      "permanent": true
+    },
+    {
+      "source": "/services/",
+      "destination": "/services",
+      "permanent": true
+    },
+    {
+      "source": "/ppc",
+      "destination": "/services/performance-marketing",
+      "permanent": true
+    },
+    {
+      "source": "/ppc/",
+      "destination": "/services/performance-marketing",
+      "permanent": true
+    },
+    {
+      "source": "/contact-us",
+      "destination": "/contact",
+      "permanent": true
+    },
+    {
+      "source": "/contact/",
+      "destination": "/contact",
+      "permanent": true
+    },
+    {
+      "source": "/about/",
+      "destination": "/about",
+      "permanent": true
+    },
+    {
+      "source": "/content-marketing-world-2024-trends-and-pattern",
+      "destination": "/blog",
+      "permanent": true
+    },
+    {
+      "source": "/content-marketing-world-2024-trends-and-pattern/",
+      "destination": "/blog",
+      "permanent": true
+    },
+    {
+      "source": "/why-saas-companies-need-content-marketing-in-2024",
+      "destination": "/blog",
+      "permanent": true
+    },
+    {
+      "source": "/why-saas-companies-need-content-marketing-in-2024/",
+      "destination": "/blog",
+      "permanent": true
+    },
+    {
+      "source": "/content-marketing-for-saas-ultimate-guide",
+      "destination": "/blog",
+      "permanent": true
+    },
+    {
+      "source": "/content-marketing-for-saas-ultimate-guide/",
+      "destination": "/blog",
+      "permanent": true
+    },
+    {
+      "source": "/saas-content-marketing-agency-guide",
+      "destination": "/blog",
+      "permanent": true
+    },
+    {
+      "source": "/saas-content-marketing-agency-guide/",
+      "destination": "/blog",
+      "permanent": true
+    },
+    {
+      "source": "/8-reasons-for-slow-search-engine-optimization",
+      "destination": "/blog/technical-seo-audit-checklist-nigeria",
+      "permanent": true
+    },
+    {
+      "source": "/8-reasons-for-slow-search-engine-optimization/",
+      "destination": "/blog/technical-seo-audit-checklist-nigeria",
+      "permanent": true
+    },
+    {
+      "source": "/automotive-seo-guide-for-ranking-your-automobiles",
+      "destination": "/services/seo",
+      "permanent": true
+    },
+    {
+      "source": "/automotive-seo-guide-for-ranking-your-automobiles/",
+      "destination": "/services/seo",
       "permanent": true
     }
   ]
