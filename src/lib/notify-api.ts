@@ -25,7 +25,7 @@ export const sendLeadNotification = createServerFn({ method: 'POST' })
     const apiKey = process.env.RESEND_API_KEY
     if (!apiKey) return { sent: false, reason: 'RESEND_API_KEY not set' }
 
-    const to = process.env.LEAD_NOTIFY_EMAIL || 'ravionhospitality@gmail.com'
+    const to = process.env.LEAD_NOTIFY_EMAIL || 'toptonmedia@gmail.com'
     const isQualifier = lead.kind === 'qualifier_form'
     const subject = isQualifier
       ? `${lead.qualified ? '🔥 Qualified lead' : 'New qualifier lead'}: ${lead.name}`
