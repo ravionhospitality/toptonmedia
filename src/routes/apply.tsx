@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { seoMeta, seoLinks } from '../lib/seo'
 import { CONTACT } from '../lib/site-data'
 import { supabase } from '../lib/supabase'
+import { sendLeadNotification } from '../lib/notify-api'
 import { generateDiagnosticReport, type DiagnosticReport } from '../lib/revenue-diagnostic'
 
 export const Route = createFileRoute('/apply')({
@@ -214,6 +215,19 @@ function ApplyPage() {
       source: 'qualifier_form',
       status: qual ? 'qualified' : 'new',
     })
+
+    sendLeadNotification({
+      data: {
+        kind: 'qualifier_form',
+        name: finalAnswers.name ?? 'Unknown',
+        email: finalAnswers.email ?? '',
+        phone: finalAnswers.phone,
+        service: finalAnswers.goal,
+        budget: finalAnswers.budget,
+        message: Object.entries(finalAnswers).map(([k, v]) => `${k}: ${v}`).join('\n'),
+        qualified: qual,
+      },
+    }).catch(() => {})
 
     setQualified(qual)
     setReport(diagnosticReport)

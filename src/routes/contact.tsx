@@ -7,6 +7,7 @@ import { FAQAccordion } from '../components/FAQAccordion'
 import { Reveal } from '../lib/useReveal'
 import { CONTACT, CONTACT_FAQS } from '../lib/site-data'
 import { supabase } from '../lib/supabase'
+import { sendLeadNotification } from '../lib/notify-api'
 import { seoMeta, seoLinks, breadcrumbSchema, faqSchema, contactPageSchema } from '../lib/seo'
 
 export const Route = createFileRoute('/contact')({
@@ -68,6 +69,20 @@ function ContactPage() {
       setSubmitError('Something went wrong sending your message. Please try again or email us directly.')
       return
     }
+
+    sendLeadNotification({
+      data: {
+        kind: 'contact_form',
+        name: String(formData.get('name') ?? ''),
+        email: String(formData.get('email') ?? ''),
+        phone: String(formData.get('phone') ?? '') || undefined,
+        company: String(formData.get('company') ?? '') || undefined,
+        service: String(formData.get('service') ?? '') || undefined,
+        budget: String(formData.get('budget') ?? '') || undefined,
+        message: String(formData.get('message') ?? '') || undefined,
+      },
+    }).catch(() => {})
+
     setSubmitted(true)
   }
 
