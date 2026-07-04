@@ -539,6 +539,81 @@
       "source": "/content-marketing-vs-social-media-marketing/",
       "destination": "/services/social-media-management",
       "permanent": true
+    },
+    {
+      "source": "/en-gb",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/en-gb/",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/en-gh",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/en-gh/",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/index.html",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/data2bot-academy",
+      "destination": "/services/training-workshops",
+      "permanent": true
+    },
+    {
+      "source": "/data2bot-academy/",
+      "destination": "/services/training-workshops",
+      "permanent": true
+    },
+    {
+      "source": "/checkout",
+      "destination": "/shop",
+      "permanent": true
+    },
+    {
+      "source": "/checkout/(.*)",
+      "destination": "/shop",
+      "permanent": true
+    },
+    {
+      "source": "/author/topton-media",
+      "destination": "/blog",
+      "permanent": true
+    },
+    {
+      "source": "/author/topton-media/",
+      "destination": "/blog",
+      "permanent": true
+    },
+    {
+      "source": "/comments/feed",
+      "destination": "/blog",
+      "permanent": true
+    },
+    {
+      "source": "/comments/feed/",
+      "destination": "/blog",
+      "permanent": true
+    },
+    {
+      "source": "/:slug/feed",
+      "destination": "/blog",
+      "permanent": true
+    },
+    {
+      "source": "/:slug/feed/",
+      "destination": "/blog",
+      "permanent": true
     }
   ]
 }

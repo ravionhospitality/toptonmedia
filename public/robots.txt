@@ -3,6 +3,7 @@ Allow: /
 
 Disallow: /admin/
 Disallow: /wp-admin/
+Disallow: /wp-content/
 Disallow: /private/
 Disallow: /*.json$
 
