@@ -309,6 +309,226 @@
       "source": "/automotive-seo-guide-for-ranking-your-automobiles/",
       "destination": "/services/seo",
       "permanent": true
+    },
+    {
+      "source": "/marketing-bootcamp",
+      "destination": "/services/training-workshops",
+      "permanent": true
+    },
+    {
+      "source": "/marketing-bootcamp/",
+      "destination": "/services/training-workshops",
+      "permanent": true
+    },
+    {
+      "source": "/marketing-school",
+      "destination": "/services/training-workshops",
+      "permanent": true
+    },
+    {
+      "source": "/marketing-school/",
+      "destination": "/services/training-workshops",
+      "permanent": true
+    },
+    {
+      "source": "/digital-marketing-training",
+      "destination": "/services/training-workshops",
+      "permanent": true
+    },
+    {
+      "source": "/digital-marketing-training/",
+      "destination": "/services/training-workshops",
+      "permanent": true
+    },
+    {
+      "source": "/contact-us-2",
+      "destination": "/contact",
+      "permanent": true
+    },
+    {
+      "source": "/contact-us-2/",
+      "destination": "/contact",
+      "permanent": true
+    },
+    {
+      "source": "/business-plan",
+      "destination": "/services",
+      "permanent": true
+    },
+    {
+      "source": "/business-plan/",
+      "destination": "/services",
+      "permanent": true
+    },
+    {
+      "source": "/download-35000-corporate-business-database-in-nigeria",
+      "destination": "/services/lead-generation",
+      "permanent": true
+    },
+    {
+      "source": "/download-35000-corporate-business-database-in-nigeria/",
+      "destination": "/services/lead-generation",
+      "permanent": true
+    },
+    {
+      "source": "/67-latest-asoebi-ankara-styles-for-wedding-ceremonies-in-africa",
+      "destination": "/blog",
+      "permanent": true
+    },
+    {
+      "source": "/67-latest-asoebi-ankara-styles-for-wedding-ceremonies-in-africa/",
+      "destination": "/blog",
+      "permanent": true
+    },
+    {
+      "source": "/6-seo-strategies-for-automotive-seo",
+      "destination": "/services/seo",
+      "permanent": true
+    },
+    {
+      "source": "/6-seo-strategies-for-automotive-seo/",
+      "destination": "/services/seo",
+      "permanent": true
+    },
+    {
+      "source": "/complete-guide-to-b2b-search-engine-optimization",
+      "destination": "/blog/b2b-seo-strategy-nigeria",
+      "permanent": true
+    },
+    {
+      "source": "/complete-guide-to-b2b-search-engine-optimization/",
+      "destination": "/blog/b2b-seo-strategy-nigeria",
+      "permanent": true
+    },
+    {
+      "source": "/real-estate-content-marketing-effective-strategies",
+      "destination": "/blog/real-estate-content-marketing-nigeria",
+      "permanent": true
+    },
+    {
+      "source": "/real-estate-content-marketing-effective-strategies/",
+      "destination": "/blog/real-estate-content-marketing-nigeria",
+      "permanent": true
+    },
+    {
+      "source": "/ecommerce-content-marketing-strategy-to-boost-your-online-sales",
+      "destination": "/blog/ecommerce-content-marketing-strategy-nigeria",
+      "permanent": true
+    },
+    {
+      "source": "/ecommerce-content-marketing-strategy-to-boost-your-online-sales/",
+      "destination": "/blog/ecommerce-content-marketing-strategy-nigeria",
+      "permanent": true
+    },
+    {
+      "source": "/the-ultimate-guide-to-influencer-marketing-for-startups",
+      "destination": "/blog/influencer-collaboration-nigerian-brands",
+      "permanent": true
+    },
+    {
+      "source": "/the-ultimate-guide-to-influencer-marketing-for-startups/",
+      "destination": "/blog/influencer-collaboration-nigerian-brands",
+      "permanent": true
+    },
+    {
+      "source": "/affiliate-marketing-vs-influencer-marketing",
+      "destination": "/blog/influencer-collaboration-nigerian-brands",
+      "permanent": true
+    },
+    {
+      "source": "/affiliate-marketing-vs-influencer-marketing/",
+      "destination": "/blog/influencer-collaboration-nigerian-brands",
+      "permanent": true
+    },
+    {
+      "source": "/automated-blog-content-generator",
+      "destination": "/blog",
+      "permanent": true
+    },
+    {
+      "source": "/automated-blog-content-generator/",
+      "destination": "/blog",
+      "permanent": true
+    },
+    {
+      "source": "/what-is-content-automation-how-does-it-work",
+      "destination": "/blog",
+      "permanent": true
+    },
+    {
+      "source": "/what-is-content-automation-how-does-it-work/",
+      "destination": "/blog",
+      "permanent": true
+    },
+    {
+      "source": "/content-marketing-automation-strategy-2024",
+      "destination": "/blog",
+      "permanent": true
+    },
+    {
+      "source": "/content-marketing-automation-strategy-2024/",
+      "destination": "/blog",
+      "permanent": true
+    },
+    {
+      "source": "/22-content-marketing-books-must-read-in-2024",
+      "destination": "/blog",
+      "permanent": true
+    },
+    {
+      "source": "/22-content-marketing-books-must-read-in-2024/",
+      "destination": "/blog",
+      "permanent": true
+    },
+    {
+      "source": "/b2b-saas-content-marketing-strategies-2024",
+      "destination": "/blog",
+      "permanent": true
+    },
+    {
+      "source": "/b2b-saas-content-marketing-strategies-2024/",
+      "destination": "/blog",
+      "permanent": true
+    },
+    {
+      "source": "/top-guide-brand-marketing-vs-content-marketing",
+      "destination": "/services/brand-strategy",
+      "permanent": true
+    },
+    {
+      "source": "/top-guide-brand-marketing-vs-content-marketing/",
+      "destination": "/services/brand-strategy",
+      "permanent": true
+    },
+    {
+      "source": "/the-perfect-b2c-content-marketing-strategies",
+      "destination": "/services/brand-strategy",
+      "permanent": true
+    },
+    {
+      "source": "/the-perfect-b2c-content-marketing-strategies/",
+      "destination": "/services/brand-strategy",
+      "permanent": true
+    },
+    {
+      "source": "/b2b-vs-b2c-content-marketing-strategies",
+      "destination": "/services/brand-strategy",
+      "permanent": true
+    },
+    {
+      "source": "/b2b-vs-b2c-content-marketing-strategies/",
+      "destination": "/services/brand-strategy",
+      "permanent": true
+    },
+    {
+      "source": "/content-marketing-vs-social-media-marketing",
+      "destination": "/services/social-media-management",
+      "permanent": true
+    },
+    {
+      "source": "/content-marketing-vs-social-media-marketing/",
+      "destination": "/services/social-media-management",
+      "permanent": true
     }
   ]
 }
