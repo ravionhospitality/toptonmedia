@@ -10,9 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TeamRouteImport } from './routes/team'
-import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ServicesRouteImport } from './routes/services'
-import { Route as RssDotxmlRouteImport } from './routes/rss[.]xml'
 import { Route as MarketingAgencyNigeriaRouteImport } from './routes/marketing-agency-nigeria'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as CaseStudiesRouteImport } from './routes/case-studies'
@@ -38,19 +36,9 @@ const TeamRoute = TeamRouteImport.update({
   path: '/team',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
-  id: '/sitemap.xml',
-  path: '/sitemap.xml',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ServicesRoute = ServicesRouteImport.update({
   id: '/services',
   path: '/services',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const RssDotxmlRoute = RssDotxmlRouteImport.update({
-  id: '/rss.xml',
-  path: '/rss.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MarketingAgencyNigeriaRoute = MarketingAgencyNigeriaRouteImport.update({
@@ -163,9 +151,7 @@ export interface FileRoutesByFullPath {
   '/case-studies': typeof CaseStudiesRoute
   '/contact': typeof ContactRoute
   '/marketing-agency-nigeria': typeof MarketingAgencyNigeriaRoute
-  '/rss.xml': typeof RssDotxmlRoute
   '/services': typeof ServicesRouteWithChildren
-  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/team': typeof TeamRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/order/confirmation': typeof OrderConfirmationRoute
@@ -188,9 +174,7 @@ export interface FileRoutesByTo {
   '/case-studies': typeof CaseStudiesRoute
   '/contact': typeof ContactRoute
   '/marketing-agency-nigeria': typeof MarketingAgencyNigeriaRoute
-  '/rss.xml': typeof RssDotxmlRoute
   '/services': typeof ServicesRouteWithChildren
-  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/team': typeof TeamRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/order/confirmation': typeof OrderConfirmationRoute
@@ -214,9 +198,7 @@ export interface FileRoutesById {
   '/case-studies': typeof CaseStudiesRoute
   '/contact': typeof ContactRoute
   '/marketing-agency-nigeria': typeof MarketingAgencyNigeriaRoute
-  '/rss.xml': typeof RssDotxmlRoute
   '/services': typeof ServicesRouteWithChildren
-  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/team': typeof TeamRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/order/confirmation': typeof OrderConfirmationRoute
@@ -241,9 +223,7 @@ export interface FileRouteTypes {
     | '/case-studies'
     | '/contact'
     | '/marketing-agency-nigeria'
-    | '/rss.xml'
     | '/services'
-    | '/sitemap.xml'
     | '/team'
     | '/blog/$slug'
     | '/order/confirmation'
@@ -266,9 +246,7 @@ export interface FileRouteTypes {
     | '/case-studies'
     | '/contact'
     | '/marketing-agency-nigeria'
-    | '/rss.xml'
     | '/services'
-    | '/sitemap.xml'
     | '/team'
     | '/blog/$slug'
     | '/order/confirmation'
@@ -291,9 +269,7 @@ export interface FileRouteTypes {
     | '/case-studies'
     | '/contact'
     | '/marketing-agency-nigeria'
-    | '/rss.xml'
     | '/services'
-    | '/sitemap.xml'
     | '/team'
     | '/blog/$slug'
     | '/order/confirmation'
@@ -317,9 +293,7 @@ export interface RootRouteChildren {
   CaseStudiesRoute: typeof CaseStudiesRoute
   ContactRoute: typeof ContactRoute
   MarketingAgencyNigeriaRoute: typeof MarketingAgencyNigeriaRoute
-  RssDotxmlRoute: typeof RssDotxmlRoute
   ServicesRoute: typeof ServicesRouteWithChildren
-  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TeamRoute: typeof TeamRoute
   OrderConfirmationRoute: typeof OrderConfirmationRoute
   ShopSlugRoute: typeof ShopSlugRoute
@@ -338,25 +312,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TeamRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/sitemap.xml': {
-      id: '/sitemap.xml'
-      path: '/sitemap.xml'
-      fullPath: '/sitemap.xml'
-      preLoaderRoute: typeof SitemapDotxmlRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/services': {
       id: '/services'
       path: '/services'
       fullPath: '/services'
       preLoaderRoute: typeof ServicesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/rss.xml': {
-      id: '/rss.xml'
-      path: '/rss.xml'
-      fullPath: '/rss.xml'
-      preLoaderRoute: typeof RssDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/marketing-agency-nigeria': {
@@ -529,9 +489,7 @@ const rootRouteChildren: RootRouteChildren = {
   CaseStudiesRoute: CaseStudiesRoute,
   ContactRoute: ContactRoute,
   MarketingAgencyNigeriaRoute: MarketingAgencyNigeriaRoute,
-  RssDotxmlRoute: RssDotxmlRoute,
   ServicesRoute: ServicesRouteWithChildren,
-  SitemapDotxmlRoute: SitemapDotxmlRoute,
   TeamRoute: TeamRoute,
   OrderConfirmationRoute: OrderConfirmationRoute,
   ShopSlugRoute: ShopSlugRoute,

@@ -1,9 +1,8 @@
-import { createFileRoute } from '@tanstack/react-router'
-import { createServerFn } from '@tanstack/react-start'
-import { supabase } from '../lib/supabase'
+const SUPABASE_URL = 'https://ahjhwqcrxcljmenoqyex.supabase.co'
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFoamh3cWNyeGNsam1lbm9xeWV4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk3ODQ5NjEsImV4cCI6MjA5NTM2MDk2MX0.KTMkkFhmMXMR-1ATK1IwaAIfUqDHkmRgO8bjJXyZ0DY'
 
-function escapeXml(str: string) {
-  return str
+function escapeXml(str) {
+  return String(str ?? '')
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
@@ -11,15 +10,19 @@ function escapeXml(str: string) {
     .replace(/'/g, '&apos;')
 }
 
-const generateRssFeed = createServerFn({ method: 'GET' }).handler(async () => {
-  const { data: posts } = await supabase
-    .from('blog_posts')
-    .select('slug,title,excerpt,meta_description,hero_image,category,created_at')
-    .eq('published', true)
-    .order('created_at', { ascending: false })
-    .limit(50)
+export default async function handler(req, res) {
+  let posts = []
+  try {
+    const r = await fetch(
+      `${SUPABASE_URL}/rest/v1/blog_posts?select=slug,title,excerpt,meta_description,hero_image,category,created_at&published=eq.true&order=created_at.desc&limit=50`,
+      { headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` } },
+    )
+    if (r.ok) posts = await r.json()
+  } catch {
+    posts = []
+  }
 
-  const items = (posts ?? []).map(post => `
+  const items = posts.map(post => `
     <item>
       <title>${escapeXml(post.title)}</title>
       <link>https://toptonmedia.com/blog/${post.slug}</link>
@@ -48,14 +51,6 @@ const generateRssFeed = createServerFn({ method: 'GET' }).handler(async () => {
   </channel>
 </rss>`
 
-  return xml
-})
-
-export const Route = createFileRoute('/rss.xml')({
-  loader: async () => {
-    const xml = await generateRssFeed()
-    return new Response(xml, {
-      headers: { 'Content-Type': 'application/rss+xml; charset=utf-8' },
-    })
-  },
-})
+  res.setHeader('Content-Type', 'application/rss+xml; charset=utf-8')
+  res.status(200).send(xml)
+}
