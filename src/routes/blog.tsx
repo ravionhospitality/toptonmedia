@@ -34,21 +34,26 @@ async function fetchPublishedPosts(): Promise<DbBlogPost[]> {
 }
 
 export const Route = createFileRoute('/blog')({
-  head: () => ({
-    meta: seoMeta({
-      title: 'Blog | Growth Marketing Insights for Nigerian Brands — Topton Media',
-      description: 'Performance marketing insights, SEO guides, paid media tips, and growth strategy from the Topton Media team. Built for Nigerian and African brands.',
-      path: '/blog',
-    }),
-    links: seoLinks('/blog'),
-    scripts: [{
-      type: 'application/ld+json',
-      children: JSON.stringify(breadcrumbSchema([
-        { name: 'Home', url: 'https://toptonmedia.com' },
-        { name: 'Blog', url: 'https://toptonmedia.com/blog' },
-      ])),
-    }],
-  }),
+  head: ({ matches }) => {
+    // The /blog/$slug child route provides its own meta/links/canonical —
+    // skip ours here to avoid duplicate <title> and canonical tags.
+    if (matches.some(m => (m.routeId as string) === '/blog/$slug')) return {}
+    return {
+      meta: seoMeta({
+        title: 'Blog | Growth Marketing Insights for Nigerian Brands — Topton Media',
+        description: 'Performance marketing insights, SEO guides, paid media tips, and growth strategy from the Topton Media team. Built for Nigerian and African brands.',
+        path: '/blog',
+      }),
+      links: seoLinks('/blog'),
+      scripts: [{
+        type: 'application/ld+json',
+        children: JSON.stringify(breadcrumbSchema([
+          { name: 'Home', url: 'https://toptonmedia.com' },
+          { name: 'Blog', url: 'https://toptonmedia.com/blog' },
+        ])),
+      }],
+    }
+  },
   loader: async () => {
     const posts = await fetchPublishedPosts()
     return { posts }
