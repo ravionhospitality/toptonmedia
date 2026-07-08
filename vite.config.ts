@@ -14,13 +14,10 @@ export default defineConfig({
     react(),
   ],
   build: {
-    minify: 'terser',
-    terserOptions: {
-      compress: {
-        drop_console: true,
-        drop_debugger: true,
-      },
-    },
+    minify: 'esbuild',
+  },
+  esbuild: {
+    drop: ['console', 'debugger'],
   },
   ssr: {
     external: ['isbot', 'googleapis', 'google-auth-library', 'googleapis-common'],
