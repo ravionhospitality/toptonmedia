@@ -11,21 +11,26 @@ import { SERVICE_ICONS } from '../lib/service-icons'
 import { seoMeta, seoLinks, breadcrumbSchema } from '../lib/seo'
 
 export const Route = createFileRoute('/services')({
-  head: () => ({
-    meta: seoMeta({
-      title: 'Services | Growth Marketing, Branding, Print & More — Topton Media Lagos',
-      description: 'Explore all 15 services from Topton Media — paid media, SEO, web design, brand strategy, social media, PR, printing, corporate gifts, market activations, and more.',
-      path: '/services',
-    }),
-    links: seoLinks('/services'),
-    scripts: [{
-      type: 'application/ld+json',
-      children: JSON.stringify(breadcrumbSchema([
-        { name: 'Home', url: 'https://toptonmedia.com' },
-        { name: 'Services', url: 'https://toptonmedia.com/services' },
-      ])),
-    }],
-  }),
+  head: ({ matches }) => {
+    // The /services/$slug child route provides its own meta/links/canonical —
+    // skip ours here to avoid duplicate <title> and canonical tags.
+    if (matches.some(m => (m.routeId as string) === '/services/$slug')) return {}
+    return {
+      meta: seoMeta({
+        title: 'Services | Growth Marketing, Branding, Print & More — Topton Media Lagos',
+        description: 'Explore all 15 services from Topton Media — paid media, SEO, web design, brand strategy, social media, PR, printing, corporate gifts, market activations, and more.',
+        path: '/services',
+      }),
+      links: seoLinks('/services'),
+      scripts: [{
+        type: 'application/ld+json',
+        children: JSON.stringify(breadcrumbSchema([
+          { name: 'Home', url: 'https://toptonmedia.com' },
+          { name: 'Services', url: 'https://toptonmedia.com/services' },
+        ])),
+      }],
+    }
+  },
   loader: async () => {
     const services = await fetchAllServices()
     return { services }

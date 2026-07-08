@@ -5,6 +5,10 @@
       "destination": "/api/sitemap"
     },
     {
+      "source": "/sitemap.xml.gz",
+      "destination": "/api/sitemap"
+    },
+    {
       "source": "/rss.xml",
       "destination": "/api/rss"
     }
@@ -122,6 +126,16 @@
     },
     {
       "source": "/google-my-business-profile-how-to-set-it-up-amp-why-you-should-have-one-in-2025/",
+      "destination": "/blog/local-seo-nigerian-businesses-guide",
+      "permanent": true
+    },
+    {
+      "source": "/google-to-shut-down-business-profile-websites-what-next",
+      "destination": "/blog/local-seo-nigerian-businesses-guide",
+      "permanent": true
+    },
+    {
+      "source": "/google-to-shut-down-business-profile-websites-what-next/",
       "destination": "/blog/local-seo-nigerian-businesses-guide",
       "permanent": true
     },
