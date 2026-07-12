@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react'
 import { supabase } from '../../lib/supabase'
 import { SERVICES } from '../../lib/services'
 import { ImageUpload } from '../../components/ImageUpload'
+import { RichEditor } from '../../components/RichEditor'
 
 export const Route = createFileRoute('/admin/')({
   component: AdminPage,
@@ -503,7 +504,9 @@ function AdminPage() {
             <SField label="Category"><input value={productForm.category} onChange={e=>pfUp('category',e.target.value)} className="admin-input" placeholder="e.g. Marketing Courses" /></SField>
           </div>
           <SField label="Short Description (shown on shop cards)"><textarea value={productForm.short_description} onChange={e=>pfUp('short_description',e.target.value)} rows={2} className="admin-input" /></SField>
-          <SField label="Full Description (HTML allowed — shown on product page)"><textarea value={productForm.description_html} onChange={e=>pfUp('description_html',e.target.value)} rows={8} className="admin-input font-mono text-xs" placeholder="<p>What the buyer gets…</p>" /></SField>
+          <SField label="Full Description (shown on product page)">
+            <RichEditor value={productForm.description_html} onChange={v=>pfUp('description_html',v)} placeholder="What the buyer gets…" minHeight={250} />
+          </SField>
           <ImageUpload value={productForm.card_image} onChange={v=>pfUp('card_image',v)} label="Card Image (square, used on Shop listing)" />
           <ImageUpload value={productForm.hero_image} onChange={v=>pfUp('hero_image',v)} label="Hero Image (used on product detail page)" />
           <div className="grid grid-cols-2 gap-5">
