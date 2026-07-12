@@ -11,23 +11,6 @@ export const Route = createFileRoute('/admin/')({
 
 const ADMIN_PASSWORD = (import.meta.env.VITE_ADMIN_PASSWORD as string) || 'topton2026admin'
 
-const STATUS_OPTIONS = ['new', 'contacted', 'qualified', 'proposal_sent', 'won', 'lost'] as const
-type Status = typeof STATUS_OPTIONS[number]
-
-const STATUS_LABELS: Record<Status, string> = {
-  new: 'New', contacted: 'Contacted', qualified: 'Qualified',
-  proposal_sent: 'Proposal Sent', won: 'Won', lost: 'Lost',
-}
-
-const STATUS_COLORS: Record<Status, string> = {
-  new: 'bg-blue-900/40 text-blue-300',
-  contacted: 'bg-yellow-900/40 text-yellow-300',
-  qualified: 'bg-purple-900/40 text-purple-300',
-  proposal_sent: 'bg-orange-900/40 text-orange-300',
-  won: 'bg-green-900/40 text-green-400',
-  lost: 'bg-red-900/40 text-red-400',
-}
-
 type ServiceRow = {
   id: string; slug: string; name: string; category: string; pitch: string;
   price_from: string; card_image: string; hero_image: string;
@@ -80,14 +63,15 @@ function blankProduct(): Omit<ProductRow,'id'> {
 }
 
 function downloadCSV(rows: any[]) {
-  if (!rows.length) { alert('No submissions to export.'); return }
-  const cols = ['name','email','phone','company','service','budget','status','source','follow_up_date','notes','message','created_at']
+  if (!rows.length) { alert('No leads to export.'); return }
+  const cols = ['name','email','phone','budget','service','created_at']
+  const headers = ['Name','Email','Phone','Monthly Budget','Interested In','Submitted']
   const escape = (v: any) => {
     if (v == null) return ''
     const s = String(v).replace(/"/g,'""')
     return s.includes(',') || s.includes('\n') || s.includes('"')?`"${s}"`:s
   }
-  const lines = [cols.join(','), ...rows.map(r => cols.map(c => escape(r[c])).join(','))]
+  const lines = [headers.join(','), ...rows.map(r => cols.map(c => escape(r[c])).join(','))]
   const blob = new Blob([lines.join('\n')], { type: 'text/csv' })
   const a = document.createElement('a'); a.href = URL.createObjectURL(blob)
   a.download = `topton-leads-${new Date().toISOString().slice(0,10)}.csv`
@@ -104,9 +88,8 @@ function AdminPage() {
   const [services, setServices] = useState<ServiceRow[]>([])
   const [products, setProducts] = useState<ProductRow[]>([])
   const [loading, setLoading] = useState(false)
-  const [statusFilter, setStatusFilter] = useState<'all'|Status>('all')
   const [expandedId, setExpandedId] = useState<string|null>(null)
-  const [noteDrafts, setNoteDrafts] = useState<Record<string,string>>({})
+  const [search, setSearch] = useState('')
   const [fetchError, setFetchError] = useState('')
   // service editor
   const [editingService, setEditingService] = useState<ServiceRow|null>(null)
@@ -265,20 +248,6 @@ function AdminPage() {
     }
     alert('Copied! Paste this directly into a LinkedIn article or newsletter post.')
   }
-  async function updateStatus(id:string,status:Status) {
-    await supabase.from('contact_submissions').update({status}).eq('id',id)
-    setSubmissions(s => s.map(sub => sub.id===id?{...sub,status}:sub))
-  }
-  async function saveNote(id:string) {
-    const note = noteDrafts[id]??''
-    await supabase.from('contact_submissions').update({notes:note}).eq('id',id)
-    setSubmissions(s => s.map(sub => sub.id===id?{...sub,notes:note}:sub))
-  }
-  async function setFollowUpDate(id:string,date:string) {
-    await supabase.from('contact_submissions').update({follow_up_date:date||null}).eq('id',id)
-    setSubmissions(s => s.map(sub => sub.id===id?{...sub,follow_up_date:date}:sub))
-  }
-
   // Service CRUD
   function openNewService() {
     setEditingService({id:'new',...blankService()} as ServiceRow)
@@ -379,9 +348,10 @@ function AdminPage() {
     setProductForm(f => ({...f,[key]:val}))
   }
 
-  const filteredSubmissions = statusFilter==='all' ? submissions : submissions.filter(s=>(s.status??'new')===statusFilter)
-  const today = new Date().toISOString().slice(0,10)
-  const overdueCount = submissions.filter(s=>s.follow_up_date&&s.follow_up_date<today&&!['won','lost'].includes(s.status)).length
+  const filteredSubmissions = !search.trim() ? submissions : submissions.filter(s => {
+    const q = search.trim().toLowerCase()
+    return [s.name, s.email, s.phone, s.budget].some(v => (v??'').toString().toLowerCase().includes(q))
+  })
 
   if (!authChecked) {
     return null
@@ -597,14 +567,9 @@ function AdminPage() {
           {(['submissions','blog','services','shop','analytics'] as const).map(t => (
             <button key={t} onClick={()=>setTab(t)}
               className={`px-5 py-2 rounded-full text-sm font-semibold transition-colors ${tab===t?'bg-gold text-charcoal':'border border-gold/30 text-ivory/70 hover:border-gold'}`}>
-              {t==='submissions'?'Contact Submissions':t==='blog'?'Blog Posts':t==='services'?'Services':t==='shop'?'Shop Products':'Analytics'}
+              {t==='submissions'?'Leads':t==='blog'?'Blog Posts':t==='services'?'Services':t==='shop'?'Shop Products':'Analytics'}
             </button>
           ))}
-          {tab==='submissions'&&overdueCount>0&&(
-            <span className="px-3 py-1.5 rounded-full text-xs font-semibold bg-red-900/40 text-red-300">
-              {overdueCount} overdue follow-up{overdueCount>1?'s':''}
-            </span>
-          )}
           {tab==='submissions'&&(
             <button onClick={()=>downloadCSV(filteredSubmissions)} className="ml-auto px-4 py-2 rounded-full text-sm font-semibold border border-gold/30 text-gold hover:border-gold transition-colors">
               ↓ Export CSV
@@ -628,18 +593,14 @@ function AdminPage() {
         </div>
 
         {tab==='submissions'&&!loading&&(
-          <div className="flex gap-2 mb-6 flex-wrap">
-            <button onClick={()=>setStatusFilter('all')} className={`px-3 py-1.5 rounded-full text-xs font-semibold ${statusFilter==='all'?'bg-ivory text-charcoal':'border border-ivory/20 text-ivory/60'}`}>
-              All ({submissions.length})
-            </button>
-            {STATUS_OPTIONS.map(s => {
-              const count = submissions.filter(sub=>(sub.status??'new')===s).length
-              return (
-                <button key={s} onClick={()=>setStatusFilter(s)} className={`px-3 py-1.5 rounded-full text-xs font-semibold ${statusFilter===s?STATUS_COLORS[s]:'border border-ivory/20 text-ivory/60'}`}>
-                  {STATUS_LABELS[s]} ({count})
-                </button>
-              )
-            })}
+          <div className="flex items-center gap-3 mb-6 flex-wrap">
+            <input
+              value={search}
+              onChange={e=>setSearch(e.target.value)}
+              placeholder="Search by name, email, phone, or budget…"
+              className="w-full max-w-sm rounded-full border border-gold/20 bg-cardbrown px-4 py-2 text-sm text-ivory placeholder:text-ivory/30 focus:outline-none focus:border-gold"
+            />
+            <span className="text-xs text-ivory/40">{filteredSubmissions.length} of {submissions.length} leads</span>
           </div>
         )}
 
@@ -650,64 +611,51 @@ function AdminPage() {
 
         {!loading&&tab==='submissions'&&(
           <div className="space-y-4">
-            {filteredSubmissions.length===0&&<p className="text-ivory/40">No submissions in this view.</p>}
+            {filteredSubmissions.length===0&&<p className="text-ivory/40">No leads in this view.</p>}
             {filteredSubmissions.map(s => {
-              const status:Status = s.status??'new'
               const isExpanded = expandedId===s.id
-              const isOverdue = s.follow_up_date&&s.follow_up_date<today&&!['won','lost'].includes(status)
               const isQualifier = s.source==='qualifier_form'
               return (
-                <div key={s.id} className={`bg-cardbrown border rounded-xl p-6 ${isOverdue?'border-red-700/50':'border-gold/10'}`}>
+                <div key={s.id} className="bg-cardbrown border border-gold/10 rounded-xl p-6">
                   <div className="flex items-start justify-between gap-4 flex-wrap">
                     <div>
                       <div className="flex items-center gap-2 flex-wrap">
-                        <p className="font-semibold text-ivory">{s.name}{s.company?` — ${s.company}`:''}</p>
+                        <p className="font-semibold text-ivory text-lg">{s.name}</p>
                         {isQualifier&&<span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-blue-900/40 text-blue-300">Qualifier Lead</span>}
                       </div>
-                      <a href={`mailto:${s.email}`} className="text-gold text-sm hover:underline">{s.email}</a>
-                      {s.phone&&<span className="text-ivory/50 text-sm ml-3">{s.phone}</span>}
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <span className={`px-3 py-1 rounded-full text-xs font-semibold ${STATUS_COLORS[status]}`}>{STATUS_LABELS[status]}</span>
-                      <p className="text-xs text-ivory/40">{new Date(s.created_at).toLocaleString('en-NG')}</p>
-                    </div>
-                  </div>
-                  <div className="mt-3 flex flex-wrap gap-3 text-xs">
-                    {s.service&&<span className="px-3 py-1 rounded-full bg-maroon/20 text-gold">{s.service}</span>}
-                    {s.budget&&<span className="px-3 py-1 rounded-full bg-gold/10 text-ivory/70">{s.budget}</span>}
-                    {isOverdue&&<span className="px-3 py-1 rounded-full bg-red-900/40 text-red-300">Follow-up overdue</span>}
-                  </div>
-                  {s.message&&<p className="mt-3 text-sm text-ivory/60 leading-relaxed whitespace-pre-line">{isQualifier?'[Qualifier answers — expand to review]':s.message}</p>}
-                  <button onClick={()=>setExpandedId(isExpanded?null:s.id)} className="mt-4 text-xs font-semibold text-gold hover:underline">
-                    {isExpanded?'Hide CRM details':'Manage status & notes →'}
-                  </button>
-                  {isExpanded&&(
-                    <div className="mt-4 pt-4 border-t border-gold/10 space-y-4">
-                      {isQualifier&&s.message&&(
-                        <div className="bg-charcoal/60 rounded-xl p-4">
-                          <p className="text-xs font-semibold text-ivory/60 mb-2">Qualifier Answers</p>
-                          <pre className="text-xs text-ivory/70 whitespace-pre-wrap font-mono">{s.message}</pre>
-                        </div>
-                      )}
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div>
-                          <label className="block text-xs font-medium text-ivory/60 mb-1.5">Status</label>
-                          <select value={status} onChange={e=>updateStatus(s.id,e.target.value as Status)} className="w-full rounded-lg border border-gold/20 bg-charcoal px-3 py-2 text-sm text-ivory">
-                            {STATUS_OPTIONS.map(opt=><option key={opt} value={opt}>{STATUS_LABELS[opt]}</option>)}
-                          </select>
-                        </div>
-                        <div>
-                          <label className="block text-xs font-medium text-ivory/60 mb-1.5">Follow-up date</label>
-                          <input type="date" value={s.follow_up_date??''} onChange={e=>setFollowUpDate(s.id,e.target.value)} className="w-full rounded-lg border border-gold/20 bg-charcoal px-3 py-2 text-sm text-ivory" />
-                        </div>
-                        <div className="sm:col-span-2">
-                          <label className="block text-xs font-medium text-ivory/60 mb-1.5">Internal notes</label>
-                          <textarea value={noteDrafts[s.id]??s.notes??''} onChange={e=>setNoteDrafts(d=>({...d,[s.id]:e.target.value}))} rows={3} className="w-full rounded-lg border border-gold/20 bg-charcoal px-3 py-2 text-sm text-ivory" placeholder="e.g. Called 12 June, interested in Growth package" />
-                          <button onClick={()=>saveNote(s.id)} className="mt-2 px-4 py-1.5 rounded-lg text-xs font-semibold bg-gold/20 text-gold hover:bg-gold/30 transition-colors">Save Note</button>
-                        </div>
+                      <div className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1">
+                        <a href={`mailto:${s.email}`} className="text-gold text-sm hover:underline">{s.email}</a>
+                        {s.phone&&<a href={`tel:${s.phone}`} className="text-ivory/60 text-sm hover:text-ivory">{s.phone}</a>}
                       </div>
                     </div>
+                    <p className="text-xs text-ivory/40">{new Date(s.created_at).toLocaleString('en-NG')}</p>
+                  </div>
+
+                  <div className="mt-4 bg-gold/10 border border-gold/20 rounded-xl px-4 py-3">
+                    <p className="text-xs font-semibold text-gold/80 uppercase tracking-wide mb-1">Monthly ad budget (Q1)</p>
+                    <p className="text-ivory font-semibold">{s.budget || '— not answered —'}</p>
+                  </div>
+
+                  <div className="mt-3 flex flex-wrap gap-2 text-xs">
+                    {s.service&&<span className="px-3 py-1 rounded-full bg-maroon/20 text-gold">{s.service}</span>}
+                  </div>
+
+                  {isQualifier&&s.message&&(
+                    <button onClick={()=>setExpandedId(isExpanded?null:s.id)} className="mt-4 text-xs font-semibold text-gold hover:underline">
+                      {isExpanded?'Hide full answers':'View all 11 answers →'}
+                    </button>
                   )}
+                  {isExpanded&&s.message&&(
+                    <div className="mt-4 pt-4 border-t border-gold/10">
+                      <pre className="text-xs text-ivory/70 whitespace-pre-wrap font-mono bg-charcoal/60 rounded-xl p-4">{s.message}</pre>
+                    </div>
+                  )}
+
+                  <div className="mt-4 flex gap-3">
+                    <a href={`mailto:${s.email}`} className="text-xs px-3 py-1.5 rounded-lg border border-gold/30 text-gold hover:border-gold transition-colors">Email</a>
+                    {s.phone&&<a href={`tel:${s.phone}`} className="text-xs px-3 py-1.5 rounded-lg border border-ivory/20 text-ivory/60 hover:border-ivory/40 transition-colors">Call</a>}
+                    {s.phone&&<a href={`https://wa.me/${s.phone.replace(/[^\d]/g,'')}`} target="_blank" rel="noopener noreferrer" className="text-xs px-3 py-1.5 rounded-lg border border-green-700/40 text-green-400 hover:border-green-400 transition-colors">WhatsApp</a>}
+                  </div>
                 </div>
               )
             })}
